@@ -105,8 +105,8 @@ export default function Home() {
 
   return (
     <div className="flex min-h-screen flex-col">
-      <div className="container">
-        <header className="sticky top-0 z-50 flex items-center justify-between bg-background/80 px-4 py-6 backdrop-blur-sm shadow-sm">
+      <header className="sticky top-0 z-50 bg-background/80 py-4 backdrop-blur-sm shadow-md">
+        <div className="container flex items-center justify-between">
           <Logo />
           <nav className="hidden items-center gap-6 md:flex">
             <Link
@@ -157,8 +157,10 @@ export default function Home() {
               </SheetContent>
             </Sheet>
           </div>
-        </header>
+        </div>
+      </header>
 
+      <div className="container">
         <main className="flex-1">
           <section className="grid grid-cols-1 items-center gap-12 px-4 py-16 md:grid-cols-2 lg:py-24">
             <div className="space-y-6">
@@ -273,5 +275,3 @@ export default function Home() {
     </div>
   );
 }
-
-    
