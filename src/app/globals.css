@@ -79,11 +79,11 @@
       background: transparent;
     }
     &::-webkit-scrollbar-thumb {
-      background: hsl(var(--primary) / 0.5);
+      background: hsl(var(--border));
       border-radius: 3px;
     }
     &::-webkit-scrollbar-thumb:hover {
-      background: hsl(var(--primary));
+      background: hsl(var(--border) / 0.8);
     }
   }
 }
@@ -97,11 +97,11 @@
       background: transparent;
     }
     &::-webkit-scrollbar-thumb {
-      background: hsl(var(--primary) / 0.5);
+      background: hsl(var(--border));
       border-radius: 3px;
     }
     &::-webkit-scrollbar-thumb:hover {
-      background: hsl(var(--primary));
+      background: hsl(var(--border) / 0.8);
     }
   }
 }
