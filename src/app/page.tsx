@@ -18,6 +18,8 @@ import {
   Map,
   Menu,
   X,
+  Info,
+  Mail,
 } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -36,68 +38,69 @@ const features = [
     title: 'Brainstorm Topik',
     description:
       'Dapatkan inspirasi dengan ide sub-topik yang relevan untuk mata kuliah apa pun.',
-    href: '/topic-brainstormer',
+    href: '/brainstorm-topik',
   },
   {
     icon: <LayoutTemplate className="h-8 w-8" />,
     title: 'Kerangka Presentasi',
     description:
       'Secara instan menghasilkan draf presentasi slide-demi-slide yang logis.',
-    href: '/presentation-outliner',
+    href: '/kerangka-presentasi',
   },
   {
     icon: <BookCopy className="h-8 w-8" />,
     title: 'Pencari Analogi',
     description:
       'Jelaskan konsep teknis yang kompleks dengan analogi yang sederhana dan jelas.',
-    href: '/analogy-finder',
+    href: '/pencari-analogi',
   },
   {
     icon: <GraduationCap className="h-8 w-8" />,
     title: 'Kerangka Penelitian',
     description:
       'Susun tesis atau proposal penelitian Anda dengan kerangka akademis standar.',
-    href: '/research-outline-generator',
+    href: '/generator-kerangka-penelitian',
   },
   {
     icon: <Search className="h-8 w-8" />,
     title: 'Pencari Referensi Cerdas',
     description:
       'Temukan kata kunci yang efektif untuk memaksimalkan riset akademis Anda.',
-    href: '/smart-reference-finder',
+    href: '/pencari-referensi-cerdas',
   },
   {
     icon: <Quote className="h-8 w-8" />,
     title: 'Parafrase Akademik',
     description:
       'Ubah susunan kalimat untuk menghindari plagiarisme sambil mempertahankan makna aslinya.',
-    href: '/academic-paraphraser',
+    href: '/parafrase-akademik',
   },
   {
     icon: <Languages className="h-8 w-8" />,
     title: 'Peringkas Jurnal',
     description:
       'Pahami jurnal bahasa Inggris yang kompleks dengan ringkasan yang mudah dibaca dalam bahasa Indonesia.',
-    href: '/summarizer',
+    href: '/peringkas-jurnal',
   },
   {
     icon: <Bot className="h-8 w-8" />,
     title: 'Tutor AI',
     description:
       'Ajukan pertanyaan tentang materi kuliah Anda dan dapatkan jawaban instan.',
-    href: '/ai-tutor',
+    href: '/tutor-ai',
   },
   {
     icon: <Map className="h-8 w-8" />,
     title: 'Peta Jalan Belajar',
     description:
       'Buat peta jalan belajar yang terstruktur untuk topik apa pun yang ingin Anda kuasai.',
-    href: '/learning-path-generator',
+    href: '/generator-peta-belajar',
   },
 ];
 
 export default function Home() {
   const heroImage = PlaceHolderImages.find((img) => img.id === 'hero-image');
+  const aboutImage = PlaceHolderImages.find((img) => img.id === 'hero-image');
   const [isSheetOpen, setIsSheetOpen] = useState(false);
 
   return (
@@ -107,13 +110,13 @@ export default function Home() {
           <Logo />
           <nav className="hidden items-center gap-6 md:flex">
             <Link
-              href="/about"
+              href="/tentang"
               className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary"
             >
               Tentang
             </Link>
             <Link
-              href="/contact"
+              href="/kontak"
               className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary"
             >
               Kontak
@@ -135,17 +138,19 @@ export default function Home() {
                 </SheetHeader>
                 <nav className="mt-8 flex flex-col gap-4">
                   <Link
-                    href="/about"
+                    href="/tentang"
                     className="text-lg font-medium text-foreground transition-colors hover:text-primary"
                     onClick={() => setIsSheetOpen(false)}
                   >
+                    <Info className="mr-2 inline-block h-5 w-5" />
                     Tentang
                   </Link>
                   <Link
-                    href="/contact"
+                    href="/kontak"
                     className="text-lg font-medium text-foreground transition-colors hover:text-primary"
                     onClick={() => setIsSheetOpen(false)}
                   >
+                    <Mail className="mr-2 inline-block h-5 w-5" />
                     Kontak
                   </Link>
                 </nav>
@@ -166,7 +171,7 @@ export default function Home() {
                 kebuntuan menulis dan percepat proses belajarmu.
               </p>
               <div className="pt-4">
-                <Link href="/topic-brainstormer">
+                <Link href="/brainstorm-topik">
                   <Button size="lg" className="mt-4">
                     Mulai Sekarang <ArrowRight className="ml-2 h-5 w-5" />
                   </Button>
@@ -228,19 +233,33 @@ export default function Home() {
           </section>
 
           <section className="px-4 py-16 lg:py-24">
-            <div className="mx-auto max-w-3xl text-center">
-              <h3 className="font-headline text-3xl font-bold tracking-tight md:text-4xl">
-                Tentang EduAI
-              </h3>
-              <p className="mt-6 text-base leading-relaxed text-muted-foreground">
-                EduAI lahir dari gagasan untuk membuat teknologi AI canggih
-                dapat diakses oleh semua siswa. Kami percaya bahwa dengan alat
-                yang tepat, setiap orang dapat mengatasi tantangan akademis,
-                mempercepat proses belajar, dan mencapai potensi penuh mereka.
-                Misi kami adalah untuk memberdayakan siswa dengan menyediakan
-                asisten belajar bertenaga AI yang intuitif, membantu, dan
-                selalu tersedia 24/7.
-              </p>
+            <div className="grid grid-cols-1 items-center gap-12 md:grid-cols-2">
+              <div className="relative h-80 w-full overflow-hidden rounded-2xl shadow-lg">
+                {aboutImage && (
+                  <Image
+                    src={aboutImage.imageUrl}
+                    alt="Tim EduAI sedang berkolaborasi"
+                    fill
+                    className="object-cover"
+                    data-ai-hint="collaboration team"
+                    sizes="(max-width: 768px) 100vw, 50vw"
+                  />
+                )}
+              </div>
+              <div className="space-y-4">
+                <h3 className="font-headline text-3xl font-bold tracking-tight md:text-4xl">
+                  Tentang EduAI
+                </h3>
+                <p className="text-base leading-relaxed text-muted-foreground">
+                  EduAI lahir dari gagasan untuk membuat teknologi AI canggih
+                  dapat diakses oleh semua siswa. Kami percaya bahwa dengan alat
+                  yang tepat, setiap orang dapat mengatasi tantangan akademis,
+                  mempercepat proses belajar, dan mencapai potensi penuh mereka.
+                  Misi kami adalah untuk memberdayakan siswa dengan menyediakan
+                  asisten belajar bertenaga AI yang intuitif, membantu, dan
+                  selalu tersedia 24/7.
+                </p>
+              </div>
             </div>
           </section>
         </main>

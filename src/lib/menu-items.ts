@@ -1,3 +1,4 @@
+
 import type { LucideIcon } from 'lucide-react';
 import {
   BrainCircuit,
@@ -29,12 +30,12 @@ export const menuItems: MenuGroup[] = [
     title: 'Asisten Belajar',
     items: [
       {
-        href: '/ai-tutor',
+        href: '/tutor-ai',
         title: 'Tutor AI',
         icon: Bot,
       },
       {
-        href: '/learning-path-generator',
+        href: '/generator-peta-belajar',
         title: 'Peta Jalan Belajar',
         icon: Map,
       },
@@ -44,17 +45,17 @@ export const menuItems: MenuGroup[] = [
     title: 'Katalisator Ide',
     items: [
       {
-        href: '/topic-brainstormer',
+        href: '/brainstorm-topik',
         title: 'Brainstorm Topik',
         icon: BrainCircuit,
       },
       {
-        href: '/presentation-outliner',
+        href: '/kerangka-presentasi',
         title: 'Kerangka Presentasi',
         icon: LayoutTemplate,
       },
       {
-        href: '/analogy-finder',
+        href: '/pencari-analogi',
         title: 'Pencari Analogi',
         icon: BookCopy,
       },
@@ -64,22 +65,22 @@ export const menuItems: MenuGroup[] = [
     title: 'Asisten Riset',
     items: [
       {
-        href: '/research-outline-generator',
+        href: '/generator-kerangka-penelitian',
         title: 'Kerangka Penelitian',
         icon: GraduationCap,
       },
       {
-        href: '/smart-reference-finder',
+        href: '/pencari-referensi-cerdas',
         title: 'Pencari Referensi Cerdas',
         icon: Search,
       },
       {
-        href: '/academic-paraphraser',
+        href: '/parafrase-akademik',
         title: 'Parafrase Akademik',
         icon: Quote,
       },
       {
-        href: '/summarizer',
+        href: '/peringkas-jurnal',
         title: 'Peringkas Jurnal',
         icon: Languages,
       },
@@ -89,12 +90,12 @@ export const menuItems: MenuGroup[] = [
     title: 'Informasi',
     items: [
       {
-        href: '/about',
+        href: '/tentang',
         title: 'Tentang',
         icon: Info,
       },
       {
-        href: '/contact',
+        href: '/kontak',
         title: 'Kontak',
         icon: Mail,
       },
