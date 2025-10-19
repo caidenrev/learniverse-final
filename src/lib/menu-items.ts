@@ -12,6 +12,7 @@ import {
   Map,
   Info,
   Mail,
+  FileText,
 } from 'lucide-react';
 
 interface MenuItem {
@@ -38,6 +39,11 @@ export const menuItems: MenuGroup[] = [
         href: '/generator-peta-belajar',
         title: 'Peta Jalan Belajar',
         icon: Map,
+      },
+      {
+        href: '/cv-reviewer',
+        title: 'CV Reviewer',
+        icon: FileText,
       },
     ],
   },

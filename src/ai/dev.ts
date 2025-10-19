@@ -11,3 +11,4 @@ import '@/ai/flows/topic-brainstormer.ts';
 import '@/ai/flows/academic-paraphraser.ts';
 import '@/ai/flows/ai-tutor.ts';
 import '@/ai/flows/learning-path-generator.ts';
+import '@/ai/flows/cv-reviewer.ts';
