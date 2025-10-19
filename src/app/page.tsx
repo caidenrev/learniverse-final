@@ -20,6 +20,7 @@ import {
   X,
   Info,
   Mail,
+  FileText,
 } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -96,6 +97,12 @@ const features = [
       'Buat peta jalan belajar yang terstruktur untuk topik apa pun yang ingin Anda kuasai.',
     href: '/generator-peta-belajar',
   },
+  {
+    icon: <FileText className="h-8 w-8" />,
+    title: 'CV Reviewer',
+    description: 'Dapatkan masukan instan tentang CV Anda dari AI yang bertindak sebagai HR.',
+    href: '/cv-reviewer',
+  }
 ];
 
 export default function Home() {
@@ -174,7 +181,7 @@ export default function Home() {
               </p>
               <div className="pt-4">
                 <Link href="/brainstorm-topik">
-                  <Button size="lg" className="mt-4">
+                  <Button size="lg" className="mt-4 px-10 py-6 text-lg">
                     Mulai Sekarang <ArrowRight className="ml-2 h-5 w-5" />
                   </Button>
                 </Link>
