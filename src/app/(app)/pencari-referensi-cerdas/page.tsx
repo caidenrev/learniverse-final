@@ -19,6 +19,7 @@ import { Input } from '@/components/ui/input';
 import { Card, CardContent } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
 import { smartReferenceFinder } from '@/ai/flows/smart-reference-finder';
+import type { SmartReferenceFinderOutput } from '@/ai/flows/smart-reference-finder';
 import { Loader2, Wand2 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 
@@ -30,7 +31,7 @@ const formSchema = z.object({
 });
 
 export default function SmartReferenceFinderPage() {
-  const [result, setResult] = useState<string | null>(null);
+  const [result, setResult] = useState<SmartReferenceFinderOutput | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
 
@@ -121,7 +122,7 @@ export default function SmartReferenceFinderPage() {
               )}
               {result && (
                 <div className="flex flex-wrap gap-2">
-                  {result.split(',').map((keyword) => (
+                  {result.keywords.split(',').map((keyword) => (
                     <Badge key={keyword.trim()} variant="secondary">
                       {keyword.trim()}
                     </Badge>
