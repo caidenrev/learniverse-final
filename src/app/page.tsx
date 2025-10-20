@@ -137,7 +137,7 @@ export default function Home() {
                   size="icon"
                   className="hover:bg-primary/10 hover:text-primary"
                 >
-                  <Menu className="h-6 w-6" />
+                  <Menu className="h-8 w-8" />
                   <span className="sr-only">Buka menu</span>
                 </Button>
               </SheetTrigger>
@@ -286,7 +286,3 @@ export default function Home() {
     </div>
   );
 }
-
-    
-
-    
