@@ -33,4 +33,56 @@ EduAI dilengkapi dengan berbagai fitur cerdas yang dirancang khusus untuk menduk
 - **Styling**: Tailwind CSS & shadcn/ui
 - **AI & Generative**: Google Genkit & Gemini
 
+## 🏗️ Arsitektur Aplikasi
+
+Aplikasi ini dirancang dengan arsitektur modern yang memisahkan antara lapisan presentasi (frontend) dan logika AI (backend generatif).
+
+```mermaid
+graph TD
+    subgraph Pengguna
+        A[Browser]
+    end
+
+    subgraph Infrastruktur Aplikasi (Next.js)
+        B[Komponen React / Halaman]
+        C[Server Actions]
+    end
+
+    subgraph Lapisan AI (Genkit)
+        D[Genkit Flows]
+        E[Konfigurasi Model & Prompt]
+    end
+    
+    subgraph Google Cloud
+        F[Google AI / Model Gemini]
+    end
+
+    A -- Interaksi Pengguna --> B
+    B -- Memanggil Fitur (misal: Submit Form) --> C
+    C -- Meneruskan Input Pengguna --> D
+    D -- Menggunakan Konfigurasi --> E
+    D -- Memanggil Model AI --> F
+    F -- Mengembalikan Hasil --> D
+    D -- Mengembalikan Output --> C
+    C -- Mengirim Data ke Client --> B
+    B -- Menampilkan Hasil ke Pengguna --> A
+
+    style Pengguna fill:#D0BFFF,stroke:#333,stroke-width:2px
+    style "Infrastruktur Aplikasi (Next.js)" fill:#ADD8E6,stroke:#333,stroke-width:2px
+    style "Lapisan AI (Genkit)" fill:#F5F5F5,stroke:#333,stroke-width:2px
+    style "Google Cloud" fill:#FFDDC1,stroke:#333,stroke-width:2px
+```
+
+### Alur Arsitektur Fitur
+
+Setiap fitur di EduAI mengikuti alur yang konsisten:
+
+1.  **UI (Komponen React)**: Pengguna memasukkan data (teks atau file) melalui antarmuka yang dibangun dengan komponen React dan Shadcn/UI. Validasi input ditangani oleh `React Hook Form` dan `Zod`.
+2.  **Server Action**: Saat formulir dikirim, sebuah *Next.js Server Action* dipanggil. Ini berfungsi sebagai jembatan yang aman antara frontend dan backend.
+3.  **Genkit Flow**: *Server Action* memanggil *Genkit Flow* yang sesuai (`/src/ai/flows/*.ts`). *Flow* ini berisi logika spesifik untuk fitur tersebut, termasuk *prompt engineering* yang dirancang untuk mendapatkan output terbaik dari model.
+4.  **Model Gemini**: *Genkit Flow* mengirimkan *prompt* yang sudah diproses ke model bahasa Gemini melalui Google AI Platform.
+5.  **Respons**: Model Gemini menghasilkan respons, yang kemudian diterima kembali oleh *Genkit Flow*, diteruskan ke *Server Action*, dan akhirnya ditampilkan kepada pengguna di UI.
+
+Pola ini memastikan bahwa setiap fitur bersifat modular, aman (karena kunci API tidak terekspos di sisi klien), dan mudah dikelola.
+
 Terima kasih telah menggunakan EduAI! Kami berharap aplikasi ini dapat menjadi mitra setia dalam perjalanan akademis Anda.
