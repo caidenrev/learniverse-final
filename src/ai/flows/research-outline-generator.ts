@@ -18,11 +18,18 @@ const ResearchOutlineInputSchema = z.object({
 });
 export type ResearchOutlineInput = z.infer<typeof ResearchOutlineInputSchema>;
 
+const SectionSchema = z.object({
+  sectionTitle: z.string().describe('The title of the research section (e.g., "BAB I: Latar Belakang").'),
+  contentPoints: z
+    .array(z.string())
+    .describe('A list of key points or sub-sections to be covered in this section.'),
+});
+
 const ResearchOutlineOutputSchema = z.object({
   outline: z
-    .string()
+    .array(SectionSchema)
     .describe(
-      'A draft research outline, including sections like introduction, literature review, methodology, etc.'
+      'A structured research outline, with each element representing a major chapter or section.'
     ),
 });
 export type ResearchOutlineOutput = z.infer<typeof ResearchOutlineOutputSchema>;
@@ -42,18 +49,15 @@ const prompt = ai.definePrompt({
   Topiknya adalah: {{{topic}}}
 
   Kerangkanya harus mencakup bagian-bagian umum seperti:
-  - BAB I: Latar Belakang
-  - Rumusan Masalah
-  - Tujuan Penelitian
-  - Manfaat Penelitian
+  - BAB I: Pendahuluan (Latar Belakang, Rumusan Masalah, Tujuan, Manfaat)
   - BAB II: Tinjauan Pustaka
   - BAB III: Metodologi Penelitian
-  - BAB IV: Hasil dan Pembahasan
+  - BAB IV: Hasil dan Pembahasan (opsional, jika perlu)
   - BAB V: Kesimpulan dan Saran
 
   Buatkan kerangka yang detail dengan sub-poin untuk setiap bagian.
   
-  Hasilnya harus dalam Bahasa Indonesia yang santai dan jangan pakai format markdown seperti bold atau heading.
+  Hasilnya harus dalam format JSON yang sesuai dengan skema output dan dalam bahasa Indonesia.
 `,
 });
 
