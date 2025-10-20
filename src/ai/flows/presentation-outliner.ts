@@ -5,7 +5,7 @@
  *
  * It exports:
  * - `generatePresentationOutline`: An async function that takes a presentation title as input and returns a presentation outline.
- * - `PresentationOutlineInput`: The input type for the `generatePresentationOutline` function.
+ * - `PresentationOutlineInput`: The input type for the `generatePresentation-outliner` function.
  * - `PresentationOutlineOutput`: The output type for the `generatePresentationOutline` function.
  */
 
@@ -17,10 +17,27 @@ const PresentationOutlineInputSchema = z.object({
 });
 export type PresentationOutlineInput = z.infer<typeof PresentationOutlineInputSchema>;
 
-const PresentationOutlineOutputSchema = z.object({
-  outline: z.string().describe('A slide-by-slide outline of the presentation.'),
+const SlideSchema = z.object({
+  slideTitle: z.string().describe('The title of the individual slide.'),
+  contentPoints: z
+    .array(z.string())
+    .describe('A list of key points or content to be covered on the slide.'),
+  speakerNotes: z
+    .string()
+    .describe(
+      'Additional notes or script for the speaker for this slide, in a casual tone.'
+    ),
 });
-export type PresentationOutlineOutput = z.infer<typeof PresentationOutlineOutputSchema>;
+
+const PresentationOutlineOutputSchema = z.object({
+  slides: z
+    .array(SlideSchema)
+    .describe('A slide-by-slide array of the presentation outline.'),
+});
+
+export type PresentationOutlineOutput = z.infer<
+  typeof PresentationOutlineOutputSchema
+>;
 
 
 export async function generatePresentationOutline(input: PresentationOutlineInput): Promise<PresentationOutlineOutput> {
@@ -31,13 +48,14 @@ const presentationOutlinerPrompt = ai.definePrompt({
   name: 'presentationOutlinerPrompt',
   input: {schema: PresentationOutlineInputSchema},
   output: {schema: PresentationOutlineOutputSchema},
-  prompt: `Kamu adalah asisten AI yang jago bikin kerangka presentasi.
-  Berdasarkan judul presentasi yang dikasih, buat kerangka slide per slide yang detail.
-  Kerangkanya harus ada pendahuluan, poin-poin utama, dan kesimpulan. Buat yang kreatif dan logis ya.
+  prompt: `Kamu adalah asisten AI yang jago bikin kerangka presentasi yang terstruktur dan menarik.
+Berdasarkan judul presentasi yang dikasih, buat kerangka slide per slide yang detail.
+Setiap slide harus punya judul slide, beberapa poin konten utama, dan catatan untuk pembicara dengan gaya yang santai.
+Strukturnya harus mencakup pendahuluan, beberapa slide isi, dan kesimpulan yang kuat.
 
-  Judul Presentasi: {{{title}}}
+Judul Presentasi: {{{title}}}
   
-  Hasilnya harus dalam bahasa Indonesia yang santai dan jangan pakai format markdown seperti bold atau heading.
+Hasilnya harus dalam format JSON yang sesuai dengan skema output dan dalam bahasa Indonesia.
   `, 
 });
 
