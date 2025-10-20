@@ -132,7 +132,7 @@ export default function Home() {
           <div className="md:hidden">
             <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
               <SheetTrigger asChild>
-                <Button variant="ghost" size="icon">
+                <Button variant="outline" size="icon">
                   <Menu className="h-6 w-6" />
                   <span className="sr-only">Buka menu</span>
                 </Button>
