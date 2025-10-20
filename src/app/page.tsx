@@ -112,7 +112,7 @@ export default function Home() {
 
   return (
     <div className="flex min-h-screen flex-col">
-      <header className="sticky top-0 z-50 bg-background/80 py-4 backdrop-blur-sm shadow-md">
+      <header className="sticky top-0 z-50 w-full bg-background/80 py-4 backdrop-blur-sm shadow-md">
         <div className="container flex items-center justify-between">
           <Logo />
           <nav className="hidden items-center gap-6 md:flex">
@@ -286,5 +286,7 @@ export default function Home() {
     </div>
   );
 }
+
+    
 
     
