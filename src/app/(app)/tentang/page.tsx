@@ -11,7 +11,7 @@ export default function AboutPage() {
     <div className="space-y-8">
       <div className="pt-4">
         <h1 className="font-headline text-3xl font-bold md:text-4xl">
-          Tentang EduAI
+          Tentang Learniverse
         </h1>
         <p className="mt-2 text-muted-foreground">
           Misi kami adalah memberdayakan siswa dengan alat AI yang inovatif.
@@ -23,7 +23,7 @@ export default function AboutPage() {
           {aboutImage && (
             <Image
               src={aboutImage.imageUrl}
-              alt="Tim EduAI sedang berkolaborasi"
+              alt="Tim Learniverse sedang berkolaborasi"
               fill
               className="object-cover"
               data-ai-hint="collaboration team"
@@ -36,7 +36,7 @@ export default function AboutPage() {
             Kekuatan AI untuk Pendidikan
           </h2>
           <p className="text-base leading-relaxed text-muted-foreground">
-            EduAI lahir dari gagasan untuk membuat teknologi AI canggih dapat
+            Learniverse lahir dari gagasan untuk membuat teknologi AI canggih dapat
             diakses oleh semua siswa. Kami percaya bahwa dengan alat yang
             tepat, setiap orang dapat mengatasi tantangan akademis,
             mempercepat proses belajar, dan mencapai potensi penuh mereka.
@@ -45,7 +45,7 @@ export default function AboutPage() {
             Misi kami adalah untuk memberdayakan siswa dengan menyediakan
             asisten belajar bertenaga AI yang intuitif, membantu, dan selalu
             tersedia 24/7. Baik Anda sedang mencari ide, menyusun penelitian,
-            atau mencoba memahami konsep yang sulit, EduAI hadir untuk
+            atau mencoba memahami konsep yang sulit, Learniverse hadir untuk
             mendukung perjalanan akademis Anda.
           </p>
         </div>

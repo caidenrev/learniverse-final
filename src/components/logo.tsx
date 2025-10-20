@@ -15,7 +15,7 @@ export function Logo({
         <GraduationCap className="h-5 w-5 text-primary-foreground" />
       </div>
       {withText && (
-        <span className="font-headline text-xl font-bold">EduAI</span>
+        <span className="font-headline text-xl font-bold">Learniverse</span>
       )}
     </Link>
   );

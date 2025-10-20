@@ -1,12 +1,12 @@
-# EduAI: Asisten Belajar Cerdas Bertenaga AI
+# Learniverse: Asisten Belajar Cerdas Bertenaga AI
 
-Selamat datang di EduAI, sebuah platform inovatif yang dirancang untuk memberdayakan siswa dan akademisi dengan seperangkat alat canggih berbasis kecerdasan buatan (AI). Misi kami adalah untuk mengatasi berbagai tantangan akademis, mempercepat proses belajar, dan membantu pengguna mencapai potensi penuh mereka.
+Selamat datang di Learniverse, sebuah platform inovatif yang dirancang untuk memberdayakan siswa dan akademisi dengan seperangkat alat canggih berbasis kecerdasan buatan (AI). Misi kami adalah untuk mengatasi berbagai tantangan akademis, mempercepat proses belajar, dan membantu pengguna mencapai potensi penuh mereka.
 
 Aplikasi ini dibangun oleh **Revan (Eka Revandi)**, seorang Cloud Architect dan Software Engineer yang bersemangat dalam menggabungkan teknologi cloud dan AI untuk menciptakan solusi pendidikan yang transformatif.
 
 ## ✨ Fitur Unggulan
 
-EduAI dilengkapi dengan berbagai fitur cerdas yang dirancang khusus untuk mendukung berbagai kebutuhan akademis, mulai dari tahap awal pencarian ide hingga penyelesaian tugas akhir.
+Learniverse dilengkapi dengan berbagai fitur cerdas yang dirancang khusus untuk mendukung berbagai kebutuhan akademis, mulai dari tahap awal pencarian ide hingga penyelesaian tugas akhir.
 
 ### 🧠 Katalisator Ide
 
@@ -75,7 +75,7 @@ graph TD
 
 ### Alur Arsitektur Fitur
 
-Setiap fitur di EduAI mengikuti alur yang konsisten:
+Setiap fitur di Learniverse mengikuti alur yang konsisten:
 
 1.  **UI (Komponen React)**: Pengguna memasukkan data (teks atau file) melalui antarmuka yang dibangun dengan komponen React dan Shadcn/UI. Validasi input ditangani oleh `React Hook Form` dan `Zod`.
 2.  **Server Action**: Saat formulir dikirim, sebuah *Next.js Server Action* dipanggil. Ini berfungsi sebagai jembatan yang aman antara frontend dan backend.
@@ -85,4 +85,4 @@ Setiap fitur di EduAI mengikuti alur yang konsisten:
 
 Pola ini memastikan bahwa setiap fitur bersifat modular, aman (karena kunci API tidak terekspos di sisi klien), dan mudah dikelola.
 
-Terima kasih telah menggunakan EduAI! Kami berharap aplikasi ini dapat menjadi mitra setia dalam perjalanan akademis Anda.
+Terima kasih telah menggunakan Learniverse! Kami berharap aplikasi ini dapat menjadi mitra setia dalam perjalanan akademis Anda.

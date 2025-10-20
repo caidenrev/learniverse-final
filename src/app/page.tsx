@@ -176,7 +176,7 @@ export default function Home() {
               </h2>
               <p className="text-lg text-muted-foreground md:text-xl">
                 Mulai dari brainstorming topik hingga meringkas jurnal yang
-                rumit, EduAI adalah asisten akademis lengkap untukmu. Atasi
+                rumit, Learniverse adalah asisten akademis lengkap untukmu. Atasi
                 kebuntuan menulis dan percepat proses belajarmu.
               </p>
               <div className="pt-4">
@@ -247,7 +247,7 @@ export default function Home() {
                 {aboutImage && (
                   <Image
                     src={aboutImage.imageUrl}
-                    alt="Tim EduAI sedang berkolaborasi"
+                    alt="Tim Learniverse sedang berkolaborasi"
                     fill
                     className="object-cover"
                     data-ai-hint="collaboration team"
@@ -257,10 +257,10 @@ export default function Home() {
               </div>
               <div className="space-y-4">
                 <h3 className="font-headline text-3xl font-bold tracking-tight md:text-4xl">
-                  Tentang EduAI
+                  Tentang Learniverse
                 </h3>
                 <p className="text-base leading-relaxed text-muted-foreground">
-                  EduAI lahir dari gagasan untuk membuat teknologi AI canggih
+                  Learniverse lahir dari gagasan untuk membuat teknologi AI canggih
                   dapat diakses oleh semua siswa. Kami percaya bahwa dengan alat
                   yang tepat, setiap orang dapat mengatasi tantangan akademis,
                   mempercepat proses belajar, dan mencapai potensi penuh mereka.
@@ -275,7 +275,7 @@ export default function Home() {
 
         <footer className="border-t px-4 py-6">
           <p className="text-center text-sm text-muted-foreground">
-            © {new Date().getFullYear()} EduAI. Seluruh hak cipta.
+            © {new Date().getFullYear()} Learniverse. Seluruh hak cipta.
           </p>
         </footer>
       </div>
