@@ -16,11 +16,16 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { Card, CardContent } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
 import { generateLearningPath } from '@/ai/flows/learning-path-generator';
 import type { LearningPathOutput } from '@/ai/flows/learning-path-generator';
-import { Loader2, Wand2 } from 'lucide-react';
+import { Loader2, Wand2, Milestone } from 'lucide-react';
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from '@/components/ui/accordion';
 
 const formSchema = z.object({
   topic: z
@@ -111,26 +116,54 @@ export default function LearningPathGeneratorPage() {
           <h2 className="font-headline text-2xl font-semibold">
             Peta Jalan yang Dihasilkan
           </h2>
-          <Card className="min-h-[240px]">
-            <CardContent className="p-6">
-              {isLoading && (
-                <div className="flex items-center justify-center pt-16">
-                  <Loader2 className="h-10 w-10 animate-spin text-primary" />
-                </div>
-              )}
-              {result && (
-                <div
-                  className="prose prose-sm max-w-none whitespace-pre-wrap"
-                  dangerouslySetInnerHTML={{ __html: result.learningPath }}
-                />
-              )}
-              {!isLoading && !result && (
-                <p className="pt-16 text-center text-muted-foreground">
+          <div className="min-h-[400px] rounded-lg border bg-card p-4 shadow-sm">
+            {isLoading && (
+              <div className="flex h-full flex-col items-center justify-center">
+                <Loader2 className="mb-4 h-10 w-10 animate-spin text-primary" />
+                <p className="text-muted-foreground">
+                  AI sedang membuat peta jalan belajar...
+                </p>
+              </div>
+            )}
+            {result && result.path.length > 0 && (
+              <Accordion
+                type="single"
+                collapsible
+                className="w-full"
+                defaultValue="item-0"
+              >
+                {result.path.map((step, index) => (
+                  <AccordionItem value={`item-${index}`} key={index}>
+                    <AccordionTrigger className="text-left text-base font-semibold hover:no-underline">
+                      <div className="flex items-center gap-3">
+                        <div className="rounded-md bg-primary/10 p-2 text-primary">
+                          <Milestone className="h-5 w-5" />
+                        </div>
+                        {step.stepTitle}
+                      </div>
+                    </AccordionTrigger>
+                    <AccordionContent className="pl-4">
+                      <p className="mb-3 text-sm text-muted-foreground">
+                        {step.description}
+                      </p>
+                      <ul className="ml-5 mt-2 list-disc space-y-2 text-sm">
+                        {step.subPoints.map((point, i) => (
+                          <li key={i}>{point}</li>
+                        ))}
+                      </ul>
+                    </AccordionContent>
+                  </AccordionItem>
+                ))}
+              </Accordion>
+            )}
+            {!isLoading && !result && (
+              <div className="flex h-full items-center justify-center">
+                <p className="text-center text-muted-foreground">
                   Peta jalan belajar Anda akan muncul di sini.
                 </p>
-              )}
-            </CardContent>
-          </Card>
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </div>

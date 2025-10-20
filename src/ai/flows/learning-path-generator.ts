@@ -18,14 +18,17 @@ const LearningPathInputSchema = z.object({
 });
 export type LearningPathInput = z.infer<typeof LearningPathInputSchema>;
 
+const StepSchema = z.object({
+  stepTitle: z.string().describe('The title of the learning step.'),
+  description: z.string().describe('A brief description of what to learn in this step.'),
+  subPoints: z.array(z.string()).describe('A list of key concepts or technologies to cover in this step.'),
+});
+
 const LearningPathOutputSchema = z.object({
-  learningPath: z
-    .string()
-    .describe(
-      'A detailed, step-by-step learning path or roadmap for the given topic, formatted as markdown.'
-    ),
+  path: z.array(StepSchema).describe('A structured, step-by-step learning path for the given topic.'),
 });
 export type LearningPathOutput = z.infer<typeof LearningPathOutputSchema>;
+
 
 export async function generateLearningPath(
   input: LearningPathInput
@@ -41,9 +44,9 @@ const prompt = ai.definePrompt({
 
   Topiknya adalah: {{{topic}}}
 
-  Peta jalan belajarnya harus logis, mulai dari dasar sampai ke hal-hal yang lebih expert. Sertakan juga teknologi, konsep kunci, dan contoh proyek untuk setiap tahap.
+  Peta jalan belajarnya harus logis, mulai dari dasar sampai ke hal-hal yang lebih expert. Untuk setiap langkah, berikan judul, deskripsi singkat, dan beberapa sub-poin (konsep kunci atau teknologi).
   
-  Tolong hasilnya ditulis dalam bahasa Indonesia yang santai dan jangan pakai format markdown seperti bold atau heading.
+  Tolong hasilnya dalam format JSON yang sesuai dengan skema output dan dalam bahasa Indonesia.
 `,
 });
 
