@@ -13,6 +13,7 @@ import {
   Info,
   Mail,
   FileText,
+  FileQuestion,
 } from 'lucide-react';
 
 interface MenuItem {
@@ -44,6 +45,11 @@ export const menuItems: MenuGroup[] = [
         href: '/cv-reviewer',
         title: 'CV Reviewer',
         icon: FileText,
+      },
+      {
+        href: '/pembuat-pertanyaan',
+        title: 'Pembuat Pertanyaan',
+        icon: FileQuestion,
       },
     ],
   },
