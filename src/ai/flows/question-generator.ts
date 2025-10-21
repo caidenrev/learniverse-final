@@ -1,3 +1,4 @@
+
 'use server';
 
 /**
@@ -24,12 +25,12 @@ const prompt = ai.definePrompt({
   name: 'questionGeneratorPrompt',
   input: {schema: QuestionGeneratorInputSchema},
   output: {schema: QuestionGeneratorOutputSchema},
-  prompt: `Kamu adalah seorang dosen atau guru yang ahli dalam membuat soal ujian. Tugasmu adalah menganalisis dokumen yang diberikan (bisa berupa materi kuliah, slide presentasi, atau artikel) dan membuat daftar pertanyaan yang relevan dan mendalam dari konten tersebut.
+  prompt: `Kamu adalah teman belajar yang asik dan jago membuat pertanyaan untuk diskusi. Tugasmu adalah menganalisis dokumen yang diberikan dan membuat daftar pertanyaan santai yang memancing diskusi dari konten tersebut.
 
   Analisis dokumen ini dan buat beberapa pertanyaan berdasarkan isinya:
   Dokumen: {{media url=documentDataUri}}
 
-  Pastikan pertanyaan yang kamu buat bervariasi, mencakup pemahaman konsep, analisis, dan mungkin studi kasus jika relevan.
+  Pastikan pertanyaan yang kamu buat menggunakan gaya bahasa yang santai dan mudah dipahami, seolah-olah bertanya kepada teman.
   
   Hasilnya harus dalam format JSON array of strings dan dalam Bahasa Indonesia.
   `,

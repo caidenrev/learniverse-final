@@ -171,13 +171,19 @@ export default function QuestionGeneratorPage() {
               </div>
             )}
             {result && (
-              <ul className="list-inside list-decimal space-y-3">
+              <ol className="list-inside list-none space-y-4">
                 {result.questions.map((question, index) => (
-                  <li key={index} className="leading-relaxed">
-                    {question}
+                  <li
+                    key={index}
+                    className="flex items-start gap-4 rounded-lg border bg-background/50 p-4"
+                  >
+                    <div className="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full bg-primary text-sm font-bold text-primary-foreground">
+                      {index + 1}
+                    </div>
+                    <p className="flex-1 leading-relaxed">{question}</p>
                   </li>
                 ))}
-              </ul>
+              </ol>
             )}
             {!isLoading && !result && (
               <div className="flex h-full items-center justify-center">
