@@ -304,14 +304,14 @@ export default function Home() {
         </main>
 
         <footer className="border-t bg-background">
-          <div className="container mx-auto grid grid-cols-1 gap-8 px-4 py-12 md:grid-cols-3">
+          <div className="container mx-auto grid grid-cols-1 gap-8 px-4 py-12 text-center md:grid-cols-3 md:text-left">
             <div className="flex flex-col items-center md:items-start">
               <Logo />
-              <p className="mt-4 text-center text-sm text-muted-foreground md:text-left">
+              <p className="mt-4 text-sm text-muted-foreground">
                 Asisten belajar cerdas bertenaga AI.
               </p>
             </div>
-            <div className="flex flex-col items-center gap-4 md:items-end">
+            <div className="flex flex-col items-center gap-4 md:items-start">
               <h4 className="font-headline text-lg font-semibold">Navigasi</h4>
               <div className="flex gap-4">
                 <Link
@@ -329,6 +329,7 @@ export default function Home() {
               </div>
             </div>
             <div className="flex flex-col items-center md:items-end">
+              <h4 className="font-headline text-lg font-semibold">Hubungi</h4>
               <p className="text-sm text-muted-foreground">
                 Dibuat dengan ❤️ oleh{' '}
                 <a
@@ -355,7 +356,7 @@ export default function Home() {
           </div>
           <div className="border-t py-4">
             <p className="text-center text-sm text-muted-foreground">
-              © {new Date().getFullYear()} Revan. Seluruh hak cipta.
+              © {new Date().getFullYear()} Learniverse. Seluruh hak cipta.
             </p>
           </div>
         </footer>
@@ -363,3 +364,5 @@ export default function Home() {
     </div>
   );
 }
+
+    
