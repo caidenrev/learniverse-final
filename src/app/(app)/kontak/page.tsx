@@ -1,54 +1,27 @@
 
 'use client';
 
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
+import { useForm, ValidationError } from '@formspree/react';
 import { Button } from '@/components/ui/button';
-import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { useToast } from '@/hooks/use-toast';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Send } from 'lucide-react';
-
-const formSchema = z.object({
-  name: z.string().min(2, 'Nama harus memiliki setidaknya 2 karakter.'),
-  email: z.string().email('Harap masukkan alamat email yang valid.'),
-  message: z
-    .string()
-    .min(10, 'Pesan harus memiliki setidaknya 10 karakter.')
-    .max(500, 'Pesan tidak boleh lebih dari 500 karakter.'),
-});
+import { Send, CheckCircle } from 'lucide-react';
+import { Label } from '@/components/ui/label';
 
 export default function ContactPage() {
-  const { toast } = useToast();
+  const [state, handleSubmit] = useForm('xpwyeynj');
 
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      name: '',
-      email: '',
-      message: '',
-    },
-  });
-
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    // Simulate form submission
-    console.log(values);
-    toast({
-      title: 'Pesan Terkirim!',
-      description: 'Terima kasih telah menghubungi kami. Kami akan segera merespons.',
-    });
-    form.reset();
+  if (state.succeeded) {
+    return (
+      <div className="flex h-full min-h-[50vh] flex-col items-center justify-center space-y-4 text-center">
+        <CheckCircle className="h-16 w-16 text-green-500" />
+        <h1 className="font-headline text-3xl font-bold">Pesan Terkirim!</h1>
+        <p className="max-w-md text-muted-foreground">
+          Terima kasih telah menghubungi. Revan akan segera merespons pesan Anda.
+        </p>
+      </div>
+    );
   }
 
   return (
@@ -67,57 +40,51 @@ export default function ContactPage() {
           <CardTitle>Kirim Pesan</CardTitle>
         </CardHeader>
         <CardContent>
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-              <FormField
-                control={form.control}
-                name="name"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Nama Anda</FormLabel>
-                    <FormControl>
-                      <Input placeholder="Revan Ganteng" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <div className="space-y-2">
+              <Label htmlFor="name">Nama Anda</Label>
+              <Input id="name" type="text" name="name" placeholder="Revan Ganteng" required />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="email">Email Anda</Label>
+              <Input
+                id="email"
+                type="email"
                 name="email"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Email Anda</FormLabel>
-                    <FormControl>
-                      <Input placeholder="revan.ganteng@example.com" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
+                placeholder="revan.ganteng@example.com"
+                required
               />
-              <FormField
-                control={form.control}
+              <ValidationError
+                prefix="Email"
+                field="email"
+                errors={state.errors}
+                className="text-sm font-medium text-destructive"
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="message">Pesan Anda</Label>
+              <Textarea
+                id="message"
                 name="message"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Pesan Anda</FormLabel>
-                    <FormControl>
-                      <Textarea
-                        placeholder="Tulis pesan Anda di sini..."
-                        className="min-h-[120px]"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
+                placeholder="Tulis pesan Anda di sini..."
+                className="min-h-[120px]"
+                required
               />
-              <Button type="submit">
-                <Send className="mr-2 h-4 w-4" />
-                Kirim Pesan
-              </Button>
-            </form>
-          </Form>
+              <ValidationError
+                prefix="Message"
+                field="message"
+                errors={state.errors}
+                className="text-sm font-medium text-destructive"
+              />
+            </div>
+
+            <Button type="submit" disabled={state.submitting}>
+              <Send className="mr-2 h-4 w-4" />
+              {state.submitting ? 'Mengirim...' : 'Kirim Pesan'}
+            </Button>
+          </form>
         </CardContent>
       </Card>
     </div>
