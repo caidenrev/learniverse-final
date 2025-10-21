@@ -125,7 +125,7 @@ export default function AboutPage() {
                 <span className="sr-only">GitHub</span>
               </Link>
               <Link
-                href="#"
+                href="https://linkedin.com/in/caidenrev/"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-muted-foreground transition-colors hover:text-primary"
@@ -135,7 +135,7 @@ export default function AboutPage() {
                 <span className="sr-only">LinkedIn</span>
               </Link>
               <Link
-                href="#"
+                href="https://www.revansite.web.id/"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-muted-foreground transition-colors hover:text-primary"
