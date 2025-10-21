@@ -109,64 +109,82 @@ export default function Home() {
 
   return (
     <div className="flex min-h-screen flex-col">
-      <header className="sticky top-0 z-50 w-full bg-background/80 py-4 backdrop-blur-sm shadow-md">
-        <div className="container flex items-center justify-between">
-          <Logo />
-          <nav className="hidden items-center gap-6 md:flex">
+      <header className="sticky top-0 z-50 w-full bg-white/80 backdrop-blur-xl py-4 shadow-sm border-b border-gray-100">
+  <div className="absolute inset-0 bg-gradient-to-r from-blue-50/40 via-purple-50/40 to-pink-50/40 pointer-events-none"></div>
+  
+  <div className="container relative flex items-center justify-between px-4 sm:px-6">
+    <div className="transform transition-all duration-300 hover:scale-105 hover:-translate-y-0.5">
+      <Logo />
+    </div>
+    
+    <nav className="hidden items-center gap-2 md:flex">
+      <Link
+        href="/tentang"
+        className="relative px-4 py-2 text-sm font-medium text-gray-700 transition-all duration-300 hover:text-blue-600 group rounded-lg"
+      >
+        <span className="relative z-10">Tentang</span>
+        <span className="absolute inset-0 bg-gradient-to-r from-blue-50 to-purple-50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-lg"></span>
+        <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-0 h-0.5 bg-gradient-to-r from-blue-500 to-purple-600 transition-all duration-300 group-hover:w-3/4 rounded-full"></span>
+      </Link>
+      <Link
+        href="/kontak"
+        className="relative px-4 py-2 text-sm font-medium text-gray-700 transition-all duration-300 hover:text-blue-600 group rounded-lg"
+      >
+        <span className="relative z-10">Kontak</span>
+        <span className="absolute inset-0 bg-gradient-to-r from-blue-50 to-purple-50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-lg"></span>
+        <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-0 h-0.5 bg-gradient-to-r from-blue-500 to-purple-600 transition-all duration-300 group-hover:w-3/4 rounded-full"></span>
+      </Link>
+    </nav>
+    
+    <div className="md:hidden">
+      <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
+        <SheetTrigger asChild>
+          <Button
+            variant="ghost"
+            size="icon"
+            className="relative hover:bg-blue-50/50 hover:text-blue-600 transform transition-all duration-300 hover:scale-110 rounded-xl border border-transparent hover:border-blue-200/50 hover:shadow-lg hover:shadow-blue-100/50"
+          >
+            <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-purple-500/5 opacity-0 hover:opacity-100 transition-opacity duration-300 rounded-xl"></div>
+            <Menu className="h-6 w-6 relative z-10" />
+            <span className="sr-only">Buka menu</span>
+          </Button>
+        </SheetTrigger>
+        <SheetContent side="right" className="w-[280px] sm:w-[320px] bg-white border-l border-gray-100">
+          <div className="absolute inset-0 bg-gradient-to-br from-blue-50/30 via-purple-50/20 to-pink-50/30 pointer-events-none"></div>
+          
+          <SheetHeader className="relative">
+            <SheetTitle className="text-left">
+              <Logo />
+            </SheetTitle>
+          </SheetHeader>
+          
+          <nav className="relative mt-8 flex flex-col gap-2">
             <Link
               href="/tentang"
-              className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary"
+              className="flex items-center text-base font-medium text-gray-700 transition-all duration-300 hover:text-blue-600 hover:bg-gradient-to-r hover:from-blue-50 hover:to-purple-50/50 p-3.5 rounded-xl group hover:shadow-md hover:shadow-blue-100/50 border border-transparent hover:border-blue-100"
+              onClick={() => setIsSheetOpen(false)}
             >
-              Tentang
+              <div className="mr-3 p-2 rounded-lg bg-blue-50 group-hover:bg-blue-100 transition-all duration-300 group-hover:scale-110 group-hover:shadow-sm">
+                <Info className="h-5 w-5 text-blue-600" />
+              </div>
+              <span className="group-hover:translate-x-0.5 transition-transform duration-300">Tentang</span>
             </Link>
             <Link
               href="/kontak"
-              className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary"
+              className="flex items-center text-base font-medium text-gray-700 transition-all duration-300 hover:text-purple-600 hover:bg-gradient-to-r hover:from-purple-50 hover:to-pink-50/50 p-3.5 rounded-xl group hover:shadow-md hover:shadow-purple-100/50 border border-transparent hover:border-purple-100"
+              onClick={() => setIsSheetOpen(false)}
             >
-              Kontak
+              <div className="mr-3 p-2 rounded-lg bg-purple-50 group-hover:bg-purple-100 transition-all duration-300 group-hover:scale-110 group-hover:shadow-sm">
+                <Mail className="h-5 w-5 text-purple-600" />
+              </div>
+              <span className="group-hover:translate-x-0.5 transition-transform duration-300">Kontak</span>
             </Link>
           </nav>
-          <div className="md:hidden">
-            <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
-              <SheetTrigger asChild>
-                <Button
-                  variant="outline"
-                  size="icon"
-                  className="hover:bg-primary/10 hover:text-primary"
-                >
-                  <Menu className="h-8 w-8" />
-                  <span className="sr-only">Buka menu</span>
-                </Button>
-              </SheetTrigger>
-              <SheetContent side="right" className="w-[240px]">
-                <SheetHeader>
-                  <SheetTitle>
-                    <Logo />
-                  </SheetTitle>
-                </SheetHeader>
-                <nav className="mt-8 flex flex-col gap-4">
-                  <Link
-                    href="/tentang"
-                    className="text-lg font-medium text-foreground transition-colors hover:text-primary"
-                    onClick={() => setIsSheetOpen(false)}
-                  >
-                    <Info className="mr-2 inline-block h-5 w-5" />
-                    Tentang
-                  </Link>
-                  <Link
-                    href="/kontak"
-                    className="text-lg font-medium text-foreground transition-colors hover:text-primary"
-                    onClick={() => setIsSheetOpen(false)}
-                  >
-                    <Mail className="mr-2 inline-block h-5 w-5" />
-                    Kontak
-                  </Link>
-                </nav>
-              </SheetContent>
-            </Sheet>
-          </div>
-        </div>
-      </header>
+        </SheetContent>
+      </Sheet>
+    </div>
+  </div>
+</header>
 
       <div className="container">
         <main className="flex-1">
