@@ -279,7 +279,7 @@ export default function Home() {
 
         <footer className="border-t px-4 py-6">
           <p className="text-center text-sm text-muted-foreground">
-            © {new Date().getFullYear()} Learniverse. Seluruh hak cipta.
+            © {new Date().getFullYear()} Revan. Seluruh hak cipta.
           </p>
         </footer>
       </div>
