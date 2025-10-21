@@ -54,7 +54,7 @@ export default function LearningPathGeneratorPage() {
       console.error(error);
       toast({
         title: 'Error',
-        description: 'Gagal membuat peta jalan belajar. Silakan coba lagi.',
+        description: 'Gagal membuat peta roadmap belajar. Silakan coba lagi.',
         variant: 'destructive',
       });
     } finally {
@@ -66,7 +66,7 @@ export default function LearningPathGeneratorPage() {
     <div className="space-y-8">
       <div>
         <h1 className="font-headline text-3xl font-bold md:text-4xl">
-          Generator Peta Jalan Belajar
+          Generator Roadmap Belajar
         </h1>
         <p className="mt-2 text-muted-foreground">
           Masukkan topik yang ingin Anda kuasai, dan AI akan membuatkan peta
@@ -106,7 +106,7 @@ export default function LearningPathGeneratorPage() {
                 ) : (
                   <Wand2 className="mr-2 h-4 w-4" />
                 )}
-                Buat Peta Jalan
+                Buat Roadmap
               </Button>
             </form>
           </Form>
@@ -114,14 +114,14 @@ export default function LearningPathGeneratorPage() {
 
         <div className="space-y-4">
           <h2 className="font-headline text-2xl font-semibold">
-            Peta Jalan yang Dihasilkan
+            Roadmap yang Dihasilkan
           </h2>
           <div className="min-h-[400px] rounded-lg border bg-card p-4 shadow-sm">
             {isLoading && (
               <div className="flex h-full flex-col items-center justify-center">
                 <Loader2 className="mb-4 h-10 w-10 animate-spin text-primary" />
                 <p className="text-muted-foreground">
-                  AI sedang membuat peta jalan belajar...
+                  AI sedang membuat Roadmap belajar...
                 </p>
               </div>
             )}
@@ -159,7 +159,7 @@ export default function LearningPathGeneratorPage() {
             {!isLoading && !result && (
               <div className="flex h-full items-center justify-center">
                 <p className="text-center text-muted-foreground">
-                  Peta jalan belajar Anda akan muncul di sini.
+                  Roadmap belajar Anda akan muncul di sini.
                 </p>
               </div>
             )}

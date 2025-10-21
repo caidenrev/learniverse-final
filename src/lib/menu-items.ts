@@ -37,7 +37,7 @@ export const menuItems: MenuGroup[] = [
       },
       {
         href: '/generator-peta-belajar',
-        title: 'Peta Jalan Belajar',
+        title: 'Roadmap Belajar',
         icon: Map,
       },
       {

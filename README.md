@@ -24,7 +24,7 @@ Learniverse dilengkapi dengan berbagai fitur cerdas yang dirancang khusus untuk 
 ### 🎓 Asisten Belajar Personal
 
 - **Tutor AI**: Jangan biarkan pertanyaan menumpuk. Unggah materi kuliah Anda (seperti PDF atau catatan), dan ajukan pertanyaan spesifik. AI akan bertindak sebagai tutor pribadi yang menjawab pertanyaan Anda berdasarkan konteks dokumen yang diberikan.
-- **Peta Jalan Belajar**: Ingin menguasai keterampilan atau topik baru? Masukkan topik yang Anda minati, dan AI akan membuatkan peta jalan belajar (roadmap) yang terstruktur, langkah demi langkah, dari tingkat pemula hingga mahir.
+- **Roadmap Belajar**: Ingin menguasai keterampilan atau topik baru? Masukkan topik yang Anda minati, dan AI akan membuatkan roadmap belajar (roadmap) yang terstruktur, langkah demi langkah, dari tingkat pemula hingga mahir.
 - **CV Reviewer**: Dapatkan keunggulan kompetitif di dunia kerja. Unggah CV Anda dan biarkan AI yang bertindak sebagai seorang HR profesional memberikan ulasan, skor, serta saran perbaikan yang konkret dan membangun.
 
 ## 🚀 Teknologi yang Digunakan

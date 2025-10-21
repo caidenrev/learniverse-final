@@ -92,9 +92,9 @@ const features = [
   },
   {
     icon: <Map className="h-8 w-8" />,
-    title: 'Peta Jalan Belajar',
+    title: 'Roadmap Belajar',
     description:
-      'Buat peta jalan belajar yang terstruktur untuk topik apa pun yang ingin Anda kuasai.',
+      'Buat roadmap belajar yang terstruktur untuk topik apa pun yang ingin Anda kuasai.',
     href: '/generator-peta-belajar',
   },
   {
