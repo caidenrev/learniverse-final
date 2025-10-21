@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState } from 'react';
@@ -85,7 +86,7 @@ export default function QuestionGeneratorPage() {
           Pembuat Pertanyaan
         </h1>
         <p className="mt-2 text-muted-foreground">
-          Unggah materi pelajaran (PDF, PPTX) dan biarkan AI membuatkan daftar
+          Unggah materi pelajaran (PDF) dan biarkan AI membuatkan daftar
           pertanyaan untuk kuis atau bahan diskusi.
         </p>
       </div>
@@ -115,7 +116,7 @@ export default function QuestionGeneratorPage() {
                           <Input
                             type="file"
                             className="absolute inset-0 h-full w-full cursor-pointer opacity-0"
-                            accept=".pdf,.pptx"
+                            accept=".pdf"
                             {...fileRef}
                             onChange={(e) => {
                               field.onChange(e.target.files);
@@ -132,7 +133,7 @@ export default function QuestionGeneratorPage() {
                         </div>
                       </FormControl>
                       <FormDescription>
-                        Unggah file PDF atau PPTX Anda.
+                        Unggah file PDF Anda.
                       </FormDescription>
                       <FormMessage />
                     </FormItem>
