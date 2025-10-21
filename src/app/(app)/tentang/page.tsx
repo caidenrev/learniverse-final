@@ -2,11 +2,8 @@
 'use client';
 
 import Image from 'next/image';
-import { PlaceHolderImages } from '@/lib/placeholder-images';
 
 export default function AboutPage() {
-  const aboutImage = PlaceHolderImages.find((img) => img.id === 'hero-image');
-
   return (
     <div className="space-y-8">
       <div className="pt-4">
@@ -20,16 +17,13 @@ export default function AboutPage() {
 
       <div className="grid grid-cols-1 items-center gap-12 md:grid-cols-2">
         <div className="relative h-80 w-full overflow-hidden rounded-2xl shadow-lg">
-          {aboutImage && (
-            <Image
-              src={aboutImage.imageUrl}
-              alt="Tim Learniverse sedang berkolaborasi"
-              fill
-              className="object-cover"
-              data-ai-hint="collaboration team"
-              sizes="(max-width: 768px) 100vw, 50vw"
-            />
-          )}
+          <Image
+            src="/hero-image.jpg"
+            alt="Tim Learniverse sedang berkolaborasi"
+            fill
+            className="object-cover"
+            sizes="(max-width: 768px) 100vw, 50vw"
+          />
         </div>
         <div className="space-y-4">
           <h2 className="font-headline text-2xl font-semibold">

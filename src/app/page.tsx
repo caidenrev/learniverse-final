@@ -4,7 +4,6 @@
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { PlaceHolderImages } from '@/lib/placeholder-images';
 import {
   ArrowRight,
   BookCopy,
@@ -106,8 +105,6 @@ const features = [
 ];
 
 export default function Home() {
-  const heroImage = PlaceHolderImages.find((img) => img.id === 'hero-image');
-  const aboutImage = PlaceHolderImages.find((img) => img.id === 'hero-image');
   const [isSheetOpen, setIsSheetOpen] = useState(false);
 
   return (
@@ -192,17 +189,14 @@ export default function Home() {
               </div>
             </div>
             <div className="relative h-64 w-full overflow-hidden rounded-2xl shadow-2xl md:h-96">
-              {heroImage && (
-                <Image
-                  src={heroImage.imageUrl}
-                  alt={heroImage.description}
-                  fill
-                  className="object-cover"
-                  data-ai-hint={heroImage.imageHint}
-                  sizes="(max-width: 768px) 100vw, 50vw"
-                  priority
-                />
-              )}
+              <Image
+                src="/hero-image.jpg"
+                alt="Seorang siswa menggunakan laptop"
+                fill
+                className="object-cover"
+                sizes="(max-width: 768px) 100vw, 50vw"
+                priority
+              />
             </div>
           </section>
 
@@ -248,16 +242,13 @@ export default function Home() {
           <section className="px-4 py-16 lg:py-24">
             <div className="grid grid-cols-1 items-center gap-12 md:grid-cols-2">
               <div className="relative h-80 w-full overflow-hidden rounded-2xl shadow-lg">
-                {aboutImage && (
                   <Image
-                    src={aboutImage.imageUrl}
+                    src="/hero-image.jpg"
                     alt="Tim Learniverse sedang berkolaborasi"
                     fill
                     className="object-cover"
-                    data-ai-hint="collaboration team"
                     sizes="(max-width: 768px) 100vw, 50vw"
                   />
-                )}
               </div>
               <div className="space-y-4">
                 <h3 className="font-headline text-3xl font-bold tracking-tight md:text-4xl">
