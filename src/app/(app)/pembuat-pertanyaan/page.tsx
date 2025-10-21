@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useState } from 'react';
@@ -19,7 +18,7 @@ import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
 import { generateQuestions } from '@/ai/flows/question-generator';
-import type { QuestionGeneratorOutput } from '@/ai/flows/question-generator';
+import type { QuestionGeneratorOutput } from '@/ai/flows/question-generator-schemas';
 import { Loader2, UploadCloud, FileQuestion, Sparkles } from 'lucide-react';
 
 const formSchema = z.object({

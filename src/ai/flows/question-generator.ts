@@ -4,28 +4,15 @@
  * @fileOverview An AI agent to generate questions from a document.
  *
  * - generateQuestions - A function that handles the question generation process.
- * - QuestionGeneratorInput - The input type for the generateQuestions function.
- * - QuestionGeneratorOutput - The return type for the generateQuestions function.
  */
 
 import {ai} from '@/ai/genkit';
-import {z} from 'genkit';
-
-export const QuestionGeneratorInputSchema = z.object({
-  documentDataUri: z
-    .string()
-    .describe(
-      "The document (e.g., PDF, PPTX) as a data URI. Expected format: 'data:<mimetype>;base64,<encoded_data>'."
-    ),
-});
-export type QuestionGeneratorInput = z.infer<typeof QuestionGeneratorInputSchema>;
-
-export const QuestionGeneratorOutputSchema = z.object({
-  questions: z
-    .array(z.string())
-    .describe('A list of generated questions from the document.'),
-});
-export type QuestionGeneratorOutput = z.infer<typeof QuestionGeneratorOutputSchema>;
+import {
+  QuestionGeneratorInputSchema,
+  QuestionGeneratorOutputSchema,
+  type QuestionGeneratorInput,
+  type QuestionGeneratorOutput,
+} from '@/ai/flows/question-generator-schemas';
 
 export async function generateQuestions(
   input: QuestionGeneratorInput
