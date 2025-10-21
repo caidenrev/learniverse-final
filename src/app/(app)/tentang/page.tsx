@@ -56,8 +56,8 @@ export default function AboutPage() {
             Setiap proyek hebat memiliki cerita. Kenali sosok di balik Learniverse.
           </p>
         </div>
-        <div className="grid grid-cols-1 gap-12 lg:grid-cols-5">
-          <div className="col-span-1 grid grid-cols-2 gap-4 lg:col-span-2 lg:grid-cols-2">
+        <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-5">
+          <div className="col-span-1 grid grid-cols-2 gap-4 lg:col-span-2">
             <div className="relative h-48 w-full overflow-hidden rounded-2xl shadow-lg sm:h-64">
               <Image
                 src="/foto-revan-1.jpg"
