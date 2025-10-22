@@ -27,7 +27,7 @@ import {
   useDoc,
   useMemoFirebase,
 } from '@/firebase';
-import { doc, updateDoc, increment, getDoc } from 'firebase/firestore';
+import { doc, updateDoc, increment } from 'firebase/firestore';
 import Link from 'next/link';
 
 const formSchema = z.object({
@@ -44,7 +44,7 @@ export default function SummarizerPage() {
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
 
-  const { user, isUserLoading } = useUser();
+  const { user } = useUser();
   const firestore = useFirestore();
 
   const subscriptionRef = useMemoFirebase(() => {
@@ -55,17 +55,17 @@ export default function SummarizerPage() {
   const {
     data: subscription,
     isLoading: isSubscriptionLoading,
-    error: subscriptionError,
   } = useDoc(subscriptionRef);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: { text: '' },
   });
-
+  
+  const planId = subscription?.planId ?? 'free';
   const remainingSummaries =
-    USAGE_LIMIT - (subscription?.usage?.summaryCount || 0);
-  const isLimitReached = remainingSummaries <= 0;
+    planId === 'premium' ? Infinity : USAGE_LIMIT - (subscription?.usage?.summaryCount || 0);
+  const isLimitReached = !isSubscriptionLoading && remainingSummaries <= 0;
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     if (!user || !firestore) {
@@ -90,17 +90,22 @@ export default function SummarizerPage() {
     setResult(null);
 
     try {
-      const response = await summarize(values);
+      const response = await summarize({ text: values.text, planId });
       setResult(response);
 
-      // Increment usage count in Firestore
-      if (subscriptionRef) {
+      // Increment usage count in Firestore only for free users
+      if (planId === 'free' && subscriptionRef) {
         await updateDoc(subscriptionRef, {
           'usage.summaryCount': increment(1),
         });
         toast({
           title: 'Berhasil Meringkas!',
           description: `Sisa kuota hari ini: ${remainingSummaries - 1}`,
+        });
+      } else {
+         toast({
+          title: 'Berhasil Meringkas!',
+          description: 'Anda menggunakan paket Premium tanpa batas.',
         });
       }
     } catch (error) {
@@ -173,7 +178,7 @@ export default function SummarizerPage() {
                     </FormControl>
                     <FormDescription>
                       AI akan membaca ini dan memberikan ringkasan dalam Bahasa
-                      Indonesia.
+                      Indonesia. Pengguna premium mendapatkan hasil dari model yang lebih canggih.
                     </FormDescription>
                     <FormMessage />
                   </FormItem>

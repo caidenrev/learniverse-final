@@ -13,6 +13,7 @@ import {z} from 'genkit';
 
 const SummarizeInputSchema = z.object({
   text: z.string().describe('The English text to summarize.'),
+  planId: z.enum(['free', 'premium']).default('free').describe('The user\'s subscription plan.'),
 });
 export type SummarizeInput = z.infer<typeof SummarizeInputSchema>;
 
@@ -25,15 +26,6 @@ export async function summarize(input: SummarizeInput): Promise<SummarizeOutput>
   return summarizeFlow(input);
 }
 
-const prompt = ai.definePrompt({
-  name: 'summarizePrompt',
-  input: {schema: SummarizeInputSchema},
-  output: {schema: SummarizeOutputSchema},
-  prompt: `Ringkasin teks bahasa Inggris ini jadi poin-poin yang gampang dimengerti dalam Bahasa Indonesia dong:\n\n{{{text}}}
-
-Hasilnya harus dalam bahasa Indonesia yang santai dan jangan pakai format markdown seperti bold atau heading.`,
-});
-
 const summarizeFlow = ai.defineFlow(
   {
     name: 'summarizeFlow',
@@ -41,7 +33,25 @@ const summarizeFlow = ai.defineFlow(
     outputSchema: SummarizeOutputSchema,
   },
   async input => {
-    const {output} = await prompt(input);
+    // Pilih model berdasarkan paket pengguna
+    const model =
+      input.planId === 'premium'
+        ? 'googleai/gemini-2.5-pro'
+        : 'googleai/gemini-2.5-flash';
+    
+    // Definisikan prompt secara dinamis di dalam flow
+    const prompt = `Ringkasin teks bahasa Inggris ini jadi poin-poin yang gampang dimengerti dalam Bahasa Indonesia dong:\n\n${input.text}
+
+    Hasilnya harus dalam bahasa Indonesia yang santai dan jangan pakai format markdown seperti bold atau heading.`;
+
+    const {output} = await ai.generate({
+      model: model,
+      prompt: prompt,
+      output: {
+        schema: SummarizeOutputSchema,
+      }
+    });
+
     return output!;
   }
 );
