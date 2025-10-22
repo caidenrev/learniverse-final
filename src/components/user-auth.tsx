@@ -7,7 +7,7 @@ import {
   signInWithPopup,
   signOut,
 } from 'firebase/auth';
-import { useAuth, useUser, useFirestore } from '@/firebase';
+import { useAuth, useUser, useFirestore, errorEmitter, FirestorePermissionError } from '@/firebase';
 import { Button } from './ui/button';
 import {
   DropdownMenu,
@@ -44,50 +44,63 @@ export function UserAuth() {
         const userSnap = await getDoc(userRef);
 
         if (!userSnap.exists()) {
-          // User is new, create their document
           const { displayName, email, photoURL } = user;
-          const subscriptionRef = doc(firestore, `users/${user.uid}/subscription`, 'default');
+          const userData = {
+            displayName,
+            email,
+            photoURL,
+            createdAt: serverTimestamp(),
+          };
+          
+          const subscriptionRef = doc(firestore, `users/${user.uid}/subscriptions`, 'default');
+          const subscriptionData = {
+              planId: 'free',
+              status: 'active',
+              currentPeriodEnd: null,
+               usage: {
+                  summaryCount: 0,
+                  paraphraseCount: 0,
+                  tutorQuestionCount: 0,
+                  lastResetDate: serverTimestamp()
+              }
+          };
 
-          try {
-            // Create user profile document
-            await setDoc(userRef, {
-              displayName,
-              email,
-              photoURL,
-              createdAt: serverTimestamp(),
-            });
+          // Create user profile document without try/catch
+          setDoc(userRef, userData)
+            .then(() => {
+              // Create default free subscription
+              return setDoc(subscriptionRef, subscriptionData);
+            })
+            .then(() => {
+               toast({
+                title: 'Selamat Datang di Learniverse!',
+                description: 'Akun Anda telah berhasil dibuat.',
+              });
+            })
+            .catch((error) => {
+              console.error("Error creating user documents:", error);
 
-            // Create default free subscription
-            await setDoc(subscriptionRef, {
-                planId: 'free',
-                status: 'active',
-                currentPeriodEnd: null,
-                 usage: {
-                    summaryCount: 0,
-                    paraphraseCount: 0,
-                    tutorQuestionCount: 0,
-                    lastResetDate: serverTimestamp()
-                }
-            });
-            
-            toast({
-              title: 'Selamat Datang di Learniverse!',
-              description: 'Akun Anda telah berhasil dibuat.',
-            });
+              // Emit a contextual error for user profile creation
+              const permissionError = new FirestorePermissionError({
+                path: userRef.path,
+                operation: 'create',
+                requestResourceData: userData,
+              });
+              errorEmitter.emit('permission-error', permissionError);
 
-          } catch (error) {
-            console.error("Error creating user document:", error);
-            toast({
-              title: 'Error Pembuatan Akun',
-              description: 'Gagal menyimpan data pengguna baru.',
-              variant: 'destructive',
+              // We can also emit an error for the subscription, but the first one is often enough
+              const subscriptionPermissionError = new FirestorePermissionError({
+                path: subscriptionRef.path,
+                operation: 'create',
+                requestResourceData: subscriptionData,
+              });
+              errorEmitter.emit('permission-error', subscriptionPermissionError);
             });
-          }
         }
       }
     };
 
-    if (!isUserLoading) {
+    if (!isUserLoading && firestore && user) {
       handleNewUser();
     }
   }, [user, isUserLoading, firestore, toast]);
