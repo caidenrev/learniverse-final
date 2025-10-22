@@ -1,13 +1,13 @@
 
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import {
   GoogleAuthProvider,
   signInWithPopup,
   signOut,
 } from 'firebase/auth';
-import { useAuth, useUser, useFirestore, errorEmitter, FirestorePermissionError, useDoc } from '@/firebase';
+import { useAuth, useUser, useFirestore, errorEmitter, FirestorePermissionError } from '@/firebase';
 import { Button } from './ui/button';
 import {
   DropdownMenu,
@@ -21,6 +21,8 @@ import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
 import { LogIn, LogOut, Loader2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { doc, getDoc, setDoc, serverTimestamp } from 'firebase/firestore';
+import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 
 function getInitials(name: string | null | undefined): string {
   if (!name) return '';
@@ -36,10 +38,11 @@ export function UserAuth() {
   const firestore = useFirestore();
   const { user, isUserLoading } = useUser();
   const { toast } = useToast();
+  const router = useRouter();
 
   useEffect(() => {
     const handleNewUser = async () => {
-      if (user) {
+      if (user && firestore) {
         const userRef = doc(firestore, 'users', user.uid);
         const userSnap = await getDoc(userRef);
 
@@ -66,27 +69,23 @@ export function UserAuth() {
               }
           };
 
-          // Create user profile document
-          setDoc(userRef, userData)
-            .catch((error) => {
-              const permissionError = new FirestorePermissionError({
-                path: userRef.path,
-                operation: 'create',
-                requestResourceData: userData,
-              });
-              errorEmitter.emit('permission-error', permissionError);
+          setDoc(userRef, userData).catch((serverError) => {
+            const permissionError = new FirestorePermissionError({
+              path: userRef.path,
+              operation: 'create',
+              requestResourceData: userData,
             });
+            errorEmitter.emit('permission-error', permissionError);
+          });
 
-          // Create default free subscription
-          setDoc(subscriptionRef, subscriptionData)
-            .catch((error) => {
-              const permissionError = new FirestorePermissionError({
+          setDoc(subscriptionRef, subscriptionData).catch((serverError) => {
+             const subscriptionPermissionError = new FirestorePermissionError({
                 path: subscriptionRef.path,
                 operation: 'create',
                 requestResourceData: subscriptionData,
               });
-              errorEmitter.emit('permission-error', permissionError);
-            });
+              errorEmitter.emit('permission-error', subscriptionPermissionError);
+          });
         }
       }
     };
@@ -94,24 +93,10 @@ export function UserAuth() {
     if (!isUserLoading && firestore && user) {
       handleNewUser();
     }
-  }, [user, isUserLoading, firestore, toast]);
+  }, [user, isUserLoading, firestore]);
 
-  const handleSignIn = async () => {
-    const provider = new GoogleAuthProvider();
-    try {
-      await signInWithPopup(auth, provider);
-      toast({
-        title: 'Login Berhasil!',
-        description: 'Selamat datang kembali!',
-      });
-    } catch (error) {
-      console.error('Error signing in with Google:', error);
-      toast({
-        title: 'Login Gagal',
-        description: 'Terjadi kesalahan saat mencoba login. Silakan coba lagi.',
-        variant: 'destructive',
-      });
-    }
+  const handleSignIn = () => {
+    router.push('/login');
   };
 
   const handleSignOut = async () => {
