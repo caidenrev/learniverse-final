@@ -35,6 +35,7 @@ import {
   SheetTrigger,
 } from '@/components/ui/sheet';
 import { Logo } from '@/components/logo';
+import { UserAuth } from '@/components/user-auth';
 
 const features = [
   {
@@ -161,9 +162,13 @@ export default function Home() {
               <span className="absolute inset-0 rounded-lg bg-gradient-to-r from-blue-50 to-purple-50 opacity-0 transition-opacity duration-300 group-hover:opacity-100"></span>
               <span className="absolute bottom-0 left-1/2 h-0.5 w-0 -translate-x-1/2 rounded-full bg-gradient-to-r from-blue-500 to-purple-600 transition-all duration-300 group-hover:w-3/4"></span>
             </Link>
+            <div className="ml-4">
+              <UserAuth />
+            </div>
           </nav>
 
-          <div className="md:hidden">
+          <div className="flex items-center gap-2 md:hidden">
+             <UserAuth />
             <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
               <SheetTrigger asChild>
                 <Button
