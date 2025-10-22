@@ -22,6 +22,7 @@ import {
   FileText,
   FileQuestion,
   Github,
+  BookDown,
 } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -111,6 +112,13 @@ const features = [
     description:
       'Buat daftar pertanyaan dari materi PDF atau PPTX untuk bahan kuis.',
     href: '/pembuat-pertanyaan',
+  },
+  {
+    icon: <BookDown className="h-8 w-8" />,
+    title: 'Peringkas Dokumen',
+    description:
+      'Unggah dokumen PDF atau Word untuk mendapatkan ringkasan dan kesimpulan instan.',
+    href: '/rangkum-dokumen',
   },
 ];
 
@@ -364,5 +372,3 @@ export default function Home() {
     </div>
   );
 }
-
-    
