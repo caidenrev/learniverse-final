@@ -20,7 +20,10 @@ import { Card, CardContent } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
 import { academicParaphraser } from '@/ai/flows/academic-paraphraser';
 import type { AcademicParaphraserOutput } from '@/ai/flows/academic-paraphraser';
-import { Loader2, Wand2 } from 'lucide-react';
+import { Loader2, Wand2, ShieldAlert } from 'lucide-react';
+import { useUser, useFirestore, useDoc, useMemoFirebase } from '@/firebase';
+import { doc, updateDoc, increment } from 'firebase/firestore';
+import Link from 'next/link';
 
 const formSchema = z.object({
   text: z
@@ -29,22 +32,66 @@ const formSchema = z.object({
     .max(1000, 'Teks terlalu panjang. Harap pertahankan di bawah 1000 karakter.'),
 });
 
+const USAGE_LIMIT = 3;
+
 export default function AcademicParaphraserPage() {
   const [result, setResult] = useState<AcademicParaphraserOutput | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
+  const { user } = useUser();
+  const firestore = useFirestore();
+
+  const subscriptionRef = useMemoFirebase(() => {
+    if (!firestore || !user) return null;
+    return doc(firestore, 'users', user.uid, 'subscriptions', 'default');
+  }, [firestore, user]);
+
+  const { data: subscription, isLoading: isSubscriptionLoading } =
+    useDoc(subscriptionRef);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: { text: '' },
   });
 
+  const remainingParaphrases =
+    USAGE_LIMIT - (subscription?.usage?.paraphraseCount || 0);
+  const isLimitReached = !isSubscriptionLoading && remainingParaphrases <= 0;
+
   async function onSubmit(values: z.infer<typeof formSchema>) {
+    if (!user || !firestore) {
+      toast({
+        title: 'Anda harus login',
+        description: 'Silakan login untuk menggunakan fitur ini.',
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    if (isLimitReached) {
+      toast({
+        title: 'Kuota Parafrase Harian Habis',
+        description: 'Anda telah mencapai batas harian. Silakan upgrade.',
+        variant: 'destructive',
+      });
+      return;
+    }
+
     setIsLoading(true);
     setResult(null);
     try {
       const response = await academicParaphraser(values);
       setResult(response);
+
+      if (subscriptionRef) {
+        await updateDoc(subscriptionRef, {
+          'usage.paraphraseCount': increment(1),
+        });
+        toast({
+          title: 'Berhasil Memparafrase!',
+          description: `Sisa kuota hari ini: ${remainingParaphrases - 1}`,
+        });
+      }
     } catch (error) {
       console.error(error);
       toast({
@@ -69,6 +116,25 @@ export default function AcademicParaphraserPage() {
         </p>
       </div>
 
+      {user && isLimitReached && (
+        <Card className="border-amber-500 bg-amber-50/50">
+          <CardContent className="flex items-center gap-4 p-4">
+            <ShieldAlert className="h-8 w-8 text-amber-600" />
+            <div className="flex-1">
+              <h3 className="font-semibold text-amber-800">
+                Kuota Gratis Anda Telah Habis
+              </h3>
+              <p className="text-sm text-amber-700">
+                Upgrade ke paket Premium untuk parafrase tanpa batas.
+              </p>
+            </div>
+            <Button asChild>
+              <Link href="/pricing">Upgrade Sekarang</Link>
+            </Button>
+          </CardContent>
+        </Card>
+      )}
+
       <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
         <div className="space-y-4">
           <h2 className="font-headline text-2xl font-semibold">Teks Asli</h2>
@@ -85,6 +151,7 @@ export default function AcademicParaphraserPage() {
                         placeholder="Tempelkan teks yang ingin Anda susun ulang di sini..."
                         className="min-h-[200px]"
                         {...field}
+                        disabled={isLimitReached}
                       />
                     </FormControl>
                     <FormDescription>
@@ -95,7 +162,7 @@ export default function AcademicParaphraserPage() {
                   </FormItem>
                 )}
               />
-              <Button type="submit" disabled={isLoading}>
+              <Button type="submit" disabled={isLoading || isLimitReached}>
                 {isLoading ? (
                   <Loader2 className="animate-spin" />
                 ) : (
