@@ -23,6 +23,7 @@ import {
   FileQuestion,
   Github,
   BookDown,
+  Gem,
 } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -136,6 +137,14 @@ export default function Home() {
           </div>
 
           <nav className="hidden items-center gap-2 md:flex">
+             <Link
+              href="/pricing"
+              className="group relative rounded-lg px-4 py-2 text-sm font-medium text-gray-700 transition-all duration-300 hover:text-blue-600"
+            >
+              <span className="relative z-10">Harga</span>
+              <span className="absolute inset-0 rounded-lg bg-gradient-to-r from-blue-50 to-purple-50 opacity-0 transition-opacity duration-300 group-hover:opacity-100"></span>
+              <span className="absolute bottom-0 left-1/2 h-0.5 w-0 -translate-x-1/2 rounded-full bg-gradient-to-r from-blue-500 to-purple-600 transition-all duration-300 group-hover:w-3/4"></span>
+            </Link>
             <Link
               href="/tentang"
               className="group relative rounded-lg px-4 py-2 text-sm font-medium text-gray-700 transition-all duration-300 hover:text-blue-600"
@@ -180,6 +189,18 @@ export default function Home() {
                 </SheetHeader>
 
                 <nav className="relative mt-8 flex flex-col gap-2">
+                   <Link
+                    href="/pricing"
+                    className="group flex items-center rounded-xl border border-transparent p-3.5 text-base font-medium text-gray-700 transition-all duration-300 hover:border-green-100 hover:bg-gradient-to-r hover:from-green-50 hover:to-blue-50/50 hover:text-green-600 hover:shadow-md hover:shadow-green-100/50"
+                    onClick={() => setIsSheetOpen(false)}
+                  >
+                    <div className="mr-3 rounded-lg bg-green-50 p-2 transition-all duration-300 group-hover:scale-110 group-hover:bg-green-100 group-hover:shadow-sm">
+                      <Gem className="h-5 w-5 text-green-600" />
+                    </div>
+                    <span className="transition-transform duration-300 group-hover:translate-x-0.5">
+                      Harga
+                    </span>
+                  </Link>
                   <Link
                     href="/tentang"
                     className="group flex items-center rounded-xl border border-transparent p-3.5 text-base font-medium text-gray-700 transition-all duration-300 hover:border-blue-100 hover:bg-gradient-to-r hover:from-blue-50 hover:to-purple-50/50 hover:text-blue-600 hover:shadow-md hover:shadow-blue-100/50"

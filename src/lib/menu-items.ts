@@ -15,6 +15,7 @@ import {
   FileText,
   FileQuestion,
   BookDown,
+  Gem,
 } from 'lucide-react';
 
 interface MenuItem {
@@ -105,8 +106,13 @@ export const menuItems: MenuGroup[] = [
     ],
   },
   {
-    title: 'Informasi',
+    title: 'Akun',
     items: [
+      {
+        href: '/pricing',
+        title: 'Harga',
+        icon: Gem,
+      },
       {
         href: '/tentang',
         title: 'Tentang',
