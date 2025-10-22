@@ -5,6 +5,9 @@ import { Toaster } from '@/components/ui/toaster';
 export const metadata: Metadata = {
   title: 'Learniverse',
   description: 'Alat belajar bertenaga AI untuk siswa.',
+  icons: {
+    icon: '/logo-learniverse.svg',
+  },
 };
 
 export default function RootLayout({
