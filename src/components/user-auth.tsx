@@ -65,36 +65,38 @@ export function UserAuth() {
               }
           };
 
-          // Create user profile document without try/catch
+          // Create user profile document
           setDoc(userRef, userData)
             .then(() => {
-              // Create default free subscription
-              return setDoc(subscriptionRef, subscriptionData);
-            })
-            .then(() => {
-               toast({
-                title: 'Selamat Datang di Learniverse!',
-                description: 'Akun Anda telah berhasil dibuat.',
+              toast({
+                title: 'Profil Pengguna Dibuat!',
+                description: 'Akun Anda telah berhasil disimpan.',
               });
             })
             .catch((error) => {
-              console.error("Error creating user documents:", error);
-
-              // Emit a contextual error for user profile creation
               const permissionError = new FirestorePermissionError({
                 path: userRef.path,
                 operation: 'create',
                 requestResourceData: userData,
               });
               errorEmitter.emit('permission-error', permissionError);
+            });
 
-              // We can also emit an error for the subscription, but the first one is often enough
-              const subscriptionPermissionError = new FirestorePermissionError({
+          // Create default free subscription
+          setDoc(subscriptionRef, subscriptionData)
+            .then(() => {
+              toast({
+                title: 'Langganan Gratis Aktif!',
+                description: 'Anda sekarang berada di paket gratis.',
+              });
+            })
+            .catch((error) => {
+              const permissionError = new FirestorePermissionError({
                 path: subscriptionRef.path,
                 operation: 'create',
                 requestResourceData: subscriptionData,
               });
-              errorEmitter.emit('permission-error', subscriptionPermissionError);
+              errorEmitter.emit('permission-error', permissionError);
             });
         }
       }
