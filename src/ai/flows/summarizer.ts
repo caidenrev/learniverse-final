@@ -36,7 +36,7 @@ const summarizeFlow = ai.defineFlow(
     // Pilih model berdasarkan paket pengguna
     const model =
       input.planId === 'premium'
-        ? 'googleai/gemini-2.5-pro'
+        ? 'googleai/gemini-pro'
         : 'googleai/gemini-2.5-flash';
     
     // Definisikan prompt secara dinamis di dalam flow
