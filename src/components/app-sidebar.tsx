@@ -1,3 +1,4 @@
+
 'use client';
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
@@ -10,8 +11,10 @@ import {
   SidebarMenu,
   SidebarMenuItem,
   SidebarMenuButton,
+  SidebarFooter,
 } from '@/components/ui/sidebar';
 import { Logo } from '@/components/logo';
+import { UserProfileSidebar } from './user-profile-sidebar';
 
 export function AppSidebar() {
   const pathname = usePathname();
@@ -48,6 +51,9 @@ export function AppSidebar() {
           </SidebarGroup>
         ))}
       </SidebarContent>
+      <SidebarFooter>
+        <UserProfileSidebar />
+      </SidebarFooter>
     </>
   );
 }

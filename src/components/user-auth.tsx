@@ -1,13 +1,13 @@
 
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import {
   GoogleAuthProvider,
   signInWithPopup,
   signOut,
 } from 'firebase/auth';
-import { useAuth, useUser, useFirestore, errorEmitter, FirestorePermissionError } from '@/firebase';
+import { useAuth, useUser, useFirestore, errorEmitter, FirestorePermissionError, useDoc } from '@/firebase';
 import { Button } from './ui/button';
 import {
   DropdownMenu,
@@ -46,6 +46,7 @@ export function UserAuth() {
         if (!userSnap.exists()) {
           const { displayName, email, photoURL } = user;
           const userData = {
+            uid: user.uid,
             displayName,
             email,
             photoURL,
@@ -67,12 +68,6 @@ export function UserAuth() {
 
           // Create user profile document
           setDoc(userRef, userData)
-            .then(() => {
-              toast({
-                title: 'Profil Pengguna Dibuat!',
-                description: 'Akun Anda telah berhasil disimpan.',
-              });
-            })
             .catch((error) => {
               const permissionError = new FirestorePermissionError({
                 path: userRef.path,
@@ -84,12 +79,6 @@ export function UserAuth() {
 
           // Create default free subscription
           setDoc(subscriptionRef, subscriptionData)
-            .then(() => {
-              toast({
-                title: 'Langganan Gratis Aktif!',
-                description: 'Anda sekarang berada di paket gratis.',
-              });
-            })
             .catch((error) => {
               const permissionError = new FirestorePermissionError({
                 path: subscriptionRef.path,
@@ -132,6 +121,7 @@ export function UserAuth() {
         title: 'Logout Berhasil',
         description: 'Anda telah berhasil keluar.',
       });
+      window.location.href = '/';
     } catch (error) {
       console.error('Error signing out:', error);
       toast({
