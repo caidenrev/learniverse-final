@@ -13,3 +13,4 @@ import '@/ai/flows/ai-tutor.ts';
 import '@/ai/flows/learning-path-generator.ts';
 import '@/ai/flows/cv-reviewer.ts';
 import '@/ai/flows/question-generator.ts';
+import '@/ai/flows/document-summarizer.ts';

@@ -14,6 +14,7 @@ import {
   Mail,
   FileText,
   FileQuestion,
+  BookDown,
 } from 'lucide-react';
 
 interface MenuItem {
@@ -95,6 +96,11 @@ export const menuItems: MenuGroup[] = [
         href: '/peringkas-jurnal',
         title: 'Peringkas Jurnal',
         icon: Languages,
+      },
+      {
+        href: '/rangkum-dokumen',
+        title: 'Peringkas Dokumen',
+        icon: BookDown,
       },
     ],
   },
