@@ -247,7 +247,7 @@ export default function Home() {
             <div className="mx-auto">
               <div className="mx-auto mb-12 max-w-2xl text-center">
                 <h3 className="font-headline text-3xl font-bold tracking-tight md:text-4xl">
-                  Satu Set Alat untuk Setiap Siswa
+                  Satu Set Alat <br></br> untuk Setiap Siswa
                 </h3>
                 <p className="mt-4 text-lg text-muted-foreground">
                   Semua yang Anda butuhkan untuk unggul dalam perjalanan akademis
