@@ -22,6 +22,10 @@ const premiumFeatures = [
 ];
 
 export default function PricingPage() {
+  // URL ini adalah contoh dari Midtrans Snap. Di aplikasi nyata, 
+  // Anda harus membuatnya secara dinamis dari backend Anda untuk setiap transaksi.
+  const midtransDemoUrl = "https://app.sandbox.midtrans.com/snap/v1/pay?token=938e4a31-fe8b-4499-a417-b7d19a48e7e1";
+
   return (
     <div className="space-y-8">
       <div className="pt-4 text-center">
@@ -100,11 +104,18 @@ export default function PricingPage() {
             </ul>
           </CardContent>
           <CardFooter>
-            <Button className="w-full font-bold">
-                Upgrade ke Premium
+            <Button className="w-full font-bold" asChild>
+                <a href={midtransDemoUrl} target="_blank" rel="noopener noreferrer">
+                    Upgrade ke Premium
+                </a>
             </Button>
           </CardFooter>
         </Card>
+      </div>
+       <div className="pt-8 text-center text-sm text-muted-foreground">
+        <p className="font-bold">Langkah Selanjutnya:</p>
+        <p>Tombol "Upgrade" di atas kini mengarah ke halaman demo pembayaran Midtrans.</p>
+        <p>Untuk integrasi penuh, Anda perlu mendaftar di Midtrans, mendapatkan API key, dan membuat link pembayaran dari backend Anda.</p>
       </div>
     </div>
   );
