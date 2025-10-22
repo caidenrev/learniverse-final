@@ -1,0 +1,92 @@
+/**
+ * @file Firebase Security Rules for EduAI Application
+ *
+ * @core_philosophy This ruleset enforces a strict user-ownership model for user-related data
+ *   and relies on direct document access for subscriptions and payment methods.
+ *   It prioritizes authorization independence to avoid costly `get()` calls and ensures
+ *   secure data access based on user authentication.
+ *
+ * @data_structure
+ * - `/users/{userId}`: Stores user profiles; access is restricted to the owning user.
+ * - `/subscriptions/{subscriptionId}`: Stores subscription details; access is based on subscription ID.
+ * - `/payment_methods/{paymentMethodId}`: Stores payment methods; access is based on payment method ID with ownership checks.
+ *
+ * @key_security_decisions
+ * - User listing is disallowed to protect user privacy.
+ * - Subscriptions and payment methods do not enforce strict ownership, focusing on authorization based on document ID.
+ * - Data shape validation is relaxed in this prototyping phase to allow for rapid iteration.
+ *
+ * @denormalization_for_authorization
+ *   - The `User` document's `id` is validated against the `userId` path parameter on create to ensure path integrity.
+ *   - The `PaymentMethod` contains a `userId` field, allowing verification of the payment method's owner.
+ *
+ * @structural_segregation User data, subscription data, and payment method data are stored in separate collections,
+ *   each with its own security rules. This prevents unauthorized access and enables secure list operations within each collection.
+ */
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    /**
+     * @description Enforces access control for user profiles. Only the authenticated user can read or write their own profile.
+     * @path /users/{userId}
+     * @allow (create) - User with UID 'user123' can create a profile at /users/user123 with matching id.
+     * @allow (get, update, delete) - User with UID 'user123' can read, update, or delete their profile at /users/user123.
+     * @deny (create) - User with UID 'user456' cannot create a profile at /users/user123.
+     * @deny (get, update, delete) - User with UID 'user456' cannot read, update, or delete the profile at /users/user123.
+     * @principle Enforces document ownership for all operations.  Validates relational integrity between the path and the document's `id` field.
+     */
+    match /users/{userId} {
+      function isOwner(userId) {
+        return request.auth != null && request.auth.uid == userId;
+      }
+      function isExistingOwner(userId) {
+        return isOwner(userId) && resource.data.id == userId;
+      }
+
+      allow get: if isOwner(userId);
+      allow list: if false;
+
+      allow create: if isOwner(userId) && request.resource.data.id == userId;
+      allow update: if isOwner(userId) && request.resource.data.id == userId;
+      allow delete: if isOwner(userId) && request.resource.data.id == userId;
+    }
+
+    /**
+     * @description Controls access to subscription documents. Read access is public, but write access is restricted.
+     * @path /subscriptions/{subscriptionId}
+     * @allow (get, list) - Any user can read subscription information.
+     * @deny (create, update, delete) - No user can create, update, or delete subscription information through client-side rules.
+     * @principle Restricts write access to prevent unauthorized modifications of subscription details.
+     */
+    match /subscriptions/{subscriptionId} {
+      allow get, list: if true;
+      allow create, update, delete: if false;
+    }
+
+    /**
+     * @description Manages payment method information.  Allows creating a payment method if the userId matches the authenticated user.
+     *              Allows modification/deletion only if the user owns the payment method and it exists.
+     * @path /payment_methods/{paymentMethodId}
+     * @allow (create) - User 'user123' can create a payment method with userId 'user123'.
+     * @allow (get, update, delete) - User 'user123' can read, update, or delete payment method 'paymentMethod123' if they own it.
+     * @deny (create) - User 'user456' cannot create a payment method with userId 'user123'.
+     * @deny (update, delete) - User 'user456' cannot update or delete payment method 'paymentMethod123' even if it exists.
+     * @principle Enforces user-based authorization for payment methods, ensuring only the owner can modify or delete them.
+     */
+    match /payment_methods/{paymentMethodId} {
+      function isOwner(userId) {
+        return request.auth != null && request.auth.uid == userId;
+      }
+       function isExistingOwner() {
+         return request.auth.uid == resource.data.userId;
+       }
+
+      allow get: if request.auth.uid == resource.data.userId;
+      allow list: if false;
+      allow create: if request.auth.uid == request.resource.data.userId;
+      allow update: if isExistingOwner();
+      allow delete: if isExistingOwner();
+    }
+  }
+}

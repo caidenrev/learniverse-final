@@ -1,0 +1,170 @@
+{
+  "entities": {
+    "User": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "User",
+      "type": "object",
+      "description": "Represents a user of the EduAI application.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the user."
+        },
+        "googleId": {
+          "type": "string",
+          "description": "The user's Google ID for authentication."
+        },
+        "email": {
+          "type": "string",
+          "description": "The user's email address.",
+          "format": "email"
+        },
+        "subscriptionId": {
+          "type": "string",
+          "description": "Reference to Subscription. (Relationship: User 1:1 Subscription). Represents the user's current subscription."
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "The timestamp when the user account was created.",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "googleId",
+        "email",
+        "subscriptionId",
+        "createdAt"
+      ]
+    },
+    "Subscription": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Subscription",
+      "type": "object",
+      "description": "Represents a user's subscription plan and associated limits.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the subscription."
+        },
+        "planType": {
+          "type": "string",
+          "description": "The type of subscription plan (e.g., free, premium)."
+        },
+        "apiQuota": {
+          "type": "number",
+          "description": "The maximum number of API requests allowed per time period."
+        },
+        "apiKey": {
+          "type": "string",
+          "description": "API key for accessing the GenAI model."
+        },
+        "model": {
+          "type": "string",
+          "description": "The AI model associated with the subscription (e.g., ai 2.5 flash)."
+        },
+        "paymentMethodId": {
+          "type": "string",
+          "description": "Reference to PaymentMethod. (Relationship: Subscription 1:1 PaymentMethod). Represents the user's chosen payment method."
+        }
+      },
+      "required": [
+        "id",
+        "planType",
+        "apiQuota",
+        "apiKey",
+        "model",
+        "paymentMethodId"
+      ]
+    },
+    "PaymentMethod": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "PaymentMethod",
+      "type": "object",
+      "description": "Represents a user's payment method for subscriptions.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the payment method."
+        },
+        "userId": {
+          "type": "string",
+          "description": "Reference to User. (Relationship: User 1:N PaymentMethod)"
+        },
+        "type": {
+          "type": "string",
+          "description": "The type of payment method (e.g., credit card, PayPal)."
+        },
+        "details": {
+          "type": "string",
+          "description": "Encrypted details of the payment method (e.g., credit card number)."
+        }
+      },
+      "required": [
+        "id",
+        "userId",
+        "type",
+        "details"
+      ]
+    }
+  },
+  "auth": {
+    "providers": [
+      "password",
+      "anonymous"
+    ]
+  },
+  "firestore": {
+    "structure": [
+      {
+        "path": "/users/{userId}",
+        "definition": {
+          "entityName": "User",
+          "schema": {
+            "$ref": "#/backend/entities/User"
+          },
+          "description": "Stores user information. Uses path-based ownership for security.",
+          "params": [
+            {
+              "name": "userId",
+              "description": "Unique identifier for the user."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/subscriptions/{subscriptionId}",
+        "definition": {
+          "entityName": "Subscription",
+          "schema": {
+            "$ref": "#/backend/entities/Subscription"
+          },
+          "description": "Stores subscription details, including API quota and associated API key. Uses direct document access based on subscriptionId.",
+          "params": [
+            {
+              "name": "subscriptionId",
+              "description": "Unique identifier for the subscription."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/payment_methods/{paymentMethodId}",
+        "definition": {
+          "entityName": "PaymentMethod",
+          "schema": {
+            "$ref": "#/backend/entities/PaymentMethod"
+          },
+          "description": "Stores payment method information.  Associated with a userId for relational integrity.",
+          "params": [
+            {
+              "name": "paymentMethodId",
+              "description": "Unique identifier for the payment method."
+            }
+          ]
+        }
+      }
+    ],
+    "reasoning": "The Firestore structure is designed to manage users, their subscriptions, payment methods, and API usage for the EduAI application. The structure prioritizes authorization independence and supports secure list operations.\n\nUsers are stored under the `/users/{userId}` path, which facilitates easy user management and clear ownership. Each user document contains a `subscriptionId` which references their current subscription.\n\nSubscriptions are stored in `/subscriptions/{subscriptionId}` and include details about the plan type, API quota, API key, model, and a reference to the payment method (`paymentMethodId`).\n\nPayment methods are stored in `/payment_methods/{paymentMethodId}` and are associated with a user ID. They include sensitive details that should be encrypted. This setup allows easy management of payment methods and associating them with users.\n\nTo support features like \"Topic Brainstormer\", \"Presentation Outliner\", \"Analogy Finder\", \"Research Outline Generator\", \"Smart Reference Finder\", \"Academic Paraphraser\", and \"Summarizer\", it is assumed that the API keys in the `Subscription` document are used by a backend service with appropriate security measures to prevent abuse.\n\nThis structure enables Authorization Independence by avoiding hierarchical `get()` calls. Security rules can be written based on the `request.auth.uid` and the data present in each document, without needing to fetch parent document data.\n\nQAPs are supported through structural segregation. User data, subscription data, and payment method data are stored in separate collections, each with its own security rules. This prevents unauthorized access and enables secure list operations within each collection."
+  }
+}
