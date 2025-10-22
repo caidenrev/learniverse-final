@@ -47,12 +47,14 @@ export function UserAuth() {
         const userSnap = await getDoc(userRef);
 
         if (!userSnap.exists()) {
-          const { displayName, email, photoURL } = user;
+          const { email, photoURL } = user;
+          const displayName = user.displayName || email?.split('@')[0] || 'User';
+
           const userData = {
             uid: user.uid,
             displayName,
             email,
-            photoURL,
+            photoURL: photoURL || null, // Ensure it's null if not present
             createdAt: serverTimestamp(),
           };
           
@@ -134,11 +136,15 @@ export function UserAuth() {
     <DropdownMenu>
       <DropdownMenuTrigger>
         <Avatar>
-          <AvatarImage
-            src={user.photoURL ?? ''}
-            alt={user.displayName ?? 'User'}
-          />
-          <AvatarFallback>{getInitials(user.displayName)}</AvatarFallback>
+          {user.photoURL ? (
+            <AvatarImage
+              src={user.photoURL}
+              alt={user.displayName ?? 'User'}
+            />
+          ) : null}
+          <AvatarFallback>
+            {user.photoURL ? getInitials(user.displayName) : undefined}
+          </AvatarFallback>
         </Avatar>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">

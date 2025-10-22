@@ -83,8 +83,12 @@ export function UserProfileSidebar() {
         <div className="cursor-pointer rounded-lg p-2 transition-colors hover:bg-sidebar-accent">
           <div className="flex items-center gap-3">
             <Avatar className="h-10 w-10">
-              <AvatarImage src={user.photoURL ?? ''} alt={user.displayName ?? 'User'} />
-              <AvatarFallback>{getInitials(user.displayName)}</AvatarFallback>
+              {user.photoURL ? (
+                <AvatarImage src={user.photoURL} alt={user.displayName ?? 'User'} />
+              ) : null}
+              <AvatarFallback>
+                {user.photoURL ? getInitials(user.displayName) : undefined}
+              </AvatarFallback>
             </Avatar>
             <div className="flex-1 overflow-hidden">
               <p className="truncate text-sm font-semibold text-sidebar-foreground">
