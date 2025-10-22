@@ -1,12 +1,13 @@
 
 'use client';
 
+import { useEffect } from 'react';
 import {
   GoogleAuthProvider,
   signInWithPopup,
   signOut,
 } from 'firebase/auth';
-import { useAuth, useUser } from '@/firebase';
+import { useAuth, useUser, useFirestore } from '@/firebase';
 import { Button } from './ui/button';
 import {
   DropdownMenu,
@@ -19,22 +20,77 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
 import { LogIn, LogOut, Loader2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { doc, getDoc, setDoc, serverTimestamp } from 'firebase/firestore';
 
 function getInitials(name: string | null | undefined): string {
-    if (!name) return '';
-    const names = name.split(' ');
-    if (names.length > 1) {
-        return `${names[0][0]}${names[names.length - 1][0]}`.toUpperCase();
-    }
-    return name.substring(0, 2).toUpperCase();
+  if (!name) return '';
+  const names = name.split(' ');
+  if (names.length > 1) {
+    return `${names[0][0]}${names[names.length - 1][0]}`.toUpperCase();
+  }
+  return name.substring(0, 2).toUpperCase();
 }
-
 
 export function UserAuth() {
   const auth = useAuth();
+  const firestore = useFirestore();
   const { user, isUserLoading } = useUser();
   const { toast } = useToast();
 
+  useEffect(() => {
+    const handleNewUser = async () => {
+      if (user) {
+        const userRef = doc(firestore, 'users', user.uid);
+        const userSnap = await getDoc(userRef);
+
+        if (!userSnap.exists()) {
+          // User is new, create their document
+          const { displayName, email, photoURL } = user;
+          const subscriptionRef = doc(firestore, `users/${user.uid}/subscription`, 'default');
+
+          try {
+            // Create user profile document
+            await setDoc(userRef, {
+              displayName,
+              email,
+              photoURL,
+              createdAt: serverTimestamp(),
+            });
+
+            // Create default free subscription
+            await setDoc(subscriptionRef, {
+                planId: 'free',
+                status: 'active',
+                currentPeriodEnd: null,
+                 usage: {
+                    summaryCount: 0,
+                    paraphraseCount: 0,
+                    tutorQuestionCount: 0,
+                    lastResetDate: serverTimestamp()
+                }
+            });
+            
+            toast({
+              title: 'Selamat Datang di Learniverse!',
+              description: 'Akun Anda telah berhasil dibuat.',
+            });
+
+          } catch (error) {
+            console.error("Error creating user document:", error);
+            toast({
+              title: 'Error Pembuatan Akun',
+              description: 'Gagal menyimpan data pengguna baru.',
+              variant: 'destructive',
+            });
+          }
+        }
+      }
+    };
+
+    if (!isUserLoading) {
+      handleNewUser();
+    }
+  }, [user, isUserLoading, firestore, toast]);
 
   const handleSignIn = async () => {
     const provider = new GoogleAuthProvider();
@@ -42,7 +98,7 @@ export function UserAuth() {
       await signInWithPopup(auth, provider);
       toast({
         title: 'Login Berhasil!',
-        description: `Selamat datang kembali!`,
+        description: 'Selamat datang kembali!',
       });
     } catch (error) {
       console.error('Error signing in with Google:', error);
@@ -57,13 +113,13 @@ export function UserAuth() {
   const handleSignOut = async () => {
     try {
       await signOut(auth);
-       toast({
+      toast({
         title: 'Logout Berhasil',
         description: 'Anda telah berhasil keluar.',
       });
     } catch (error) {
       console.error('Error signing out:', error);
-       toast({
+      toast({
         title: 'Logout Gagal',
         description: 'Terjadi kesalahan saat mencoba logout. Silakan coba lagi.',
         variant: 'destructive',
@@ -88,7 +144,10 @@ export function UserAuth() {
     <DropdownMenu>
       <DropdownMenuTrigger>
         <Avatar>
-          <AvatarImage src={user.photoURL ?? ''} alt={user.displayName ?? 'User'} />
+          <AvatarImage
+            src={user.photoURL ?? ''}
+            alt={user.displayName ?? 'User'}
+          />
           <AvatarFallback>{getInitials(user.displayName)}</AvatarFallback>
         </Avatar>
       </DropdownMenuTrigger>

@@ -16,16 +16,12 @@
           "format": "email"
         },
         "displayName": {
-            "type": "string",
-            "description": "The user's display name."
+          "type": "string",
+          "description": "The user's display name."
         },
         "photoURL": {
-            "type": "string",
-            "description": "URL of the user's profile picture."
-        },
-        "subscriptionId": {
           "type": "string",
-          "description": "Reference to the user's current subscription in the 'subscriptions' collection."
+          "description": "URL of the user's profile picture."
         },
         "createdAt": {
           "type": "string",
@@ -35,8 +31,7 @@
       },
       "required": [
         "uid",
-        "email",
-        "createdAt"
+        "email"
       ]
     },
     "Subscription": {
@@ -50,26 +45,32 @@
           "description": "The type of subscription plan (e.g., 'free', 'premium')."
         },
         "status": {
-            "type": "string",
-            "description": "Status of the subscription (e.g., 'active', 'canceled', 'past_due')."
+          "type": "string",
+          "description": "Status of the subscription (e.g., 'active', 'canceled', 'past_due')."
         },
         "currentPeriodEnd": {
-            "type": "string",
-            "format": "date-time",
-            "description": "The timestamp when the current subscription period ends."
+          "type": "string",
+          "format": "date-time",
+          "description": "The timestamp when the current subscription period ends."
         },
         "usage": {
-            "type": "object",
-            "description": "Tracks the user's feature usage for the current billing period.",
-            "properties": {
-                "summaryCount": {"type": "number"},
-                "paraphraseCount": {"type": "number"},
-                "tutorQuestionCount": {"type": "number"},
-                "lastResetDate": {
-                    "type": "string",
-                    "format": "date-time"
-                }
+          "type": "object",
+          "description": "Tracks the user's feature usage for the current billing period.",
+          "properties": {
+            "summaryCount": {
+              "type": "number"
+            },
+            "paraphraseCount": {
+              "type": "number"
+            },
+            "tutorQuestionCount": {
+              "type": "number"
+            },
+            "lastResetDate": {
+              "type": "string",
+              "format": "date-time"
             }
+          }
         }
       },
       "required": [
@@ -90,11 +91,11 @@
       },
       "description": "Stores user profile information, linked to their Firebase Auth UID."
     },
-    "/users/{userId}/subscription": {
-        "schema": {
-            "$ref": "#/entities/Subscription"
-        },
-        "description": "Stores the subscription status and usage limits for a specific user. This is a subcollection under each user."
+    "/users/{userId}/subscriptions/{subscriptionId}": {
+      "schema": {
+        "$ref": "#/entities/Subscription"
+      },
+      "description": "Stores the subscription status and usage limits for a specific user. This is a subcollection under each user."
     }
   }
 }
