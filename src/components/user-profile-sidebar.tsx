@@ -99,10 +99,10 @@ export function UserProfileSidebar() {
                 </AvatarFallback>
               </Avatar>
               <div className="flex-1 overflow-hidden">
-                <p className="truncate text-sm font-semibold text-sidebar-foreground">
+                <p className="truncate text-sm font-semibold text-primary-foreground">
                   {user.displayName}
                 </p>
-                <p className="truncate text-xs text-sidebar-foreground/70">
+                <p className="truncate text-xs text-primary-foreground/70">
                   {user.email}
                 </p>
               </div>
@@ -124,14 +124,14 @@ export function UserProfileSidebar() {
 
       <Accordion type="single" collapsible className="w-full">
         <AccordionItem value="item-1" className="border-none">
-          <AccordionTrigger className="py-2 text-xs font-medium text-sidebar-foreground/80 hover:no-underline">
+          <AccordionTrigger className="py-2 text-xs font-medium text-primary-foreground/80 hover:no-underline">
             Lihat Detail Penggunaan
           </AccordionTrigger>
           <AccordionContent>
-            <div className="space-y-3 px-1 text-xs">
+            <div className="space-y-3 px-1 text-xs text-primary-foreground">
               <div className="flex justify-between items-center">
-                <span className="text-sidebar-foreground/70">Status Paket</span>
-                <span className="font-medium capitalize text-sidebar-foreground">
+                <span className="text-primary-foreground/70">Status Paket</span>
+                <span className="font-medium capitalize text-primary-foreground">
                   {isSubscriptionLoading ? (
                     <Skeleton className="h-4 w-12" />
                   ) : (
@@ -141,10 +141,10 @@ export function UserProfileSidebar() {
               </div>
               {!isPremium && (
                    <>
-                      <p className="font-medium text-sidebar-foreground/80 pt-2 pb-1 border-t border-sidebar-border">Sisa Kuota Harian:</p>
+                      <p className="font-medium text-primary-foreground/80 pt-2 pb-1 border-t border-sidebar-border">Sisa Kuota Harian:</p>
                       <div className="flex justify-between items-center">
-                        <span className="flex items-center gap-1.5 text-sidebar-foreground/70"><BookText className="w-3.5 h-3.5"/> Peringkas</span>
-                        <span className="font-medium text-sidebar-foreground">
+                        <span className="flex items-center gap-1.5 text-primary-foreground/70"><BookText className="w-3.5 h-3.5"/> Peringkas</span>
+                        <span className="font-medium text-primary-foreground">
                           {isSubscriptionLoading ? (
                             <Skeleton className="h-4 w-8" />
                           ) : (
@@ -153,8 +153,8 @@ export function UserProfileSidebar() {
                         </span>
                       </div>
                        <div className="flex justify-between items-center">
-                        <span className="flex items-center gap-1.5 text-sidebar-foreground/70"><Repeat className="w-3.5 h-3.5"/> Parafrase</span>
-                        <span className="font-medium text-sidebar-foreground">
+                        <span className="flex items-center gap-1.5 text-primary-foreground/70"><Repeat className="w-3.5 h-3.5"/> Parafrase</span>
+                        <span className="font-medium text-primary-foreground">
                           {isSubscriptionLoading ? (
                             <Skeleton className="h-4 w-8" />
                           ) : (
@@ -166,7 +166,7 @@ export function UserProfileSidebar() {
               )}
                {isPremium && (
                    <>
-                      <p className="font-medium text-sidebar-foreground/80 pt-2 pb-1 border-t border-sidebar-border">Kuota Penggunaan:</p>
+                      <p className="font-medium text-primary-foreground/80 pt-2 pb-1 border-t border-sidebar-border">Kuota Penggunaan:</p>
                        <div className="flex justify-center items-center gap-2 p-2 rounded-md bg-sidebar-accent/50 text-sidebar-accent-foreground">
                           <Infinity className="w-4 h-4"/>
                           <span className="font-bold">Tanpa Batas</span>
