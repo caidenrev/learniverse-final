@@ -25,8 +25,8 @@ export default function ContactPage() {
   }
 
   return (
-    <div className="space-y-8">
-      <div className="pt-4">
+    <div className="container space-y-8 py-16">
+      <div className="text-center">
         <h1 className="font-headline text-3xl font-bold md:text-4xl">
           Hubungi Kami
         </h1>

@@ -1,3 +1,4 @@
+
 'use client';
 
 import Image from 'next/image';
@@ -6,17 +7,17 @@ import Link from 'next/link';
 
 export default function AboutPage() {
   return (
-    <div className="space-y-12 px-4 sm:space-y-16 sm:px-6 lg:px-8">
-      <div className="pt-4 sm:pt-6">
+    <div className="space-y-12 px-4 py-16 sm:space-y-16 sm:px-6 lg:px-8">
+      <div className="container text-center">
         <h1 className="font-headline text-2xl font-bold sm:text-3xl md:text-4xl lg:text-5xl">
           Tentang Learniverse
         </h1>
-        <p className="mt-2 text-sm text-muted-foreground sm:text-base">
+        <p className="mx-auto mt-2 max-w-2xl text-sm text-muted-foreground sm:text-base">
           Misi kami adalah memberdayakan siswa dengan alat AI yang inovatif.
         </p>
       </div>
 
-      <div className="grid grid-cols-1 items-center gap-8 md:grid-cols-2 md:gap-12">
+      <div className="container grid grid-cols-1 items-center gap-8 md:grid-cols-2 md:gap-12">
         <div className="relative h-64 w-full overflow-hidden rounded-2xl shadow-lg sm:h-80 md:h-96">
           <Image
             src="/hero-image.jpg"
@@ -47,7 +48,7 @@ export default function AboutPage() {
         </div>
       </div>
 
-      <div className="space-y-8 sm:space-y-12">
+      <div className="container space-y-8 sm:space-y-12">
         <div className="text-center">
           <h2 className="font-headline text-2xl font-bold sm:text-3xl md:text-4xl">
             Di Balik Layar: Sang Kreator

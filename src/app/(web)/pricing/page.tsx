@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState } from 'react';
@@ -112,8 +113,8 @@ export default function PricingPage() {
 
 
   return (
-    <div className="space-y-8">
-      <div className="pt-4 text-center">
+    <div className="container space-y-8 py-16">
+      <div className="text-center">
         <h1 className="font-headline text-3xl font-bold tracking-tight md:text-4xl lg:text-5xl">
           Pilih Paket yang Tepat untuk Anda
         </h1>
