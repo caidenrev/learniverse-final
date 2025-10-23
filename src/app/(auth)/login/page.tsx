@@ -28,6 +28,7 @@ import { useAuth } from '@/firebase';
 import { Loader2, LogIn, UserPlus } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { Logo } from '@/components/logo';
+import Link from 'next/link';
 
 const formSchema = z.object({
   email: z.string().email('Format email tidak valid.'),
@@ -118,9 +119,9 @@ export default function LoginPage() {
     <div className="flex min-h-screen items-center justify-center bg-gray-50 p-4">
        <Card className="w-full max-w-md shadow-lg">
         <CardHeader className="text-center">
-            <div className="mx-auto mb-4">
+            <Link href="/" className="mx-auto mb-4">
                 <Logo />
-            </div>
+            </Link>
           <CardTitle className="text-2xl font-bold">{isRegistering ? 'Buat Akun Baru' : 'Login ke Akun Anda'}</CardTitle>
           <CardDescription>
             {isRegistering ? 'Isi form di bawah untuk memulai.' : 'Selamat datang kembali! Silakan masukkan detail Anda.'}

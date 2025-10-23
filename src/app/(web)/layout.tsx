@@ -134,7 +134,9 @@ export default function WebLayout({ children }: { children: ReactNode }) {
       <footer className="border-t bg-background">
         <div className="container mx-auto grid grid-cols-1 gap-8 px-4 py-12 text-center md:grid-cols-3 md:text-left">
           <div className="flex flex-col items-center md:items-start">
-            <Logo />
+            <Link href="/">
+              <Logo />
+            </Link>
             <p className="mt-4 text-sm text-muted-foreground">
               Asisten belajar cerdas bertenaga AI.
             </p>
