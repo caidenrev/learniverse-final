@@ -87,7 +87,7 @@ export function FeatureTour() {
           {currentFeature.title === 'Pencari Analogi' && 'Sederhanakan konsep teknis yang rumit menjadi lebih mudah dipahami dengan analogi yang relevan.'}
           {currentFeature.title === 'Kerangka Penelitian' && 'Dapatkan draf kerangka penelitian terstruktur untuk skripsi atau tesis sesuai standar akademis.'}
           {currentFeature.title === 'Pencari Referensi Cerdas' && 'Temukan kata kunci alternatif untuk memperluas dan memperdalam pencarian referensi di Google Scholar.'}
-          {current{~.title === 'Parafrase Akademik' && 'Susun ulang kalimat atau paragraf untuk menghindari plagiarisme dengan tetap menjaga integritas makna.'}
+          {currentFeature.title === 'Parafrase Akademik' && 'Susun ulang kalimat atau paragraf untuk menghindari plagiarisme dengan tetap menjaga integritas makna.'}
           {currentFeature.title === 'Peringkas Jurnal' && 'Pahami inti dari jurnal berbahasa Inggris yang padat dalam waktu singkat dengan ringkasan Bahasa Indonesia.'}
           {currentFeature.title === 'Peringkas Dokumen' && 'Dapatkan ringkasan dan kesimpulan instan dari dokumen PDF atau Word yang Anda unggah.'}
         </div>
