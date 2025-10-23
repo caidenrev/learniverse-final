@@ -13,6 +13,7 @@ import { type ReactNode, useEffect } from 'react';
 import { useUser } from '@/firebase';
 import { useRouter } from 'next/navigation';
 import { Loader2 } from 'lucide-react';
+import { FeatureTour } from '@/components/feature-tour';
 
 export default function AppLayout({
   children,
@@ -42,6 +43,7 @@ export default function AppLayout({
   if (user) {
     return (
       <SidebarProvider>
+        <FeatureTour />
         <Sidebar collapsible="icon">
           <AppSidebar />
         </Sidebar>
