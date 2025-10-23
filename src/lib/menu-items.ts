@@ -17,6 +17,7 @@ import {
   BookDown,
   Gem,
   History,
+  Archive,
 } from 'lucide-react';
 
 interface MenuItem {
@@ -109,6 +110,11 @@ export const menuItems: MenuGroup[] = [
   {
     title: 'Akun',
     items: [
+       {
+        href: '/riwayat-projek',
+        title: 'Riwayat Projek',
+        icon: Archive,
+      },
       {
         href: '/pricing',
         title: 'Harga',
