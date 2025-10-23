@@ -1,9 +1,20 @@
 'use client';
 
+import { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
-import { CheckCircle2, XCircle, Gem, Sparkles } from 'lucide-react';
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+  CardFooter,
+} from '@/components/ui/card';
+import { CheckCircle2, XCircle, Gem, Sparkles, Loader2 } from 'lucide-react';
 import Link from 'next/link';
+import { useUser, useFirestore } from '@/firebase';
+import { useToast } from '@/hooks/use-toast';
+import { createPayment } from '@/ai/flows/create-payment';
 
 const freeFeatures = [
   { text: '3 ringkasan jurnal per hari', included: true },
@@ -22,9 +33,53 @@ const premiumFeatures = [
 ];
 
 export default function PricingPage() {
-  // URL ini adalah contoh dari Midtrans Snap. Di aplikasi nyata, 
-  // Anda harus membuatnya secara dinamis dari backend Anda untuk setiap transaksi.
-  const midtransDemoUrl = "https://app.sandbox.midtrans.com/snap/v1/pay?token=938e4a31-fe8b-4499-a417-b7d19a48e7e1";
+  const { user, isUserLoading } = useUser();
+  const { toast } = useToast();
+  const [isRedirecting, setIsRedirecting] = useState(false);
+
+  async function handleUpgrade() {
+    if (!user) {
+      toast({
+        title: 'Harus Login',
+        description: 'Anda harus login untuk bisa upgrade ke Premium.',
+        variant: 'destructive',
+      });
+      return;
+    }
+    
+    setIsRedirecting(true);
+
+    try {
+      const paymentInput = {
+        userId: user.uid,
+        planId: 'premium' as const,
+        amount: 50000,
+        user: {
+          name: user.displayName || 'Pengguna Learniverse',
+          email: user.email || 'no-email@learniverse.com',
+        },
+      };
+
+      const result = await createPayment(paymentInput);
+      
+      // Arahkan pengguna ke halaman pembayaran Midtrans
+      if (result.paymentUrl) {
+        window.location.href = result.paymentUrl;
+      } else {
+        throw new Error('URL pembayaran tidak diterima dari server.');
+      }
+
+    } catch (error: any) {
+      console.error('Payment creation failed:', error);
+      toast({
+        title: 'Gagal Membuat Pembayaran',
+        description: error.message || 'Terjadi kesalahan saat mencoba membuat link pembayaran. Silakan coba lagi.',
+        variant: 'destructive',
+      });
+      setIsRedirecting(false);
+    }
+  }
+
 
   return (
     <div className="space-y-8">
@@ -59,14 +114,14 @@ export default function PricingPage() {
                   <span>{feature.text}</span>
                 </li>
               ))}
-               <li className="flex items-center gap-3 text-muted-foreground">
-                  <XCircle className="h-5 w-5 flex-shrink-0 text-gray-400" />
-                  <span>Akses ke model AI canggih</span>
-                </li>
-                 <li className="flex items-center gap-3 text-muted-foreground">
-                  <XCircle className="h-5 w-5 flex-shrink-0 text-gray-400" />
-                  <span>Simpan riwayat & proyek</span>
-                </li>
+              <li className="flex items-center gap-3 text-muted-foreground">
+                <XCircle className="h-5 w-5 flex-shrink-0 text-gray-400" />
+                <span>Akses ke model AI canggih</span>
+              </li>
+              <li className="flex items-center gap-3 text-muted-foreground">
+                <XCircle className="h-5 w-5 flex-shrink-0 text-gray-400" />
+                <span>Simpan riwayat & proyek</span>
+              </li>
             </ul>
           </CardContent>
           <CardFooter>
@@ -78,12 +133,12 @@ export default function PricingPage() {
 
         {/* Premium Plan Card */}
         <Card className="relative flex flex-col border-2 border-primary shadow-lg shadow-primary/20">
-            <div className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-primary px-4 py-1 text-sm font-semibold text-primary-foreground">
-                Paling Populer
-            </div>
+          <div className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-primary px-4 py-1 text-sm font-semibold text-primary-foreground">
+            Paling Populer
+          </div>
           <CardHeader className="pb-4">
             <CardTitle className="flex items-center gap-3">
-               <Gem className="h-6 w-6 text-primary" />
+              <Gem className="h-6 w-6 text-primary" />
               <span className="font-headline text-2xl">Premium</span>
             </CardTitle>
             <CardDescription>
@@ -91,31 +146,34 @@ export default function PricingPage() {
             </CardDescription>
           </CardHeader>
           <CardContent className="flex-1 space-y-4">
-             <p className="font-headline text-4xl font-bold">
+            <p className="font-headline text-4xl font-bold">
               Rp 50rb<span className="text-lg font-normal text-muted-foreground">/bulan</span>
             </p>
             <ul className="space-y-3">
               {premiumFeatures.map((feature, index) => (
                 <li key={index} className="flex items-center gap-3 font-medium">
-                   <Sparkles className="h-5 w-5 flex-shrink-0 text-primary" />
+                  <Sparkles className="h-5 w-5 flex-shrink-0 text-primary" />
                   <span>{feature.text}</span>
                 </li>
               ))}
             </ul>
           </CardContent>
           <CardFooter>
-            <Button className="w-full font-bold" asChild>
-                <a href={midtransDemoUrl} target="_blank" rel="noopener noreferrer">
-                    Upgrade ke Premium
-                </a>
+            <Button
+              className="w-full font-bold"
+              onClick={handleUpgrade}
+              disabled={isUserLoading || isRedirecting}
+            >
+              {isRedirecting ? (
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              ) : null}
+              {isRedirecting ? 'Mengarahkan...' : 'Upgrade ke Premium'}
             </Button>
           </CardFooter>
         </Card>
       </div>
-       <div className="pt-8 text-center text-sm text-muted-foreground">
-        <p className="font-bold">Langkah Selanjutnya:</p>
-        <p>Tombol "Upgrade" di atas kini mengarah ke halaman demo pembayaran Midtrans.</p>
-        <p>Untuk integrasi penuh, Anda perlu mendaftar di Midtrans, mendapatkan API key, dan membuat link pembayaran dari backend Anda.</p>
+      <div className="pt-8 text-center text-sm text-muted-foreground">
+        <p>Anda akan diarahkan ke halaman pembayaran Midtrans untuk menyelesaikan transaksi.</p>
       </div>
     </div>
   );
