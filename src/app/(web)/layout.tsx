@@ -25,7 +25,7 @@ export default function WebLayout({ children }: { children: ReactNode }) {
         <div className="container relative mx-auto flex items-center justify-between px-4 sm:px-6">
           <div className="transform transition-all duration-300 hover:scale-105 hover:-translate-y-0.5">
             <Link href="/">
-              <Logo />
+              <Logo withText={true} />
             </Link>
           </div>
 
@@ -81,7 +81,7 @@ export default function WebLayout({ children }: { children: ReactNode }) {
                 <SheetHeader className="relative">
                   <SheetTitle className="text-left">
                     <Link href="/" onClick={() => setIsSheetOpen(false)}>
-                      <Logo />
+                      <Logo withText={true} />
                     </Link>
                   </SheetTitle>
                 </SheetHeader>
@@ -132,37 +132,14 @@ export default function WebLayout({ children }: { children: ReactNode }) {
       <main className="flex-1">{children}</main>
 
       <footer className="border-t bg-background">
-        <div className="container mx-auto grid grid-cols-1 gap-8 px-4 py-12 text-center md:grid-cols-3 md:text-left">
+        <div className="container mx-auto grid grid-cols-1 gap-8 px-4 py-12 text-center md:grid-cols-2 md:text-left">
           <div className="flex flex-col items-center md:items-start">
             <Link href="/">
-              <Logo />
+              <Logo withText={true} />
             </Link>
             <p className="mt-4 text-sm text-muted-foreground">
               Asisten belajar cerdas bertenaga AI.
             </p>
-          </div>
-          <div className="flex flex-col items-center gap-4 md:items-start">
-            <h4 className="font-headline text-lg font-semibold">Navigasi</h4>
-            <div className="flex gap-4">
-              <Link
-                href="/tentang"
-                className="text-sm text-muted-foreground transition-colors hover:text-primary"
-              >
-                Tentang
-              </Link>
-              <Link
-                href="/kontak"
-                className="text-sm text-muted-foreground transition-colors hover:text-primary"
-              >
-                Kontak
-              </Link>
-              <Link
-                href="/pricing"
-                className="text-sm text-muted-foreground transition-colors hover:text-primary"
-              >
-                Harga
-              </Link>
-            </div>
           </div>
           <div className="flex flex-col items-center md:items-end">
             <h4 className="font-headline text-lg font-semibold">Hubungi</h4>
