@@ -132,7 +132,7 @@ export default function WebLayout({ children }: { children: ReactNode }) {
       <main className="flex-1">{children}</main>
 
       <footer className="border-t bg-background">
-        <div className="container mx-auto grid grid-cols-1 gap-8 px-4 py-12 text-center md:grid-cols-2 md:text-left">
+        <div className="container mx-auto flex flex-col items-center justify-center px-4 py-8 text-center md:flex-row md:justify-between">
           <div className="flex flex-col items-center md:items-start">
             <Link href="/">
               <Logo withText={true} />
@@ -140,31 +140,6 @@ export default function WebLayout({ children }: { children: ReactNode }) {
             <p className="mt-4 text-sm text-muted-foreground">
               Asisten belajar cerdas bertenaga AI.
             </p>
-          </div>
-          <div className="flex flex-col items-center md:items-end">
-            <h4 className="font-headline text-lg font-semibold">Hubungi</h4>
-            <p className="text-sm text-muted-foreground">
-              Dibuat dengan ❤️ oleh{' '}
-              <a
-                href="https://github.com/caidenrev"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="font-medium text-primary hover:underline"
-              >
-                Revan
-              </a>
-            </p>
-            <div className="mt-2 flex items-center gap-3">
-              <a
-                href="https://github.com/caidenrev"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-muted-foreground transition-colors hover:text-primary"
-              >
-                <Github className="h-5 w-5" />
-                <span className="sr-only">GitHub</span>
-              </a>
-            </div>
           </div>
         </div>
         <div className="border-t py-4">
