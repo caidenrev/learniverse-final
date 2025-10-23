@@ -22,6 +22,7 @@ import {
 } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { Badge } from '@/components/ui/badge';
 
 const features = [
   {
@@ -225,7 +226,13 @@ export default function Home() {
                   </Button>
                 </div>
               </Card>
-              <Card className="flex flex-col border-2 border-primary p-6 shadow-lg">
+              <Card className="relative flex flex-col border-2 border-primary p-6 shadow-lg">
+                 <Badge
+                  variant="destructive"
+                  className="absolute -top-3 left-1/2 -translate-x-1/2 animate-pulse"
+                >
+                  Diskon Terbatas!
+                </Badge>
                 <CardHeader className="p-0">
                   <CardTitle className="flex items-center gap-2 font-headline text-2xl">
                     <Gem className="h-6 w-6 text-primary" />
@@ -234,7 +241,7 @@ export default function Home() {
                 </CardHeader>
                 <CardContent className="flex-1 space-y-4 p-0 pt-4">
                   <div className="flex items-baseline gap-2">
-                    <span className="text-4xl font-bold">Rp 25rb</span>
+                    <span className="text-4xl font-bold">Rp 10rb</span>
                     <span className="text-xl font-medium text-muted-foreground line-through">
                       Rp 50rb
                     </span>

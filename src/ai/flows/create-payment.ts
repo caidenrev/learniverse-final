@@ -1,3 +1,4 @@
+
 'use server';
 
 /**
@@ -30,6 +31,10 @@ const CreatePaymentOutputSchema = z.object({
 export type CreatePaymentOutput = z.infer<typeof CreatePaymentOutputSchema>;
 
 export async function createPayment(input: CreatePaymentInput): Promise<CreatePaymentOutput> {
+  // Enforce the price on the backend.
+  if (input.planId === 'premium') {
+    input.amount = 10000;
+  }
   return createPaymentFlow(input);
 }
 

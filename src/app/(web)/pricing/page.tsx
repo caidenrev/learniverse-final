@@ -17,6 +17,7 @@ import { useUser, useFirestore, errorEmitter, FirestorePermissionError } from '@
 import { useToast } from '@/hooks/use-toast';
 import { createPayment } from '@/ai/flows/create-payment';
 import { doc, setDoc, serverTimestamp } from 'firebase/firestore';
+import { Badge } from '@/components/ui/badge';
 
 const freeFeatures = [
   { text: '3 ringkasan jurnal per hari', included: true },
@@ -54,7 +55,7 @@ export default function PricingPage() {
 
     try {
       const planId = 'premium';
-      const amount = 25000;
+      const amount = 10000; // Updated price
 
       const paymentInput = {
         userId: user.uid,
@@ -164,9 +165,12 @@ export default function PricingPage() {
 
         {/* Premium Plan Card */}
         <Card className="relative flex flex-col border-2 border-primary shadow-lg shadow-primary/20">
-          <div className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-primary px-4 py-1 text-sm font-semibold text-primary-foreground">
-            Paling Populer
-          </div>
+          <Badge
+            variant="destructive"
+            className="absolute -top-3 left-1/2 -translate-x-1/2 animate-pulse"
+          >
+            Diskon Terbatas!
+          </Badge>
           <CardHeader className="pb-4">
             <CardTitle className="flex items-center gap-3">
               <Gem className="h-6 w-6 text-primary" />
@@ -178,7 +182,7 @@ export default function PricingPage() {
           </CardHeader>
           <CardContent className="flex-1 space-y-4">
             <div className="flex items-baseline gap-2">
-                <span className="font-headline text-4xl font-bold">Rp 25rb</span>
+                <span className="font-headline text-4xl font-bold">Rp 10rb</span>
                 <span className="text-xl font-medium text-muted-foreground line-through">Rp 50rb</span>
             </div>
             <p className="text-lg font-normal text-muted-foreground -mt-2">/bulan</p>
