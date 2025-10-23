@@ -17,6 +17,8 @@ import {
   FileText,
   FileQuestion,
   BookDown,
+  CheckCircle2,
+  Gem,
 } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -205,6 +207,87 @@ export default function Home() {
                 siswa dengan menyediakan asisten belajar bertenaga AI yang
                 intuitif, membantu, dan selalu tersedia 24/7.
               </p>
+            </div>
+          </div>
+        </section>
+
+        <section className="-mx-4 bg-muted/50 px-4 py-16 sm:mx-0 sm:px-6 lg:py-24">
+          <div className="mx-auto">
+            <div className="mx-auto mb-12 max-w-2xl text-center">
+              <h3 className="font-headline text-3xl font-bold tracking-tight md:text-4xl">
+                Paket Harga Sederhana
+              </h3>
+              <p className="mt-4 text-lg text-muted-foreground">
+                Mulai gratis, upgrade saat Anda siap untuk membuka potensi
+                penuh.
+              </p>
+            </div>
+            <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
+              <Card className="flex flex-col p-6">
+                <CardHeader className="p-0">
+                  <CardTitle className="font-headline text-2xl">
+                    Gratis
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="flex-1 space-y-4 p-0 pt-4">
+                  <p className="text-4xl font-bold">
+                    Rp 0
+                    <span className="text-base font-normal text-muted-foreground">
+                      /bulan
+                    </span>
+                  </p>
+                  <ul className="space-y-2 text-muted-foreground">
+                    <li className="flex items-center gap-2">
+                      <CheckCircle2 className="h-5 w-5 text-green-500" />
+                      <span>Akses terbatas ke fitur dasar</span>
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <CheckCircle2 className="h-5 w-5 text-green-500" />
+                      <span>Cocok untuk penggunaan sesekali</span>
+                    </li>
+                  </ul>
+                </CardContent>
+                <div className="mt-6">
+                  <Button variant="outline" className="w-full" asChild>
+                    <Link href="/login">Mulai Gratis</Link>
+                  </Button>
+                </div>
+              </Card>
+              <Card className="flex flex-col border-2 border-primary p-6 shadow-lg">
+                <CardHeader className="p-0">
+                  <CardTitle className="flex items-center gap-2 font-headline text-2xl">
+                    <Gem className="h-6 w-6 text-primary" />
+                    Premium
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="flex-1 space-y-4 p-0 pt-4">
+                  <p className="text-4xl font-bold">
+                    Rp 50rb
+                    <span className="text-base font-normal text-muted-foreground">
+                      /bulan
+                    </span>
+                  </p>
+                  <ul className="space-y-2 text-muted-foreground">
+                    <li className="flex items-center gap-2">
+                      <CheckCircle2 className="h-5 w-5 text-green-500" />
+                      <span>Akses tak terbatas ke semua fitur</span>
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <CheckCircle2 className="h-5 w-5 text-green-500" />
+                      <span>Model AI yang lebih canggih</span>
+                    </li>
+                     <li className="flex items-center gap-2">
+                      <CheckCircle2 className="h-5 w-5 text-green-500" />
+                      <span>Dukungan prioritas</span>
+                    </li>
+                  </ul>
+                </CardContent>
+                <div className="mt-6">
+                  <Button className="w-full" asChild>
+                    <Link href="/pricing">Lihat Detail Paket</Link>
+                  </Button>
+                </div>
+              </Card>
             </div>
           </div>
         </section>
