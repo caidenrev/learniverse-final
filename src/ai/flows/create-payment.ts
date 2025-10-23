@@ -39,13 +39,15 @@ const createPaymentFlow = ai.defineFlow(
     outputSchema: CreatePaymentOutputSchema,
   },
   async (input) => {
+    // Validasi kunci API di awal
     if (!process.env.MIDTRANS_SERVER_KEY || !process.env.MIDTRANS_CLIENT_KEY) {
-      throw new Error('Midtrans server key or client key is not configured.');
+      console.error('MIDTRANS_SERVER_KEY or MIDTRANS_CLIENT_KEY is not set in .env file.');
+      throw new Error('Konfigurasi kunci Midtrans tidak ditemukan. Harap periksa pengaturan server.');
     }
 
     // Inisialisasi Midtrans Snap
     const snap = new Snap({
-      isProduction: false, // Set ke true jika sudah live
+      isProduction: false, // Set ke true jika sudah live. Pastikan kunci yang digunakan sesuai.
       serverKey: process.env.MIDTRANS_SERVER_KEY,
       clientKey: process.env.MIDTRANS_CLIENT_KEY,
     });
@@ -83,7 +85,11 @@ const createPaymentFlow = ai.defineFlow(
       return { paymentUrl };
     } catch (e: any) {
       console.error('Midtrans API Error:', e.message);
-      throw new Error(`Failed to create Midtrans transaction: ${e.message}`);
+      // Memberikan pesan error yang lebih spesifik jika tetap 401
+      if (e.httpStatusCode === 401) {
+          throw new Error('Akses ditolak oleh Midtrans. Pastikan Server Key dan Client Key yang Anda gunakan benar dan sesuai dengan lingkungan (Sandbox/Production).');
+      }
+      throw new Error(`Gagal membuat transaksi Midtrans: ${e.message}`);
     }
   }
 );
