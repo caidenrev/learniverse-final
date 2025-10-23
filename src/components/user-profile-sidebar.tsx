@@ -12,7 +12,7 @@ import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
 import { Skeleton } from './ui/skeleton';
 import { Button } from './ui/button';
 import Link from 'next/link';
-import { LogOut } from 'lucide-react';
+import { LogOut, BookText, Repeat, Infinity } from 'lucide-react';
 import { useAuth } from '@/firebase';
 import { signOut } from 'firebase/auth';
 import {
@@ -33,7 +33,8 @@ function getInitials(name: string | null | undefined): string {
   return name.substring(0, 2).toUpperCase();
 }
 
-const USAGE_LIMIT = 3; // Daily limit for summaries
+const SUMMARY_LIMIT = 3;
+const PARAPHRASE_LIMIT = 3;
 
 export function UserProfileSidebar() {
   const auth = useAuth();
@@ -73,9 +74,9 @@ export function UserProfileSidebar() {
     return null; // Don't show anything if user is not logged in
   }
 
-  const remainingSummaries = isSubscriptionLoading
-    ? -1
-    : USAGE_LIMIT - (subscription?.usage?.summaryCount || 0);
+  const isPremium = subscription?.planId === 'premium';
+  const remainingSummaries = SUMMARY_LIMIT - (subscription?.usage?.summaryCount || 0);
+  const remainingParaphrases = PARAPHRASE_LIMIT - (subscription?.usage?.paraphraseCount || 0);
 
   return (
     <DropdownMenu>
@@ -87,7 +88,7 @@ export function UserProfileSidebar() {
                 <AvatarImage src={user.photoURL} alt={user.displayName ?? 'User'} />
               ) : null}
               <AvatarFallback>
-                {user.photoURL ? getInitials(user.displayName) : undefined}
+                {getInitials(user.displayName)}
               </AvatarFallback>
             </Avatar>
             <div className="flex-1 overflow-hidden">
@@ -99,10 +100,10 @@ export function UserProfileSidebar() {
               </p>
             </div>
           </div>
-          <div className="mt-4 space-y-2 text-xs">
-            <div className="flex justify-between">
+          <div className="mt-4 space-y-3 px-1 text-xs">
+             <div className="flex justify-between items-center">
               <span className="text-sidebar-foreground/70">Status Paket</span>
-              <span className="font-medium capitalize text-sidebar-foreground">
+               <span className="font-medium capitalize text-sidebar-foreground">
                 {isSubscriptionLoading ? (
                   <Skeleton className="h-4 w-12" />
                 ) : (
@@ -110,16 +111,40 @@ export function UserProfileSidebar() {
                 )}
               </span>
             </div>
-            <div className="flex justify-between">
-              <span className="text-sidebar-foreground/70">Sisa Kuota</span>
-              <span className="font-medium text-sidebar-foreground">
-                {isSubscriptionLoading ? (
-                  <Skeleton className="h-4 w-8" />
-                ) : (
-                  `${remainingSummaries < 0 ? 0 : remainingSummaries} / ${USAGE_LIMIT}`
-                )}
-              </span>
-            </div>
+            {!isPremium && (
+                 <>
+                    <p className="font-medium text-sidebar-foreground/80 pt-2 pb-1 border-t border-sidebar-border">Sisa Kuota Harian:</p>
+                    <div className="flex justify-between items-center">
+                      <span className="flex items-center gap-1.5 text-sidebar-foreground/70"><BookText className="w-3.5 h-3.5"/> Peringkas</span>
+                      <span className="font-medium text-sidebar-foreground">
+                        {isSubscriptionLoading ? (
+                          <Skeleton className="h-4 w-8" />
+                        ) : (
+                          `${remainingSummaries < 0 ? 0 : remainingSummaries} / ${SUMMARY_LIMIT}`
+                        )}
+                      </span>
+                    </div>
+                     <div className="flex justify-between items-center">
+                      <span className="flex items-center gap-1.5 text-sidebar-foreground/70"><Repeat className="w-3.5 h-3.5"/> Parafrase</span>
+                      <span className="font-medium text-sidebar-foreground">
+                        {isSubscriptionLoading ? (
+                          <Skeleton className="h-4 w-8" />
+                        ) : (
+                          `${remainingParaphrases < 0 ? 0 : remainingParaphrases} / ${PARAPHRASE_LIMIT}`
+                        )}
+                      </span>
+                    </div>
+                 </>
+            )}
+             {isPremium && (
+                 <>
+                    <p className="font-medium text-sidebar-foreground/80 pt-2 pb-1 border-t border-sidebar-border">Kuota Penggunaan:</p>
+                     <div className="flex justify-center items-center gap-2 p-2 rounded-md bg-sidebar-accent/50 text-sidebar-accent-foreground">
+                        <Infinity className="w-4 h-4"/>
+                        <span className="font-bold">Tanpa Batas</span>
+                    </div>
+                 </>
+            )}
           </div>
         </div>
       </DropdownMenuTrigger>

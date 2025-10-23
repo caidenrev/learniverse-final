@@ -53,9 +53,10 @@ export default function AcademicParaphraserPage() {
     resolver: zodResolver(formSchema),
     defaultValues: { text: '' },
   });
-
+  
+  const planId = subscription?.planId ?? 'free';
   const remainingParaphrases =
-    USAGE_LIMIT - (subscription?.usage?.paraphraseCount || 0);
+    planId === 'premium' ? Infinity : USAGE_LIMIT - (subscription?.usage?.paraphraseCount || 0);
   const isLimitReached = !isSubscriptionLoading && remainingParaphrases <= 0;
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
@@ -83,13 +84,18 @@ export default function AcademicParaphraserPage() {
       const response = await academicParaphraser(values);
       setResult(response);
 
-      if (subscriptionRef) {
+      if (planId === 'free' && subscriptionRef) {
         await updateDoc(subscriptionRef, {
           'usage.paraphraseCount': increment(1),
         });
         toast({
           title: 'Berhasil Memparafrase!',
-          description: `Sisa kuota hari ini: ${remainingParaphrases - 1}`,
+          description: `Sisa kuota parafrase hari ini: ${remainingParaphrases - 1}`,
+        });
+      } else if (planId === 'premium') {
+         toast({
+          title: 'Berhasil Memparafrase!',
+          description: 'Anda menggunakan paket Premium tanpa batas.',
         });
       }
     } catch (error) {
@@ -156,7 +162,7 @@ export default function AcademicParaphraserPage() {
                     </FormControl>
                     <FormDescription>
                       Model akan menulis ulang teks ini dengan gaya yang
-                      berbeda.
+                      berbeda. Pengguna premium mendapat hasil lebih baik.
                     </FormDescription>
                     <FormMessage />
                   </FormItem>
