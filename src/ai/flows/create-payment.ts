@@ -54,6 +54,9 @@ const createPaymentFlow = ai.defineFlow(
 
     const orderId = `learniverse-${input.planId}-${Date.now()}`;
 
+    // Define base URL from environment variable or default to localhost for development
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:9002';
+
     const parameter = {
       transaction_details: {
         order_id: orderId,
@@ -72,6 +75,10 @@ const createPaymentFlow = ai.defineFlow(
           merchant_name: 'Learniverse',
         },
       ],
+      callbacks: {
+        finish: `${baseUrl}/payment/finish`,
+        // Midtrans will redirect here with query params for different statuses
+      },
     };
 
     try {
