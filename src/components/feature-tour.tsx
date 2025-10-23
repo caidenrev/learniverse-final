@@ -30,7 +30,9 @@ export function FeatureTour() {
   useEffect(() => {
     const hasCompletedTour = localStorage.getItem(TOUR_STORAGE_KEY);
     if (hasCompletedTour !== 'true') {
-      setIsOpen(true);
+      // Small delay to ensure the UI is ready
+      const timer = setTimeout(() => setIsOpen(true), 500);
+      return () => clearTimeout(timer);
     }
   }, []);
 
@@ -60,7 +62,7 @@ export function FeatureTour() {
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
-      <DialogContent className="sm:max-w-[425px]" onEscapeKeyDown={handleClose}>
+      <DialogContent className="w-[90vw] max-w-md rounded-lg" onEscapeKeyDown={handleClose}>
         <DialogHeader>
           <div className="flex items-center gap-4 mb-2">
              <div className="rounded-lg bg-primary/10 p-3 text-primary">
@@ -71,13 +73,11 @@ export function FeatureTour() {
              </DialogTitle>
           </div>
           <DialogDescription>
-            {/* Find a more permanent description solution later */}
             Selamat datang di Learniverse! Mari kita lihat fitur-fitur yang ada.
           </DialogDescription>
         </DialogHeader>
         
         <div className="py-4 text-sm text-muted-foreground">
-          {/* Placeholder descriptions */}
           {currentFeature.title === 'Tutor AI' && 'Unggah materi kuliah Anda dan ajukan pertanyaan spesifik untuk mendapatkan jawaban instan.'}
           {currentFeature.title === 'Roadmap Belajar' && 'Buat roadmap belajar yang terstruktur untuk menguasai topik atau keterampilan baru dari awal hingga mahir.'}
           {currentFeature.title === 'CV Reviewer' && 'Dapatkan ulasan, skor, dan saran perbaikan untuk CV Anda dari AI yang bertindak sebagai HR profesional.'}
@@ -92,17 +92,17 @@ export function FeatureTour() {
           {currentFeature.title === 'Peringkas Dokumen' && 'Dapatkan ringkasan dan kesimpulan instan dari dokumen PDF atau Word yang Anda unggah.'}
         </div>
 
-        <DialogFooter className="flex-col-reverse items-center gap-2 sm:flex-row sm:justify-between">
-            <div className="flex items-center space-x-2">
+        <DialogFooter className="flex-col-reverse items-center gap-4 sm:flex-row sm:justify-between">
+            <div className="flex items-center space-x-2 self-start sm:self-center">
                 <Checkbox id="dont-show-again" checked={dontShowAgain} onCheckedChange={(checked) => setDontShowAgain(checked as boolean)} />
                 <label htmlFor="dont-show-again" className="text-xs text-muted-foreground">
                     Jangan tampilkan lagi
                 </label>
             </div>
-            <div className="flex gap-2">
-                <Button variant="ghost" onClick={handleClose}>Lewati</Button>
-                {currentStep > 0 && <Button variant="outline" onClick={handleBack}><ArrowLeft className="mr-2 h-4 w-4"/> Kembali</Button>}
-                <Button onClick={handleNext}>
+            <div className="flex w-full flex-col-reverse gap-2 sm:w-auto sm:flex-row">
+                <Button variant="ghost" onClick={handleClose} className="w-full sm:w-auto">Lewati</Button>
+                {currentStep > 0 && <Button variant="outline" onClick={handleBack} className="w-full sm:w-auto"><ArrowLeft className="mr-2 h-4 w-4"/> Kembali</Button>}
+                <Button onClick={handleNext} className="w-full sm:w-auto">
                   {currentStep === tourSteps.length - 1 ? 'Selesai' : 'Lanjut'}
                   {currentStep < tourSteps.length - 1 && <ArrowRight className="ml-2 h-4 w-4"/>}
                 </Button>
