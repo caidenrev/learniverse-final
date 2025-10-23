@@ -54,7 +54,7 @@ export default function PricingPage() {
 
     try {
       const planId = 'premium';
-      const amount = 50000;
+      const amount = 25000;
 
       const paymentInput = {
         userId: user.uid,
@@ -177,9 +177,11 @@ export default function PricingPage() {
             </CardDescription>
           </CardHeader>
           <CardContent className="flex-1 space-y-4">
-            <p className="font-headline text-4xl font-bold">
-              Rp 50rb<span className="text-lg font-normal text-muted-foreground">/bulan</span>
-            </p>
+            <div className="flex items-baseline gap-2">
+                <span className="font-headline text-4xl font-bold">Rp 25rb</span>
+                <span className="text-xl font-medium text-muted-foreground line-through">Rp 50rb</span>
+            </div>
+            <p className="text-lg font-normal text-muted-foreground -mt-2">/bulan</p>
             <ul className="space-y-3">
               {premiumFeatures.map((feature, index) => (
                 <li key={index} className="flex items-center gap-3 font-medium">

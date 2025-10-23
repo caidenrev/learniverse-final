@@ -233,11 +233,14 @@ export default function Home() {
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="flex-1 space-y-4 p-0 pt-4">
-                  <p className="text-4xl font-bold">
-                    Rp 50rb
-                    <span className="text-base font-normal text-muted-foreground">
-                      /bulan
+                  <div className="flex items-baseline gap-2">
+                    <span className="text-4xl font-bold">Rp 25rb</span>
+                    <span className="text-xl font-medium text-muted-foreground line-through">
+                      Rp 50rb
                     </span>
+                  </div>
+                  <p className="text-sm font-normal text-muted-foreground -mt-2">
+                    /bulan
                   </p>
                   <ul className="space-y-2 text-muted-foreground">
                     <li className="flex items-center gap-2">
