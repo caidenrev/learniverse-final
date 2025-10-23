@@ -3,82 +3,110 @@
  *
  * Core Philosophy:
  * This ruleset enforces a strict user-ownership model, ensuring that users can only
- * access their own data. All user-specific data is nested under the /users/{userId}
- * path.
+ * access their own data. All data is nested under /users/{userId}, and access is
+ * controlled based on the authenticated user's UID matching the userId in the path.
  *
  * Data Structure:
- * - /users/{userId}: Stores user profile information. Only the user themselves can
- *   read or write their profile data.
- * - /users/{userId}/subscriptions/{subscriptionId}: Stores subscription information
- *   for each user. Only the user themselves can manage their subscriptions.
+ * - /users/{userId}: Stores user profile data. Only the authenticated user can read/write their own profile.
+ * - /users/{userId}/subscriptions/{subscriptionId}: Stores subscription information. Only the authenticated user can read/write their own subscriptions.
+ * - /users/{userId}/transactions/{transactionId}: Stores transaction history. Only the authenticated user can read/write their own transactions.
  *
  * Key Security Decisions:
- * - Users can only create, read, update, and delete their own data.
- * - Data validation is relaxed to facilitate rapid prototyping and iteration,
- *   focusing primarily on authorization.
- * - Listing of users is disallowed for privacy and security reasons.
+ * - User listing is disallowed to prevent unauthorized access to user data.
+ * - All write operations are validated against the authenticated user's UID.
  *
  * Denormalization for Authorization:
- *  - The subscription document is nested under the user document, avoiding the need for complex queries to determine user access.
+ *  - The rules rely on the `userId` present in the path to match `request.auth.uid`.
  */
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
     /**
-     * @description Enforces user-ownership for user profiles.
+     * @description Secure user profiles. Only the user can read and write their own profile.
      * @path /users/{userId}
-     * @allow (get, create, update, delete) - Authenticated user with matching {userId}.
-     * @deny (get, create, update, delete) - Any other user or unauthenticated request.
-     * @principle Enforces document ownership for all operations.
+     * @allow (get, update, delete) User 'qgVojRxAdqe7pKp8n72dY0lwGSP2' can read/write their own profile at /users/qgVojRxAdqe7pKp8n72dY0lwGSP2.
+     * @deny (get, update, delete) User 'anotherUser' cannot read/write the profile at /users/qgVojRxAdqe7pKp8n72dY0lwGSP2.
+     * @allow (create) User 'qgVojRxAdqe7pKp8n72dY0lwGSP2' can create their own profile at /users/qgVojRxAdqe7pKp8n72dY0lwGSP2 if the document id matches their uid.
+     * @deny (create) User 'anotherUser' cannot create the profile at /users/qgVojRxAdqe7pKp8n72dY0lwGSP2.
+     * @principle Enforces document ownership, validates user ID on creation, and enforces immutability of user ID on update.
      */
     match /users/{userId} {
-      // Only signed-in users can access user documents
-      allow get: if isSignedIn() && isOwner(userId);
-      allow list: if false; // Listing users is not permitted
+      function isSignedIn() {
+        return request.auth != null;
+      }
 
-      // Only the user themselves can create their profile
-      allow create: if isSignedIn() && isOwner(userId);
+      function isOwner(userId) {
+        return request.auth.uid == userId;
+      }
 
-      // Only the user themselves can update their profile and user must exist.
-      allow update: if isSignedIn() && isOwner(userId) && resource != null;
+      function isExistingOwner(userId) {
+        return isOwner(userId) && resource != null;
+      }
 
-      // Only the user themselves can delete their profile and user must exist.
-      allow delete: if isSignedIn() && isOwner(userId) && resource != null;
+      allow get: if isOwner(userId);
+      allow list: if false; // Disallowing listing of all users for privacy.
+      allow create: if isSignedIn() && isOwner(userId) && request.resource.data.uid == userId;
+      allow update: if isExistingOwner(userId) && request.resource.data.uid == resource.data.uid;
+      allow delete: if isExistingOwner(userId);
     }
 
     /**
-     * @description Enforces user-ownership for subscription documents.
+     * @description Secure user subscriptions. Only the user can read and write their own subscriptions.
      * @path /users/{userId}/subscriptions/{subscriptionId}
-     * @allow (get, create, update, delete) - Authenticated user with matching {userId}.
-     * @deny (get, create, update, delete) - Any other user or unauthenticated request.
-     * @principle Enforces document ownership for all operations.
+     * @allow (get, update, delete) User 'qgVojRxAdqe7pKp8n72dY0lwGSP2' can read/write their own subscription at /users/qgVojRxAdqe7pKp8n72dY0lwGSP2/subscriptions/sub123.
+     * @deny (get, update, delete) User 'anotherUser' cannot read/write the subscription at /users/qgVojRxAdqe7pKp8n72dY0lwGSP2/subscriptions/sub123.
+     * @allow (create) User 'qgVojRxAdqe7pKp8n72dY0lwGSP2' can create their own subscription at /users/qgVojRxAdqe7pKp8n72dY0lwGSP2/subscriptions/sub123.
+     * @deny (create) User 'anotherUser' cannot create the subscription at /users/qgVojRxAdqe7pKp8n72dY0lwGSP2/subscriptions/sub123.
+     * @principle Enforces document ownership.
      */
     match /users/{userId}/subscriptions/{subscriptionId} {
-      // Only signed-in users can access their own subscription documents
-      allow get: if isSignedIn() && isOwner(userId);
-      allow list: if isSignedIn() && isOwner(userId);
+      function isSignedIn() {
+        return request.auth != null;
+      }
 
-      // Only the user themselves can create their subscription
+      function isOwner(userId) {
+        return request.auth.uid == userId;
+      }
+
+       function isExistingOwner(userId) {
+        return isOwner(userId) && resource != null;
+      }
+
+      allow get: if isOwner(userId);
+      allow list: if isOwner(userId);
       allow create: if isSignedIn() && isOwner(userId);
-
-      // Only the user themselves can update their subscription and user must exist.
-      allow update: if isSignedIn() && isOwner(userId) && resource != null;
-
-      // Only the user themselves can delete their subscription and user must exist.
-      allow delete: if isSignedIn() && isOwner(userId) && resource != null;
+      allow update: if isExistingOwner(userId);
+      allow delete: if isExistingOwner(userId);
     }
 
-    // ---- Helper functions ----
+    /**
+     * @description Secure user transactions. Only the user can read and write their own transactions.
+     * @path /users/{userId}/transactions/{transactionId}
+     * @allow (get, update, delete) User 'qgVojRxAdqe7pKp8n72dY0lwGSP2' can read/write their own transaction at /users/qgVojRxAdqe7pKp8n72dY0lwGSP2/transactions/txn123.
+     * @deny (get, update, delete) User 'anotherUser' cannot read/write the transaction at /users/qgVojRxAdqe7pKp8n72dY0lwGSP2/transactions/txn123.
+     * @allow (create) User 'qgVojRxAdqe7pKp8n72dY0lwGSP2' can create their own transaction at /users/qgVojRxAdqe7pKp8n72dY0lwGSP2/transactions/txn123.
+     * @deny (create) User 'anotherUser' cannot create the transaction at /users/qgVojRxAdqe7pKp8n72dY0lwGSP2/transactions/txn123.
+     * @principle Enforces document ownership.
+     */
+    match /users/{userId}/transactions/{transactionId} {
+      function isSignedIn() {
+        return request.auth != null;
+      }
 
-    // Checks if the user is signed in.
-    function isSignedIn() {
-      return request.auth != null;
-    }
+      function isOwner(userId) {
+        return request.auth.uid == userId;
+      }
 
-    // Checks if the user is the owner of the resource based on the userId.
-    function isOwner(userId) {
-      return request.auth.uid == userId;
+      function isExistingOwner(userId) {
+        return isOwner(userId) && resource != null;
+      }
+
+      allow get: if isOwner(userId);
+      allow list: if isOwner(userId);
+      allow create: if isSignedIn() && isOwner(userId);
+      allow update: if isExistingOwner(userId);
+      allow delete: if isExistingOwner(userId);
     }
   }
 }
