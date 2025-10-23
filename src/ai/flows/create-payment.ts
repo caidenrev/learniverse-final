@@ -52,7 +52,7 @@ const createPaymentFlow = ai.defineFlow(
       clientKey: process.env.MIDTRANS_CLIENT_KEY,
     });
 
-    const orderId = `learniverse-${input.planId}-${input.userId}-${Date.now()}`;
+    const orderId = `learniverse-${input.planId}-${Date.now()}`;
 
     const parameter = {
       transaction_details: {
