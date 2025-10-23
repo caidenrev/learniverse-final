@@ -12,7 +12,7 @@ import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
 import { Skeleton } from './ui/skeleton';
 import { Button } from './ui/button';
 import Link from 'next/link';
-import { LogOut, BookText, Repeat, Infinity, ChevronDown } from 'lucide-react';
+import { LogOut, BookText, Repeat, Infinity } from 'lucide-react';
 import { useAuth } from '@/firebase';
 import { signOut } from 'firebase/auth';
 import {
@@ -124,9 +124,8 @@ export function UserProfileSidebar() {
 
       <Accordion type="single" collapsible className="w-full">
         <AccordionItem value="item-1" className="border-none">
-          <AccordionTrigger className="py-2 text-xs font-medium text-sidebar-foreground/80 hover:no-underline [&[data-state=open]>svg]:rotate-180">
+          <AccordionTrigger className="py-2 text-xs font-medium text-sidebar-foreground/80 hover:no-underline">
             Lihat Detail Penggunaan
-            <ChevronDown className="h-4 w-4 shrink-0 transition-transform duration-200" />
           </AccordionTrigger>
           <AccordionContent>
             <div className="space-y-3 px-1 text-xs">
