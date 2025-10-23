@@ -47,7 +47,7 @@ const createPaymentFlow = ai.defineFlow(
 
     // Inisialisasi Midtrans Snap
     const snap = new Snap({
-      isProduction: false, // Set ke true jika sudah live. Pastikan kunci yang digunakan sesuai.
+      isProduction: true, // Set ke true jika sudah live. Pastikan kunci yang digunakan sesuai.
       serverKey: process.env.MIDTRANS_SERVER_KEY,
       clientKey: process.env.MIDTRANS_CLIENT_KEY,
     });
