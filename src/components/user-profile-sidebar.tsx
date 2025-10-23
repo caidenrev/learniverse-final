@@ -12,7 +12,7 @@ import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
 import { Skeleton } from './ui/skeleton';
 import { Button } from './ui/button';
 import Link from 'next/link';
-import { LogOut, BookText, Repeat, Infinity } from 'lucide-react';
+import { LogOut, BookText, Repeat, Infinity, ChevronDown } from 'lucide-react';
 import { useAuth } from '@/firebase';
 import { signOut } from 'firebase/auth';
 import {
@@ -23,6 +23,12 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from './ui/dropdown-menu';
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from '@/components/ui/accordion';
 
 function getInitials(name: string | null | undefined): string {
   if (!name) return '';
@@ -79,86 +85,99 @@ export function UserProfileSidebar() {
   const remainingParaphrases = PARAPHRASE_LIMIT - (subscription?.usage?.paraphraseCount || 0);
 
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <div className="cursor-pointer rounded-lg p-2 transition-colors hover:bg-sidebar-accent">
-          <div className="flex items-center gap-3">
-            <Avatar className="h-10 w-10">
-              {user.photoURL ? (
-                <AvatarImage src={user.photoURL} alt={user.displayName ?? 'User'} />
-              ) : null}
-              <AvatarFallback>
-                {getInitials(user.displayName)}
-              </AvatarFallback>
-            </Avatar>
-            <div className="flex-1 overflow-hidden">
-              <p className="truncate text-sm font-semibold text-sidebar-foreground">
-                {user.displayName}
-              </p>
-              <p className="truncate text-xs text-sidebar-foreground/70">
-                {user.email}
-              </p>
+    <div className="p-2">
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <div className="cursor-pointer rounded-lg p-2 transition-colors hover:bg-sidebar-accent">
+            <div className="flex items-center gap-3">
+              <Avatar className="h-10 w-10">
+                {user.photoURL ? (
+                  <AvatarImage src={user.photoURL} alt={user.displayName ?? 'User'} />
+                ) : null}
+                <AvatarFallback>
+                  {getInitials(user.displayName)}
+                </AvatarFallback>
+              </Avatar>
+              <div className="flex-1 overflow-hidden">
+                <p className="truncate text-sm font-semibold text-sidebar-foreground">
+                  {user.displayName}
+                </p>
+                <p className="truncate text-xs text-sidebar-foreground/70">
+                  {user.email}
+                </p>
+              </div>
             </div>
           </div>
-          <div className="mt-4 space-y-3 px-1 text-xs">
-             <div className="flex justify-between items-center">
-              <span className="text-sidebar-foreground/70">Status Paket</span>
-               <span className="font-medium capitalize text-sidebar-foreground">
-                {isSubscriptionLoading ? (
-                  <Skeleton className="h-4 w-12" />
-                ) : (
-                  subscription?.planId || 'Gratis'
-                )}
-              </span>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end" className="w-56" side="top" sideOffset={8}>
+          <DropdownMenuLabel>Akun Saya</DropdownMenuLabel>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem asChild>
+            <Link href="/pricing" className="cursor-pointer">Upgrade Paket</Link>
+          </DropdownMenuItem>
+          <DropdownMenuItem onClick={handleSignOut} className="cursor-pointer text-red-500 focus:bg-red-50 focus:text-red-600">
+            <LogOut className="mr-2 h-4 w-4" />
+            <span>Logout</span>
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+
+      <Accordion type="single" collapsible className="w-full">
+        <AccordionItem value="item-1" className="border-none">
+          <AccordionTrigger className="py-2 text-xs font-medium text-sidebar-foreground/80 hover:no-underline [&[data-state=open]>svg]:rotate-180">
+            Lihat Detail Penggunaan
+            <ChevronDown className="h-4 w-4 shrink-0 transition-transform duration-200" />
+          </AccordionTrigger>
+          <AccordionContent>
+            <div className="space-y-3 px-1 text-xs">
+              <div className="flex justify-between items-center">
+                <span className="text-sidebar-foreground/70">Status Paket</span>
+                <span className="font-medium capitalize text-sidebar-foreground">
+                  {isSubscriptionLoading ? (
+                    <Skeleton className="h-4 w-12" />
+                  ) : (
+                    subscription?.planId || 'Gratis'
+                  )}
+                </span>
+              </div>
+              {!isPremium && (
+                   <>
+                      <p className="font-medium text-sidebar-foreground/80 pt-2 pb-1 border-t border-sidebar-border">Sisa Kuota Harian:</p>
+                      <div className="flex justify-between items-center">
+                        <span className="flex items-center gap-1.5 text-sidebar-foreground/70"><BookText className="w-3.5 h-3.5"/> Peringkas</span>
+                        <span className="font-medium text-sidebar-foreground">
+                          {isSubscriptionLoading ? (
+                            <Skeleton className="h-4 w-8" />
+                          ) : (
+                            `${remainingSummaries < 0 ? 0 : remainingSummaries} / ${SUMMARY_LIMIT}`
+                          )}
+                        </span>
+                      </div>
+                       <div className="flex justify-between items-center">
+                        <span className="flex items-center gap-1.5 text-sidebar-foreground/70"><Repeat className="w-3.5 h-3.5"/> Parafrase</span>
+                        <span className="font-medium text-sidebar-foreground">
+                          {isSubscriptionLoading ? (
+                            <Skeleton className="h-4 w-8" />
+                          ) : (
+                            `${remainingParaphrases < 0 ? 0 : remainingParaphrases} / ${PARAPHRASE_LIMIT}`
+                          )}
+                        </span>
+                      </div>
+                   </>
+              )}
+               {isPremium && (
+                   <>
+                      <p className="font-medium text-sidebar-foreground/80 pt-2 pb-1 border-t border-sidebar-border">Kuota Penggunaan:</p>
+                       <div className="flex justify-center items-center gap-2 p-2 rounded-md bg-sidebar-accent/50 text-sidebar-accent-foreground">
+                          <Infinity className="w-4 h-4"/>
+                          <span className="font-bold">Tanpa Batas</span>
+                      </div>
+                   </>
+              )}
             </div>
-            {!isPremium && (
-                 <>
-                    <p className="font-medium text-sidebar-foreground/80 pt-2 pb-1 border-t border-sidebar-border">Sisa Kuota Harian:</p>
-                    <div className="flex justify-between items-center">
-                      <span className="flex items-center gap-1.5 text-sidebar-foreground/70"><BookText className="w-3.5 h-3.5"/> Peringkas</span>
-                      <span className="font-medium text-sidebar-foreground">
-                        {isSubscriptionLoading ? (
-                          <Skeleton className="h-4 w-8" />
-                        ) : (
-                          `${remainingSummaries < 0 ? 0 : remainingSummaries} / ${SUMMARY_LIMIT}`
-                        )}
-                      </span>
-                    </div>
-                     <div className="flex justify-between items-center">
-                      <span className="flex items-center gap-1.5 text-sidebar-foreground/70"><Repeat className="w-3.5 h-3.5"/> Parafrase</span>
-                      <span className="font-medium text-sidebar-foreground">
-                        {isSubscriptionLoading ? (
-                          <Skeleton className="h-4 w-8" />
-                        ) : (
-                          `${remainingParaphrases < 0 ? 0 : remainingParaphrases} / ${PARAPHRASE_LIMIT}`
-                        )}
-                      </span>
-                    </div>
-                 </>
-            )}
-             {isPremium && (
-                 <>
-                    <p className="font-medium text-sidebar-foreground/80 pt-2 pb-1 border-t border-sidebar-border">Kuota Penggunaan:</p>
-                     <div className="flex justify-center items-center gap-2 p-2 rounded-md bg-sidebar-accent/50 text-sidebar-accent-foreground">
-                        <Infinity className="w-4 h-4"/>
-                        <span className="font-bold">Tanpa Batas</span>
-                    </div>
-                 </>
-            )}
-          </div>
-        </div>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="w-56" side="top" sideOffset={8}>
-        <DropdownMenuLabel>Akun Saya</DropdownMenuLabel>
-        <DropdownMenuSeparator />
-        <DropdownMenuItem asChild>
-          <Link href="/pricing" className="cursor-pointer">Upgrade Paket</Link>
-        </DropdownMenuItem>
-        <DropdownMenuItem onClick={handleSignOut} className="cursor-pointer text-red-500 focus:bg-red-50 focus:text-red-600">
-          <LogOut className="mr-2 h-4 w-4" />
-          <span>Logout</span>
-        </DropdownMenuItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
+          </AccordionContent>
+        </AccordionItem>
+      </Accordion>
+    </div>
   );
 }
