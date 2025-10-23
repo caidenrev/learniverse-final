@@ -12,9 +12,10 @@ import {
 } from '@/components/ui/card';
 import { CheckCircle2, XCircle, Gem, Sparkles, Loader2 } from 'lucide-react';
 import Link from 'next/link';
-import { useUser, useFirestore } from '@/firebase';
+import { useUser, useFirestore, errorEmitter, FirestorePermissionError } from '@/firebase';
 import { useToast } from '@/hooks/use-toast';
 import { createPayment } from '@/ai/flows/create-payment';
+import { doc, setDoc, serverTimestamp } from 'firebase/firestore';
 
 const freeFeatures = [
   { text: '3 ringkasan jurnal per hari', included: true },
@@ -34,11 +35,12 @@ const premiumFeatures = [
 
 export default function PricingPage() {
   const { user, isUserLoading } = useUser();
+  const firestore = useFirestore();
   const { toast } = useToast();
   const [isRedirecting, setIsRedirecting] = useState(false);
 
   async function handleUpgrade() {
-    if (!user) {
+    if (!user || !firestore) {
       toast({
         title: 'Harus Login',
         description: 'Anda harus login untuk bisa upgrade ke Premium.',
@@ -50,30 +52,58 @@ export default function PricingPage() {
     setIsRedirecting(true);
 
     try {
+      const planId = 'premium';
+      const amount = 50000;
+
       const paymentInput = {
         userId: user.uid,
-        planId: 'premium' as const,
-        amount: 50000,
+        planId: planId,
+        amount: amount,
         user: {
           name: user.displayName || 'Pengguna Learniverse',
           email: user.email || 'no-email@learniverse.com',
         },
       };
 
+      // 1. Create payment link and get orderId from the flow
       const result = await createPayment(paymentInput);
       
-      // Arahkan pengguna ke halaman pembayaran Midtrans
-      if (result.paymentUrl) {
+      if (result.paymentUrl && result.orderId) {
+        // 2. Save the transaction to Firestore with 'pending' status
+        const transactionRef = doc(firestore, 'users', user.uid, 'transactions', result.orderId);
+        const transactionData = {
+          orderId: result.orderId,
+          userId: user.uid,
+          planId: planId,
+          amount: amount,
+          status: 'pending',
+          paymentUrl: result.paymentUrl,
+          createdAt: serverTimestamp(),
+          updatedAt: serverTimestamp(),
+        };
+
+        await setDoc(transactionRef, transactionData).catch((serverError) => {
+          const permissionError = new FirestorePermissionError({
+            path: transactionRef.path,
+            operation: 'create',
+            requestResourceData: transactionData,
+          });
+          errorEmitter.emit('permission-error', permissionError);
+          // Re-throw to be caught by the outer catch block
+          throw new Error('Gagal menyimpan transaksi ke database.');
+        });
+        
+        // 3. Redirect user to payment page
         window.location.href = result.paymentUrl;
       } else {
-        throw new Error('URL pembayaran tidak diterima dari server.');
+        throw new Error('URL pembayaran atau Order ID tidak diterima dari server.');
       }
 
     } catch (error: any) {
-      console.error('Payment creation failed:', error);
+      console.error('Payment process failed:', error);
       toast({
-        title: 'Gagal Membuat Pembayaran',
-        description: error.message || 'Terjadi kesalahan saat mencoba membuat link pembayaran. Silakan coba lagi.',
+        title: 'Proses Upgrade Gagal',
+        description: error.message || 'Terjadi kesalahan saat memulai proses pembayaran. Silakan coba lagi.',
         variant: 'destructive',
       });
       setIsRedirecting(false);

@@ -77,6 +77,59 @@
         "planId",
         "status"
       ]
+    },
+    "Transaction": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Transaction",
+      "type": "object",
+      "description": "Represents a payment transaction initiated by a user.",
+      "properties": {
+        "orderId": {
+          "type": "string",
+          "description": "The unique order ID from the payment gateway."
+        },
+        "userId": {
+          "type": "string",
+          "description": "The UID of the user who initiated the transaction."
+        },
+        "planId": {
+          "type": "string",
+          "description": "The ID of the subscription plan being purchased."
+        },
+        "amount": {
+          "type": "number",
+          "description": "The transaction amount."
+        },
+        "status": {
+          "type": "string",
+          "description": "The current status of the transaction.",
+          "enum": ["pending", "success", "cancelled", "expired", "failed"]
+        },
+        "paymentUrl": {
+          "type": "string",
+          "format": "uri",
+          "description": "The URL for the user to complete the payment."
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Timestamp when the transaction was created."
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Timestamp when the transaction was last updated."
+        }
+      },
+      "required": [
+        "orderId",
+        "userId",
+        "planId",
+        "amount",
+        "status",
+        "paymentUrl",
+        "createdAt"
+      ]
     }
   },
   "auth": {
@@ -96,6 +149,12 @@
         "$ref": "#/entities/Subscription"
       },
       "description": "Stores the subscription status and usage limits for a specific user. This is a subcollection under each user."
+    },
+    "/users/{userId}/transactions/{transactionId}": {
+      "schema": {
+        "$ref": "#/entities/Transaction"
+      },
+      "description": "Stores a user's payment transaction history."
     }
   }
 }

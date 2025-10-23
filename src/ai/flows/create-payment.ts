@@ -9,7 +9,7 @@
  */
 
 import { ai } from '@/ai/genkit';
-import { z } from 'genkit';
+import { z } from 'zod';
 import { Snap } from 'midtrans-client';
 
 const CreatePaymentInputSchema = z.object({
@@ -25,6 +25,7 @@ export type CreatePaymentInput = z.infer<typeof CreatePaymentInputSchema>;
 
 const CreatePaymentOutputSchema = z.object({
   paymentUrl: z.string().url().describe('The Midtrans Snap payment URL.'),
+  orderId: z.string().describe('The unique order ID for the transaction.'),
 });
 export type CreatePaymentOutput = z.infer<typeof CreatePaymentOutputSchema>;
 
@@ -76,7 +77,7 @@ const createPaymentFlow = ai.defineFlow(
         },
       ],
       callbacks: {
-        finish: `${baseUrl}/payment/finish`,
+        finish: `${baseUrl}/payment/finish?order_id=${orderId}`,
         // Midtrans will redirect here with query params for different statuses
       },
     };
@@ -89,7 +90,7 @@ const createPaymentFlow = ai.defineFlow(
         throw new Error('Failed to create payment URL from Midtrans.');
       }
 
-      return { paymentUrl };
+      return { paymentUrl, orderId };
     } catch (e: any) {
       console.error('Midtrans API Error:', e.message);
       // Memberikan pesan error yang lebih spesifik jika tetap 401
