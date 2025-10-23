@@ -183,34 +183,6 @@ export default function Home() {
           </div>
         </section>
 
-        <section className="px-4 py-16 lg:py-24">
-          <div className="grid grid-cols-1 items-center gap-12 md:grid-cols-2">
-            <div className="relative h-80 w-full overflow-hidden rounded-2xl shadow-lg">
-              <Image
-                src="/hero-image.jpg"
-                alt="Tim Learniverse sedang berkolaborasi"
-                fill
-                className="object-cover"
-                sizes="(max-width: 768px) 100vw, 50vw"
-              />
-            </div>
-            <div className="space-y-4">
-              <h3 className="font-headline text-3xl font-bold tracking-tight md:text-4xl">
-                Tentang Learniverse
-              </h3>
-              <p className="text-base leading-relaxed text-muted-foreground">
-                Learniverse lahir dari gagasan untuk membuat teknologi AI
-                canggih dapat diakses oleh semua siswa. Kami percaya bahwa
-                dengan alat yang tepat, setiap orang dapat mengatasi
-                tantangan akademis, mempercepat proses belajar, dan mencapai
-                potensi penuh mereka. Misi kami adalah untuk memberdayakan
-                siswa dengan menyediakan asisten belajar bertenaga AI yang
-                intuitif, membantu, dan selalu tersedia 24/7.
-              </p>
-            </div>
-          </div>
-        </section>
-
         <section className="-mx-4 bg-muted/50 px-4 py-16 sm:mx-0 sm:px-6 lg:py-24">
           <div className="mx-auto">
             <div className="mx-auto mb-12 max-w-2xl text-center">
