@@ -1,17 +1,20 @@
+
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogFooter,
-} from '@/components/ui/dialog';
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetFooter,
+  SheetTrigger,
+  SheetClose
+} from '@/components/ui/sheet';
 import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Loader2, Send, Bot, User, MessageSquare } from 'lucide-react';
+import { Loader2, Send, Bot, User, MessageSquare, X } from 'lucide-react';
 import { chatWithBot } from '@/ai/flows/chatbot';
 import type { ChatbotInput } from '@/ai/flows/chatbot-schemas';
 import { useToast } from '@/hooks/use-toast';
@@ -73,82 +76,92 @@ export function Chatbot() {
 
 
   return (
-    <>
-      <Button
-        className="fixed bottom-6 right-6 h-16 w-16 rounded-full shadow-lg"
-        onClick={() => setIsOpen(true)}
+    <Sheet open={isOpen} onOpenChange={setIsOpen}>
+      <SheetTrigger asChild>
+        <Button
+          className="fixed bottom-6 right-6 h-16 w-16 rounded-full shadow-lg"
+          onClick={() => setIsOpen(true)}
+        >
+          <MessageSquare className="h-8 w-8" />
+          <span className="sr-only">Buka Chatbot</span>
+        </Button>
+      </SheetTrigger>
+      <SheetContent
+        side="right"
+        className="flex h-full w-full flex-col p-0 sm:max-w-md"
+        onOpenAutoFocus={(e) => e.preventDefault()} // Prevent autofocus on the close button
       >
-        <MessageSquare className="h-8 w-8" />
-        <span className="sr-only">Buka Chatbot</span>
-      </Button>
-
-      <Dialog open={isOpen} onOpenChange={setIsOpen}>
-        <DialogContent className="flex h-[70vh] w-[90vw] max-w-lg flex-col p-0">
-          <DialogHeader className="p-4 pb-2">
-            <DialogTitle className="flex items-center gap-2">
-              <Logo withText={false} />
-              <span>Learnibot Assistant</span>
-            </DialogTitle>
-          </DialogHeader>
-          <ScrollArea className="flex-1 px-4" ref={scrollAreaRef}>
-            <div className="space-y-4">
-              {messages.map((message, index) => (
-                <div
-                  key={index}
-                  className={`flex items-start gap-3 ${
-                    message.role === 'user' ? 'justify-end' : ''
-                  }`}
-                >
-                  {message.role === 'model' && (
-                    <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground">
-                      <Bot className="h-5 w-5" />
-                    </div>
-                  )}
-                  <div
-                    className={`max-w-[80%] rounded-lg p-3 text-sm ${
-                      message.role === 'user'
-                        ? 'bg-primary text-primary-foreground'
-                        : 'bg-muted'
-                    }`}
-                  >
-                    {message.content}
-                  </div>
-                  {message.role === 'user' && (
-                    <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-secondary text-secondary-foreground">
-                      <User className="h-5 w-5" />
-                    </div>
-                  )}
-                </div>
-              ))}
-              {isLoading && (
-                <div className="flex items-start gap-3">
+        <SheetHeader className="p-4 pb-2 border-b">
+          <SheetTitle className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+                <Logo withText={false} />
+                <span>Learnibot Assistant</span>
+            </div>
+            <SheetClose className="rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-secondary">
+              <X className="h-4 w-4" />
+              <span className="sr-only">Close</span>
+            </SheetClose>
+          </SheetTitle>
+        </SheetHeader>
+        <ScrollArea className="flex-1 px-4" ref={scrollAreaRef}>
+          <div className="space-y-4 py-4">
+            {messages.map((message, index) => (
+              <div
+                key={index}
+                className={`flex items-start gap-3 ${
+                  message.role === 'user' ? 'justify-end' : ''
+                }`}
+              >
+                {message.role === 'model' && (
                   <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground">
                     <Bot className="h-5 w-5" />
                   </div>
-                  <div className="flex items-center gap-2 rounded-lg bg-muted p-3">
-                    <Loader2 className="h-4 w-4 animate-spin" />
-                    <span className="text-sm">Mengetik...</span>
-                  </div>
+                )}
+                <div
+                  className={`max-w-[80%] rounded-lg p-3 text-sm ${
+                    message.role === 'user'
+                      ? 'bg-primary text-primary-foreground'
+                      : 'bg-muted'
+                  }`}
+                >
+                  {message.content}
                 </div>
-              )}
-            </div>
-          </ScrollArea>
-          <DialogFooter className="border-t p-4">
-            <div className="flex w-full gap-2">
-              <Input
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-                onKeyDown={(e) => e.key === 'Enter' && handleSend()}
-                placeholder="Tanya sesuatu..."
-                disabled={isLoading}
-              />
-              <Button onClick={handleSend} disabled={isLoading}>
-                <Send className="h-4 w-4" />
-              </Button>
-            </div>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-    </>
+                {message.role === 'user' && (
+                  <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-secondary text-secondary-foreground">
+                    <User className="h-5 w-5" />
+                  </div>
+                )}
+              </div>
+            ))}
+            {isLoading && (
+              <div className="flex items-start gap-3">
+                <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground">
+                  <Bot className="h-5 w-5" />
+                </div>
+                <div className="flex items-center gap-2 rounded-lg bg-muted p-3">
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                  <span className="text-sm">Mengetik...</span>
+                </div>
+              </div>
+            )}
+          </div>
+        </ScrollArea>
+        <SheetFooter className="border-t p-4 sm:p-4">
+          <div className="flex w-full gap-2">
+            <Input
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              onKeyDown={(e) => e.key === 'Enter' && handleSend()}
+              placeholder="Tanya sesuatu..."
+              disabled={isLoading}
+              autoFocus
+            />
+            <Button onClick={handleSend} disabled={isLoading}>
+              <Send className="h-4 w-4" />
+            </Button>
+          </div>
+        </SheetFooter>
+      </SheetContent>
+    </Sheet>
   );
 }
