@@ -48,11 +48,12 @@ const prompt = ai.definePrompt({
   Riwayat Percakapan:
   {{#if history}}
     {{#each history}}
-      {{#if (eq this.role 'user')}}
-        Pengguna: {{{this.content}}}
-      {{else}}
-        Kamu: {{{this.content}}}
-      {{/if}}
+{{#if (eq role "user")}}
+Pengguna: {{{content}}}
+{{/if}}
+{{#if (eq role "model")}}
+Kamu: {{{content}}}
+{{/if}}
     {{/each}}
   {{/if}}
 
@@ -68,9 +69,16 @@ const chatbotFlow = ai.defineFlow(
     name: 'chatbotFlow',
     inputSchema: ChatbotInputSchema,
     outputSchema: ChatbotOutputSchema,
-  },
-  async (input) => {
-    const { output } = await prompt(input);
+    },
+    async (input) => {
+    // Workaround for Handlebars `eq` helper not being available by default
+    const historyWithHelpers = input.history?.map(m => ({
+        ...m,
+        isUser: m.role === 'user',
+        isModel: m.role === 'model',
+    }));
+
+    const { output } = await prompt({ ...input, history: historyWithHelpers as any });
     return output!;
   }
 );
