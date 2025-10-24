@@ -99,13 +99,13 @@ export function UserProfileSidebar() {
                 {user.photoURL ? (
                   <AvatarImage src={user.photoURL} alt={user.displayName ?? 'User'} />
                 ) : null}
-                <AvatarFallback>
-                  {user.photoURL ? getInitials(user.displayName) : <User className="h-5 w-5" />}
+                <AvatarFallback className="bg-primary text-primary-foreground">
+                    <User className="h-5 w-5" />
                 </AvatarFallback>
               </Avatar>
               <div className="flex-1 overflow-hidden">
                 <p className="truncate text-sm font-semibold">
-                  Hi, {getFirstName(user.displayName)}
+                  {user.displayName}
                 </p>
                 <p className="text-xs text-muted-foreground truncate">{user.email}</p>
               </div>

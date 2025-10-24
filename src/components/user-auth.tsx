@@ -125,7 +125,7 @@ export function UserAuth() {
 
   if (!user) {
     return (
-      <Button onClick={handleSignIn} variant="outline" size="sm" className="hidden md:inline-flex">
+      <Button onClick={handleSignIn} variant="outline" size="sm">
         <LogIn className="mr-2 h-4 w-4" />
         Login
       </Button>
@@ -142,8 +142,8 @@ export function UserAuth() {
                 alt={user.displayName ?? 'User'}
               />
             ) : null}
-            <AvatarFallback>
-              {user.photoURL ? getInitials(user.displayName) : <User className="h-5 w-5" />}
+            <AvatarFallback className="bg-primary text-primary-foreground">
+                <User className="h-5 w-5" />
             </AvatarFallback>
           </Avatar>
       </DropdownMenuTrigger>
