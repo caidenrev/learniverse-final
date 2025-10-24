@@ -22,18 +22,27 @@ export default function WebLayout({ children }: { children: ReactNode }) {
   return (
     <div className="relative flex min-h-screen flex-col">
       {/* Background Ambience and Grid Pattern */}
-      <div
-        className="pointer-events-none absolute inset-0 -z-10 h-full bg-background"
-        aria-hidden="true"
-      >
-        {/* Purple Ambience */}
-        <div className="absolute bottom-0 left-0 right-0 top-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-primary/20 via-transparent to-transparent"></div>
-        
-        {/* Fading Grid Lines */}
-        <div
-          className="absolute inset-0 bg-[image:linear-gradient(to_right,hsl(var(--border))_1px,transparent_1px),linear-gradient(to_bottom,hsl(var(--border))_1px,transparent_1px)] bg-[size:3rem_3rem] [mask-image:radial-gradient(ellipse_at_center,transparent_0%,black_100%)]"
-        ></div>
-      </div>
+<div
+  className="pointer-events-none absolute inset-0 -z-10 h-full bg-background"
+  aria-hidden="true"
+>
+  {/* Mobile Ambience (dibuat tidak terlalu tajam) */}
+  {/* Diubah dari from-primary/40 menjadi from-primary/20 */}
+  <div className="absolute bottom-0 left-0 right-0 top-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-primary/20 via-transparent to-transparent md:hidden"></div>
+  
+  {/* Glow di kiri atas desktop (diperbesar) */}
+  {/* Diubah dari h-64 w-64 menjadi h-96 w-96 */}
+  <div className="absolute -left-16 top-40 hidden h-96 w-96 rounded-full bg-primary/30 blur-3xl md:block"></div>
+  
+  {/* Glow di kanan atas desktop (diperbesar) */}
+  {/* Diubah dari h-64 w-64 menjadi h-96 w-96 */}
+  <div className="absolute -right-16 top-40 hidden h-96 w-96 rounded-full bg-primary/30 blur-3xl md:block"></div>
+
+  {/* Fading Grid Lines */}
+  <div
+    className="absolute inset-0 bg-[image:linear-gradient(to_right,hsl(var(--border))_1px,transparent_1px),linear-gradient(to_bottom,hsl(var(--border))_1px,transparent_1px)] bg-[size:3rem_3rem] [mask-image:radial-gradient(ellipse_at_center,transparent_0%,black_100%)]"
+  ></div>
+</div>
 
       <header className="sticky top-0 z-50 w-full border-b bg-background/80 backdrop-blur-sm">
         <div className="container mx-auto flex items-center justify-between px-4 py-4 sm:px-6">
