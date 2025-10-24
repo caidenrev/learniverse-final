@@ -96,7 +96,7 @@ export function Chatbot() {
         className="flex h-full w-full flex-col p-0 sm:max-w-md"
         onOpenAutoFocus={(e) => e.preventDefault()} // Prevent autofocus on the close button
       >
-        <SheetHeader className="p-4 pb-2 border-b">
+        <SheetHeader className="p-4 pb-2 border-b shadow-sm">
           <SheetTitle className="flex items-center justify-between">
             <div className="flex items-center gap-2">
                 <Logo withText={false} />
