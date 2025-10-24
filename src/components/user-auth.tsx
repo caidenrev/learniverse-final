@@ -125,7 +125,7 @@ export function UserAuth() {
 
   if (!user) {
     return (
-      <Button onClick={handleSignIn} variant="outline" className="hidden md:flex">
+      <Button onClick={handleSignIn} variant="outline">
         <LogIn className="mr-2 h-4 w-4" />
         Login
       </Button>
@@ -143,10 +143,10 @@ export function UserAuth() {
               />
             ) : null}
             <AvatarFallback>
-              {getInitials(user.displayName)}
+              {user.photoURL ? getInitials(user.displayName) : <User className="h-5 w-5" />}
             </AvatarFallback>
           </Avatar>
-          <div className="hidden flex-col items-start md:flex">
+          <div className="flex flex-col items-start">
             <span className="font-semibold">{user.displayName}</span>
             <span className="text-sm text-muted-foreground">{user.email}</span>
           </div>

@@ -1,3 +1,4 @@
+
 "use client"
 
 import * as React from "react"
@@ -45,7 +46,7 @@ const AvatarFallback = React.forwardRef<
     )}
     {...props}
   >
-    {children ?? <User className="h-5 w-5" />}
+    {children}
   </AvatarPrimitive.Fallback>
 ))
 AvatarFallback.displayName = AvatarPrimitive.Fallback.displayName

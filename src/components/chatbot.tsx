@@ -151,7 +151,7 @@ export function Chatbot() {
                       />
                     )}
                     <AvatarFallback className="bg-secondary text-secondary-foreground">
-                      {user?.displayName ? (
+                      {user?.photoURL ? (
                         getInitials(user.displayName)
                       ) : (
                         <User className="h-4 w-4" />

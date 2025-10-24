@@ -12,7 +12,7 @@ import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
 import { Skeleton } from './ui/skeleton';
 import { Button } from './ui/button';
 import Link from 'next/link';
-import { LogOut, BookText, Repeat, Infinity } from 'lucide-react';
+import { LogOut, BookText, Repeat, Infinity, User } from 'lucide-react';
 import { useAuth } from '@/firebase';
 import { signOut } from 'firebase/auth';
 import {
@@ -100,14 +100,14 @@ export function UserProfileSidebar() {
                   <AvatarImage src={user.photoURL} alt={user.displayName ?? 'User'} />
                 ) : null}
                 <AvatarFallback>
-                  {getInitials(user.displayName)}
+                  {user.photoURL ? getInitials(user.displayName) : <User className="h-5 w-5" />}
                 </AvatarFallback>
               </Avatar>
               <div className="flex-1 overflow-hidden">
-                <p className="text-xs text-muted-foreground">Hi, {getFirstName(user.displayName)}</p>
                 <p className="truncate text-sm font-semibold">
-                  {user.displayName}
+                  Hi, {getFirstName(user.displayName)}
                 </p>
+                <p className="text-xs text-muted-foreground truncate">{user.email}</p>
               </div>
             </div>
           </div>
