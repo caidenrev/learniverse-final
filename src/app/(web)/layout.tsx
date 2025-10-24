@@ -14,6 +14,7 @@ import { Button } from '@/components/ui/button';
 import { Logo } from '@/components/logo';
 import { UserAuth } from '@/components/user-auth';
 import { Gem, Info, Mail, Menu, Github } from 'lucide-react';
+import { Chatbot } from '@/components/chatbot';
 
 export default function WebLayout({ children }: { children: ReactNode }) {
   const [isSheetOpen, setIsSheetOpen] = useState(false);
@@ -130,6 +131,7 @@ export default function WebLayout({ children }: { children: ReactNode }) {
       </header>
 
       <main className="flex-1">{children}</main>
+      <Chatbot />
 
       <footer className="border-t bg-background">
         <div className="container mx-auto flex flex-col items-center justify-center px-4 py-8 text-center md:flex-row md:justify-between">

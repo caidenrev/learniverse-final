@@ -15,3 +15,5 @@ import '@/ai/flows/cv-reviewer.ts';
 import '@/ai/flows/question-generator.ts';
 import '@/ai/flows/document-summarizer.ts';
 import '@/ai/flows/create-payment.ts';
+import '@/ai/flows/chatbot-schemas.ts';
+import '@/ai/flows/chatbot.ts';
