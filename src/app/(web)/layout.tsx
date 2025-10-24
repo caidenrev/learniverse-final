@@ -45,7 +45,7 @@ export default function WebLayout({ children }: { children: ReactNode }) {
 </div>
 
       <header className="sticky top-0 z-50 w-full border-b bg-background/80 backdrop-blur-sm">
-        <div className="container mx-auto flex items-center justify-between px-4 py-4 sm:px-6">
+        <div className="container flex items-center justify-between py-4">
           <Link href="/">
             <Logo withText={true} />
           </Link>
@@ -124,7 +124,7 @@ export default function WebLayout({ children }: { children: ReactNode }) {
       <Chatbot />
 
       <footer className="border-t bg-background">
-        <div className="container mx-auto flex flex-col items-center justify-between gap-6 px-4 py-8 md:flex-row md:px-6">
+        <div className="container flex flex-col items-center justify-between gap-6 py-8 md:flex-row">
           <div className="flex flex-col items-center gap-4 md:items-start">
             <Link href="/">
               <Logo withText={true} />
