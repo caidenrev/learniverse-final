@@ -138,7 +138,7 @@ export default function Home() {
               src="/hero-image.png"
               alt="Seorang siswa menggunakan laptop"
               fill
-              className="object-contain [filter:drop-shadow(0_25px_25px_rgba(0,0,0,0.15))]"
+              className="object-contain [filter:drop-shadow(0_10px_15px_rgba(0,0,0,0.1))]"
               sizes="(max-width: 768px) 100vw, 50vw"
               priority
             />
