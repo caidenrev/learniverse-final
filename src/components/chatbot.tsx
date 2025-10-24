@@ -84,10 +84,10 @@ export function Chatbot() {
     <Sheet open={isOpen} onOpenChange={setIsOpen}>
       <SheetTrigger asChild>
         <Button
-          className="fixed bottom-6 right-6 h-16 w-16 rounded-full shadow-lg"
+          className="fixed bottom-6 right-6 h-14 w-14 rounded-full shadow-lg"
           onClick={() => setIsOpen(true)}
         >
-          <MessageSquare className="h-8 w-8" />
+          <MessageSquare className="h-7 w-7" />
           <span className="sr-only">Buka Chatbot</span>
         </Button>
       </SheetTrigger>
