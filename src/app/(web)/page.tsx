@@ -133,7 +133,7 @@ export default function Home() {
               </Link>
             </div>
           </div>
-          <div className="relative h-64 w-full overflow-hidden rounded-2xl md:h-96">
+          <div className="relative h-64 w-full overflow-hidden rounded-2xl p-4 md:h-96">
             <Image
               src="/hero-image.png"
               alt="Seorang siswa menggunakan laptop"
