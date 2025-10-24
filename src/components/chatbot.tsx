@@ -21,6 +21,7 @@ import { Logo } from './logo';
 import { useUser } from '@/firebase';
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
 import { User } from 'lucide-react';
+import Link from 'next/link';
 
 
 type Message = {
@@ -112,10 +113,10 @@ export function Chatbot() {
       >
         <SheetHeader className="p-4 pb-2 border-b shadow-sm">
           <SheetTitle className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
+            <Link href="/" className="flex items-center gap-2">
                 <Logo withText={false} />
                 <span>Learnibot Assistant</span>
-            </div>
+            </Link>
           </SheetTitle>
         </SheetHeader>
         <ScrollArea className="flex-1" ref={scrollAreaRef}>

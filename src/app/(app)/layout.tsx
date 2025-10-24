@@ -15,6 +15,7 @@ import { useRouter } from 'next/navigation';
 import { Loader2 } from 'lucide-react';
 import { FeatureTour } from '@/components/feature-tour';
 import { Chatbot } from '@/components/chatbot';
+import Link from 'next/link';
 
 export default function AppLayout({
   children,
@@ -52,7 +53,9 @@ export default function AppLayout({
           <header className="sticky top-0 z-10 flex h-14 items-center gap-4 border-b bg-card px-4 sm:h-auto sm:border-0 sm:bg-transparent sm:px-6">
             <SidebarTrigger className="sm:hidden" />
             <div className="sm:hidden">
-              <Logo withText={true} />
+              <Link href="/">
+                <Logo withText={true} />
+              </Link>
             </div>
           </header>
           <main className="flex-1 p-4 pt-0 sm:p-6">{children}</main>

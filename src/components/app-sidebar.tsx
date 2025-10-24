@@ -22,7 +22,9 @@ export function AppSidebar() {
   return (
     <>
       <SidebarHeader>
-        <Logo />
+        <Link href="/">
+          <Logo />
+        </Link>
       </SidebarHeader>
       <SidebarContent className="p-2">
         {menuItems.map((group) => (
