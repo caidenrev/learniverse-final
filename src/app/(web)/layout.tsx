@@ -32,11 +32,11 @@ export default function WebLayout({ children }: { children: ReactNode }) {
   
   {/* Glow di kiri atas desktop (diperbesar) */}
   {/* Diubah dari h-64 w-64 menjadi h-96 w-96 */}
-  <div className="absolute -left-16 top-40 hidden h-96 w-96 rounded-full bg-primary/30 blur-3xl md:block"></div>
+  <div className="absolute -left-16 top-40 hidden h-96 w-96 rounded-full bg-primary/20 blur-3xl md:block"></div>
   
   {/* Glow di kanan atas desktop (diperbesar) */}
   {/* Diubah dari h-64 w-64 menjadi h-96 w-96 */}
-  <div className="absolute -right-16 top-40 hidden h-96 w-96 rounded-full bg-primary/30 blur-3xl md:block"></div>
+  <div className="absolute -right-16 top-40 hidden h-96 w-96 rounded-full bg-primary/20 blur-3xl md:block"></div>
 
   {/* Fading Grid Lines */}
   <div
@@ -72,10 +72,7 @@ export default function WebLayout({ children }: { children: ReactNode }) {
           </nav>
 
           <div className="flex items-center gap-4">
-            <div className="hidden md:block">
-              <UserAuth />
-            </div>
-
+            <UserAuth />
             <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
               <SheetTrigger asChild>
                 <Button variant="ghost" size="icon" className="md:hidden">
@@ -117,9 +114,6 @@ export default function WebLayout({ children }: { children: ReactNode }) {
                     Kontak
                   </Link>
                 </nav>
-                <div className="mt-8 border-t pt-4">
-                   <UserAuth />
-                </div>
               </SheetContent>
             </Sheet>
           </div>

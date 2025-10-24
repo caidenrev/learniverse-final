@@ -18,7 +18,7 @@ import {
   DropdownMenuTrigger,
 } from './ui/dropdown-menu';
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
-import { LogIn, LogOut, Loader2 } from 'lucide-react';
+import { LogIn, LogOut, Loader2, User } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { doc, getDoc, setDoc, serverTimestamp } from 'firebase/firestore';
 import { useRouter } from 'next/navigation';
@@ -125,7 +125,7 @@ export function UserAuth() {
 
   if (!user) {
     return (
-      <Button onClick={handleSignIn} variant="outline" className="w-full">
+      <Button onClick={handleSignIn} variant="outline" className="hidden md:flex">
         <LogIn className="mr-2 h-4 w-4" />
         Login
       </Button>
@@ -134,9 +134,8 @@ export function UserAuth() {
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger className="w-full">
-        <div className="flex w-full items-center gap-3 rounded-md p-2 text-left transition-colors hover:bg-muted">
-          <Avatar>
+      <DropdownMenuTrigger className="flex items-center gap-2">
+        <Avatar>
             {user.photoURL ? (
               <AvatarImage
                 src={user.photoURL}
@@ -147,11 +146,10 @@ export function UserAuth() {
               {getInitials(user.displayName)}
             </AvatarFallback>
           </Avatar>
-          <div className="flex-1 overflow-hidden">
-            <p className="truncate font-semibold">{user.displayName}</p>
-            <p className="truncate text-sm text-muted-foreground">{user.email}</p>
+          <div className="hidden flex-col items-start md:flex">
+            <span className="font-semibold">{user.displayName}</span>
+            <span className="text-sm text-muted-foreground">{user.email}</span>
           </div>
-        </div>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-56">
         <DropdownMenuLabel>
