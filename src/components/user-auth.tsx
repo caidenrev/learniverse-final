@@ -125,7 +125,7 @@ export function UserAuth() {
 
   if (!user) {
     return (
-      <Button onClick={handleSignIn} variant="outline">
+      <Button onClick={handleSignIn} variant="outline" size="sm" className="hidden md:inline-flex">
         <LogIn className="mr-2 h-4 w-4" />
         Login
       </Button>
@@ -134,7 +134,7 @@ export function UserAuth() {
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger className="flex items-center gap-2">
+      <DropdownMenuTrigger>
         <Avatar>
             {user.photoURL ? (
               <AvatarImage
@@ -146,14 +146,10 @@ export function UserAuth() {
               {user.photoURL ? getInitials(user.displayName) : <User className="h-5 w-5" />}
             </AvatarFallback>
           </Avatar>
-          <div className="flex flex-col items-start">
-            <span className="font-semibold">{user.displayName}</span>
-            <span className="text-sm text-muted-foreground">{user.email}</span>
-          </div>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-56">
         <DropdownMenuLabel>
-          <div className="text-sm font-medium">{user.displayName}</div>
+          <div className="text-sm font-semibold">{user.displayName}</div>
           <div className="text-xs text-muted-foreground">{user.email}</div>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
