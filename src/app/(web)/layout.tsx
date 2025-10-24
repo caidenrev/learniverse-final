@@ -27,7 +27,7 @@ export default function WebLayout({ children }: { children: ReactNode }) {
         aria-hidden="true"
       >
         {/* Purple Ambience */}
-        <div className="absolute bottom-0 left-0 right-0 top-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-primary/10 via-transparent to-transparent"></div>
+        <div className="absolute bottom-0 left-0 right-0 top-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-primary/20 via-transparent to-transparent"></div>
         
         {/* Fading Grid Lines */}
         <div
