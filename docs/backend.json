@@ -1,3 +1,4 @@
+
 {
   "entities": {
     "User": {
@@ -31,7 +32,8 @@
       },
       "required": [
         "uid",
-        "email"
+        "email",
+        "displayName"
       ]
     },
     "Subscription": {
