@@ -125,7 +125,7 @@ export function UserAuth() {
 
   if (!user) {
     return (
-      <Button onClick={handleSignIn} variant="outline">
+      <Button onClick={handleSignIn} variant="outline" className="w-full">
         <LogIn className="mr-2 h-4 w-4" />
         Login
       </Button>
@@ -134,26 +134,37 @@ export function UserAuth() {
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger>
-        <Avatar>
-          {user.photoURL ? (
-            <AvatarImage
-              src={user.photoURL}
-              alt={user.displayName ?? 'User'}
-            />
-          ) : null}
-          <AvatarFallback>
-            {user.photoURL ? getInitials(user.displayName) : undefined}
-          </AvatarFallback>
-        </Avatar>
+      <DropdownMenuTrigger className="w-full">
+        <div className="flex w-full items-center gap-3 rounded-md p-2 text-left transition-colors hover:bg-muted">
+          <Avatar>
+            {user.photoURL ? (
+              <AvatarImage
+                src={user.photoURL}
+                alt={user.displayName ?? 'User'}
+              />
+            ) : null}
+            <AvatarFallback>
+              {getInitials(user.displayName)}
+            </AvatarFallback>
+          </Avatar>
+          <div className="flex-1 overflow-hidden">
+            <p className="truncate font-semibold">{user.displayName}</p>
+            <p className="truncate text-sm text-muted-foreground">{user.email}</p>
+          </div>
+        </div>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end">
+      <DropdownMenuContent align="end" className="w-56">
         <DropdownMenuLabel>
           <div className="text-sm font-medium">{user.displayName}</div>
           <div className="text-xs text-muted-foreground">{user.email}</div>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <DropdownMenuItem onClick={handleSignOut} className="cursor-pointer">
+        <DropdownMenuItem asChild>
+          <Link href="/brainstorm-topik" className="cursor-pointer">
+            Ke Dasbor
+          </Link>
+        </DropdownMenuItem>
+        <DropdownMenuItem onClick={handleSignOut} className="cursor-pointer text-red-500 focus:bg-red-50 focus:text-red-600">
           <LogOut className="mr-2 h-4 w-4" />
           <span>Logout</span>
         </DropdownMenuItem>
