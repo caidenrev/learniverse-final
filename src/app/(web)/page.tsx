@@ -23,6 +23,7 @@ import {
 import Image from 'next/image';
 import Link from 'next/link';
 import { Badge } from '@/components/ui/badge';
+import { FadeIn } from '@/components/ui/fade-in';
 
 const features = [
   {
@@ -115,7 +116,7 @@ export default function Home() {
   return (
     <div className="container">
       <main className="flex-1">
-        <section className="grid grid-cols-1 items-center gap-12 px-4 py-16 md:grid-cols-2 lg:py-24">
+        <FadeIn as="section" className="grid grid-cols-1 items-center gap-12 px-4 py-16 md:grid-cols-2 lg:py-24">
           <div className="space-y-6">
             <h2 className="font-headline text-4xl font-bold tracking-tight md:text-5xl lg:text-6xl">
               Tingkatkan Kemampuan Belajarmu dengan AI
@@ -133,19 +134,19 @@ export default function Home() {
               </Link>
             </div>
           </div>
-          <div className="relative h-64 w-full overflow-hidden rounded-2xl p-4 md:h-96">
+          <div className="relative h-64 w-full overflow-hidden p-4 md:h-96">
             <Image
               src="/hero-image.png"
               alt="Seorang siswa menggunakan laptop"
               fill
-              className="object-contain [filter:drop-shadow(0_10px_15px_rgba(0,0,0,0.1))]"
+              className="object-contain [filter:drop-shadow(0_4px_6px_rgba(0,0,0,0.05))]"
               sizes="(max-width: 768px) 100vw, 50vw"
               priority
             />
           </div>
-        </section>
+        </FadeIn>
 
-        <section className="-mx-4 bg-muted/50 px-4 py-16 sm:mx-0 sm:px-6 lg:py-24">
+        <FadeIn as="section" className="-mx-4 bg-muted/50 px-4 py-16 sm:mx-0 sm:px-6 lg:py-24">
           <div className="mx-auto">
             <div className="mx-auto mb-12 max-w-2xl text-center">
               <h3 className="font-headline text-3xl font-bold tracking-tight md:text-4xl">
@@ -157,34 +158,35 @@ export default function Home() {
               </p>
             </div>
             <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-              {features.map((feature) => (
-                <Link
-                  href={feature.href}
-                  key={feature.title}
-                  className="flex"
-                >
-                  <Card className="flex flex-1 flex-col transition-all hover:ring-2 hover:ring-primary">
-                    <CardHeader className="flex flex-row items-center gap-4">
-                      <div className="rounded-full bg-primary/10 p-3 text-primary">
-                        {feature.icon}
-                      </div>
-                      <CardTitle className="font-headline text-xl">
-                        {feature.title}
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent className="flex-1">
-                      <p className="text-muted-foreground">
-                        {feature.description}
-                      </p>
-                    </CardContent>
-                  </Card>
-                </Link>
+              {features.map((feature, index) => (
+                <FadeIn key={feature.title} custom={index}>
+                    <Link
+                    href={feature.href}
+                    className="flex h-full"
+                    >
+                    <Card className="flex flex-1 flex-col transition-all hover:ring-2 hover:ring-primary">
+                        <CardHeader className="flex flex-row items-center gap-4">
+                        <div className="rounded-full bg-primary/10 p-3 text-primary">
+                            {feature.icon}
+                        </div>
+                        <CardTitle className="font-headline text-xl">
+                            {feature.title}
+                        </CardTitle>
+                        </CardHeader>
+                        <CardContent className="flex-1">
+                        <p className="text-muted-foreground">
+                            {feature.description}
+                        </p>
+                        </CardContent>
+                    </Card>
+                    </Link>
+                </FadeIn>
               ))}
             </div>
           </div>
-        </section>
+        </FadeIn>
 
-        <section className="-mx-4 bg-muted/50 px-4 py-16 sm:mx-0 sm:px-6 lg:py-24">
+        <FadeIn as="section" className="-mx-4 bg-muted/50 px-4 py-16 sm:mx-0 sm:px-6 lg:py-24">
           <div className="mx-auto">
             <div className="mx-auto mb-12 max-w-2xl text-center">
               <h3 className="font-headline text-3xl font-bold tracking-tight md:text-4xl">
@@ -272,7 +274,7 @@ export default function Home() {
               </Card>
             </div>
           </div>
-        </section>
+        </FadeIn>
       </main>
     </div>
   );
