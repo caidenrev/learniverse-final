@@ -10,11 +10,10 @@ import {
   SheetTitle,
   SheetFooter,
   SheetTrigger,
-  SheetClose
 } from '@/components/ui/sheet';
 import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Loader2, Send, Bot, User, MessageSquare, X } from 'lucide-react';
+import { Loader2, Send, Bot, User, MessageSquare } from 'lucide-react';
 import { chatWithBot } from '@/ai/flows/chatbot';
 import type { ChatbotInput } from '@/ai/flows/chatbot-schemas';
 import { useToast } from '@/hooks/use-toast';
@@ -25,9 +24,15 @@ type Message = {
   content: string;
 };
 
+const initialMessage: Message = {
+    role: 'model',
+    content: 'Halo! Saya Learnibot, asistenmu di Learniverse. Ada yang bisa saya bantu terkait fitur-fitur Learniverse hari ini?',
+};
+
+
 export function Chatbot() {
   const [isOpen, setIsOpen] = useState(false);
-  const [messages, setMessages] = useState<Message[]>([]);
+  const [messages, setMessages] = useState<Message[]>([initialMessage]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
