@@ -94,7 +94,7 @@ export default function WebLayout({ children }: { children: ReactNode }) {
                 <nav className="mt-8 flex flex-col gap-2">
                   <Link
                     href="/pricing"
-                    className="flex items-center gap-3 rounded-md p-2 text-base font-medium hover:bg-muted"
+                    className="flex items-center gap-3 rounded-md p-2 text-base font-medium transition-colors hover:bg-primary/10 hover:text-primary"
                     onClick={() => setIsSheetOpen(false)}
                   >
                     <Gem className="h-5 w-5" />
@@ -102,7 +102,7 @@ export default function WebLayout({ children }: { children: ReactNode }) {
                   </Link>
                   <Link
                     href="/tentang"
-                    className="flex items-center gap-3 rounded-md p-2 text-base font-medium hover:bg-muted"
+                    className="flex items-center gap-3 rounded-md p-2 text-base font-medium transition-colors hover:bg-primary/10 hover:text-primary"
                     onClick={() => setIsSheetOpen(false)}
                   >
                     <Info className="h-5 w-5" />
@@ -110,7 +110,7 @@ export default function WebLayout({ children }: { children: ReactNode }) {
                   </Link>
                   <Link
                     href="/kontak"
-                    className="flex items-center gap-3 rounded-md p-2 text-base font-medium hover:bg-muted"
+                    className="flex items-center gap-3 rounded-md p-2 text-base font-medium transition-colors hover:bg-primary/10 hover:text-primary"
                     onClick={() => setIsSheetOpen(false)}
                   >
                     <Mail className="h-5 w-5" />
