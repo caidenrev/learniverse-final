@@ -13,11 +13,15 @@ import {
 } from '@/components/ui/sheet';
 import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Loader2, Send, Bot, User, MessageSquare } from 'lucide-react';
+import { Loader2, Send, Bot, MessageSquare } from 'lucide-react';
 import { chatWithBot } from '@/ai/flows/chatbot';
 import type { ChatbotInput } from '@/ai/flows/chatbot-schemas';
 import { useToast } from '@/hooks/use-toast';
 import { Logo } from './logo';
+import { useUser } from '@/firebase';
+import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
+import { User } from 'lucide-react';
+
 
 type Message = {
   role: 'user' | 'model';
@@ -29,6 +33,15 @@ const initialMessage: Message = {
     content: 'Halo! Saya Learnibot, asistenmu di Learniverse. Ada yang bisa saya bantu terkait fitur-fitur Learniverse hari ini?',
 };
 
+function getInitials(name: string | null | undefined): string {
+  if (!name) return '';
+  const names = name.split(' ');
+  if (names.length > 1) {
+    return `${names[0][0]}${names[names.length - 1][0]}`.toUpperCase();
+  }
+  return name.substring(0, 2).toUpperCase();
+}
+
 
 export function Chatbot() {
   const [isOpen, setIsOpen] = useState(false);
@@ -37,6 +50,7 @@ export function Chatbot() {
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
   const scrollAreaRef = useRef<HTMLDivElement>(null);
+  const { user } = useUser();
 
   const handleSend = async () => {
     if (input.trim() === '') return;
@@ -104,8 +118,8 @@ export function Chatbot() {
             </div>
           </SheetTitle>
         </SheetHeader>
-        <ScrollArea className="flex-1 px-4" ref={scrollAreaRef}>
-          <div className="space-y-4 py-4">
+        <ScrollArea className="flex-1" ref={scrollAreaRef}>
+          <div className="space-y-4 py-4 px-4">
             {messages.map((message, index) => (
               <div
                 key={index}
@@ -128,9 +142,21 @@ export function Chatbot() {
                   {message.content}
                 </div>
                 {message.role === 'user' && (
-                  <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-secondary text-secondary-foreground">
-                    <User className="h-5 w-5" />
-                  </div>
+                  <Avatar className="h-8 w-8">
+                    {user?.photoURL && (
+                      <AvatarImage
+                        src={user.photoURL}
+                        alt={user.displayName ?? 'User'}
+                      />
+                    )}
+                    <AvatarFallback className="bg-secondary text-secondary-foreground">
+                      {user?.displayName ? (
+                        getInitials(user.displayName)
+                      ) : (
+                        <User className="h-4 w-4" />
+                      )}
+                    </AvatarFallback>
+                  </Avatar>
                 )}
               </div>
             ))}
