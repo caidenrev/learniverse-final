@@ -39,6 +39,11 @@ function getInitials(name: string | null | undefined): string {
   return name.substring(0, 2).toUpperCase();
 }
 
+function getFirstName(name: string | null | undefined): string {
+    if (!name) return 'User';
+    return name.split(' ')[0];
+}
+
 const SUMMARY_LIMIT = 3;
 const PARAPHRASE_LIMIT = 3;
 
@@ -99,11 +104,9 @@ export function UserProfileSidebar() {
                 </AvatarFallback>
               </Avatar>
               <div className="flex-1 overflow-hidden">
+                <p className="text-xs text-muted-foreground">Hi, {getFirstName(user.displayName)}</p>
                 <p className="truncate text-sm font-semibold">
                   {user.displayName}
-                </p>
-                <p className="truncate text-xs text-muted-foreground">
-                  {user.email}
                 </p>
               </div>
             </div>
