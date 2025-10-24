@@ -133,12 +133,12 @@ export default function Home() {
               </Link>
             </div>
           </div>
-          <div className="relative h-64 w-full overflow-hidden rounded-2xl shadow-2xl md:h-96">
+          <div className="relative h-64 w-full overflow-hidden rounded-2xl md:h-96">
             <Image
-              src="/hero-image.jpg"
+              src="/hero-image.png"
               alt="Seorang siswa menggunakan laptop"
               fill
-              className="object-cover"
+              className="object-contain [filter:drop-shadow(0_25px_25px_rgba(0,0,0,0.15))]"
               sizes="(max-width: 768px) 100vw, 50vw"
               priority
             />
@@ -277,3 +277,5 @@ export default function Home() {
     </div>
   );
 }
+
+    
