@@ -124,7 +124,7 @@ export default function WebLayout({ children }: { children: ReactNode }) {
       <Chatbot />
 
       <footer className="border-t bg-background">
-        <div className="container mx-auto flex flex-col items-center justify-between gap-6 px-4 py-8 md:flex-row">
+        <div className="container mx-auto flex flex-col items-center justify-between gap-6 px-4 py-8 md:flex-row md:px-6">
           <div className="flex flex-col items-center gap-4 md:items-start">
             <Link href="/">
               <Logo withText={true} />
