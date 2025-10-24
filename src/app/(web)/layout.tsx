@@ -13,7 +13,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { Logo } from '@/components/logo';
 import { UserAuth } from '@/components/user-auth';
-import { Gem, Info, Mail, Menu, Github } from 'lucide-react';
+import { Gem, Info, Mail, Menu } from 'lucide-react';
 import { Chatbot } from '@/components/chatbot';
 
 export default function WebLayout({ children }: { children: ReactNode }) {
@@ -135,16 +135,7 @@ export default function WebLayout({ children }: { children: ReactNode }) {
             </p>
           </div>
           <div className="flex items-center gap-4">
-            <Link
-                href="https://github.com/caidenrev/learniverse-app"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-muted-foreground transition-colors hover:text-primary"
-                aria-label="GitHub"
-              >
-                <Github className="h-6 w-6" />
-                <span className="sr-only">GitHub</span>
-              </Link>
+           
           </div>
         </div>
         <div className="border-t py-4">
