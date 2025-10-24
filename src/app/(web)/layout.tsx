@@ -140,7 +140,7 @@ export default function WebLayout({ children }: { children: ReactNode }) {
         </div>
         <div className="border-t py-4">
           <p className="text-center text-sm text-muted-foreground">
-            © {new Date().getFullYear()} Learniverse. Dibuat dengan ❤️ oleh Revan.
+            © {new Date().getFullYear()} Learniverse. Revan.
           </p>
         </div>
       </footer>
