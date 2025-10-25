@@ -13,7 +13,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { Logo } from '@/components/logo';
 import { UserAuth } from '@/components/user-auth';
-import { Gem, Info, Mail } from 'lucide-react';
+import { Gem, Info, Mail, LayoutDashboard } from 'lucide-react';
 import { Chatbot } from '@/components/chatbot';
 import { AnimatedHamburger } from '@/components/ui/animated-hamburger';
 
@@ -53,6 +53,12 @@ export default function WebLayout({ children }: { children: ReactNode }) {
 
           <nav className="hidden items-center gap-6 md:flex">
             <Link
+              href="/brainstorm-topik"
+              className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary"
+            >
+              Dasbor
+            </Link>
+            <Link
               href="/pricing"
               className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary"
             >
@@ -87,11 +93,19 @@ export default function WebLayout({ children }: { children: ReactNode }) {
                      <AnimatedHamburger 
                         open={true} 
                         onClick={() => setIsSheetOpen(false)}
-                        color={isSheetOpen ? 'hsl(var(--primary))' : 'transparent'}
+                        color="hsl(var(--primary))"
                       />
                   </SheetTitle>
                 </SheetHeader>
                 <nav className="mt-8 flex flex-col gap-2">
+                  <Link
+                    href="/brainstorm-topik"
+                    className="flex items-center gap-3 rounded-md p-2 text-base font-medium transition-colors hover:bg-primary/10 hover:text-primary"
+                    onClick={() => setIsSheetOpen(false)}
+                  >
+                    <LayoutDashboard className="h-5 w-5" />
+                    Dasbor
+                  </Link>
                   <Link
                     href="/pricing"
                     className="flex items-center gap-3 rounded-md p-2 text-base font-medium transition-colors hover:bg-primary/10 hover:text-primary"

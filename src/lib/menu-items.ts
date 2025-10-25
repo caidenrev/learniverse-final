@@ -18,6 +18,7 @@ import {
   Gem,
   History,
   Archive,
+  LayoutDashboard,
 } from 'lucide-react';
 
 interface MenuItem {
@@ -32,6 +33,16 @@ interface MenuGroup {
 }
 
 export const menuItems: MenuGroup[] = [
+   {
+    title: 'Navigasi',
+    items: [
+       {
+        href: '/brainstorm-topik',
+        title: 'Dasbor',
+        icon: LayoutDashboard,
+      },
+    ]
+  },
   {
     title: 'Asisten Belajar',
     items: [
