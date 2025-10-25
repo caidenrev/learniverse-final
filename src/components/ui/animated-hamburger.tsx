@@ -17,7 +17,7 @@ export function AnimatedHamburger({
   const lineStyle: React.CSSProperties = {
     transition: '0.5s',
     stroke: 'hsl(var(--primary))',
-    strokeWidth: 4,
+    strokeWidth: 6,
     strokeLinecap: 'round',
   };
 
