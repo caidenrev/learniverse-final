@@ -13,8 +13,9 @@ import {
 import { Button } from '@/components/ui/button';
 import { Logo } from '@/components/logo';
 import { UserAuth } from '@/components/user-auth';
-import { Gem, Info, Mail, Menu } from 'lucide-react';
+import { Gem, Info, Mail } from 'lucide-react';
 import { Chatbot } from '@/components/chatbot';
+import { AnimatedHamburger } from '@/components/ui/animated-hamburger';
 
 export default function WebLayout({ children }: { children: ReactNode }) {
   const [isSheetOpen, setIsSheetOpen] = useState(false);
@@ -50,41 +51,32 @@ export default function WebLayout({ children }: { children: ReactNode }) {
             <Logo withText={true} />
           </Link>
 
-          <nav className="hidden md:flex items-center gap-10">
-  <Link
-    href="/pricing"
-    className="relative text-base md:text-lg font-medium text-muted-foreground transition-all duration-300 hover:text-primary hover:-translate-y-[2px] hover:drop-shadow-[0_0_8px_rgba(109,40,217,0.4)] group"
-  >
-    Harga
-    <span className="absolute left-1/2 bottom-[-6px] h-[2px] w-0 bg-primary transition-all duration-300 group-hover:w-full group-hover:left-0 rounded-full" />
-  </Link>
-
-  <Link
-    href="/tentang"
-    className="relative text-base md:text-lg font-medium text-muted-foreground transition-all duration-300 hover:text-primary hover:-translate-y-[2px] hover:drop-shadow-[0_0_8px_rgba(109,40,217,0.4)] group"
-  >
-    Tentang
-    <span className="absolute left-1/2 bottom-[-6px] h-[2px] w-0 bg-primary transition-all duration-300 group-hover:w-full group-hover:left-0 rounded-full" />
-  </Link>
-
-  <Link
-    href="/kontak"
-    className="relative text-base md:text-lg font-medium text-muted-foreground transition-all duration-300 hover:text-primary hover:-translate-y-[2px] hover:drop-shadow-[0_0_8px_rgba(109,40,217,0.4)] group"
-  >
-    Kontak
-    <span className="absolute left-1/2 bottom-[-6px] h-[2px] w-0 bg-primary transition-all duration-300 group-hover:w-full group-hover:left-0 rounded-full" />
-  </Link>
-</nav>
-
+          <nav className="hidden items-center gap-6 md:flex">
+            <Link
+              href="/pricing"
+              className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary"
+            >
+              Harga
+            </Link>
+            <Link
+              href="/tentang"
+              className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary"
+            >
+              Tentang
+            </Link>
+            <Link
+              href="/kontak"
+              className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary"
+            >
+              Kontak
+            </Link>
+          </nav>
 
           <div className="flex items-center gap-4">
             <UserAuth />
             <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
-              <SheetTrigger asChild>
-                <Button variant="ghost" size="icon" className="md:hidden">
-                  <Menu />
-                  <span className="sr-only">Buka menu</span>
-                </Button>
+              <SheetTrigger asChild className="md:hidden">
+                 <AnimatedHamburger open={isSheetOpen} onClick={() => setIsSheetOpen(!isSheetOpen)} />
               </SheetTrigger>
               <SheetContent side="right">
                 <SheetHeader>
@@ -130,7 +122,7 @@ export default function WebLayout({ children }: { children: ReactNode }) {
       <Chatbot />
 
       <footer className="border-t bg-background">
-        <div className="container flex flex-col items-center justify-between gap-6 py-8 md:flex-row">
+        <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-6 px-6 py-8 md:flex-row">
           <div className="flex flex-col items-center gap-4 md:items-start">
             <Link href="/">
               <Logo withText={true} />
@@ -146,7 +138,7 @@ export default function WebLayout({ children }: { children: ReactNode }) {
         </div>
         <div className="border-t py-4">
           <p className="text-center text-sm text-muted-foreground">
-            © {new Date().getFullYear()} Learniverse. Hak Cipta Dilindungi.
+            © {new Date().getFullYear()} Learniverse. Dibuat dengan ❤️ oleh Revan.
           </p>
         </div>
       </footer>
