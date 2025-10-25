@@ -123,7 +123,7 @@ export default function AiTutorPage() {
                           <Input
                             type="file"
                             className="absolute inset-0 h-full w-full cursor-pointer opacity-0"
-                            accept=".pdf,.doc,.docx,.txt"
+                            accept=".pdf,.doc,.docx,.txt,.jpg,.jpeg,.png"
                             {...fileRef}
                             onChange={(e) => {
                               field.onChange(e.target.files);
@@ -142,7 +142,7 @@ export default function AiTutorPage() {
                         </div>
                       </FormControl>
                       <FormDescription>
-                        Unggah file PDF, DOCX, atau TXT Anda.
+                        Unggah file PDF, DOCX, JPG, atau TXT Anda.
                       </FormDescription>
                       <FormMessage />
                     </FormItem>
@@ -157,7 +157,7 @@ export default function AiTutorPage() {
                       <FormLabel>Pertanyaan Anda</FormLabel>
                       <FormControl>
                         <Textarea
-                          placeholder="misalnya, 'Jelaskan konsep utama dari bab 3?'"
+                          placeholder="misalnya, 'Jelaskan konsep utama dari bab 3?' atau 'Apa jawaban untuk soal nomor 5?'"
                           className="min-h-[100px]"
                           {...field}
                         />
