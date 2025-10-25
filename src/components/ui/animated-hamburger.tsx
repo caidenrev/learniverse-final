@@ -53,7 +53,7 @@ export function AnimatedHamburger({
       style={{
         color, // Apply color to the button, which SVG will inherit
         transition: 'color 0.3s ease-in-out',
-        transitionDelay: open ? '0.3s' : '0s', // Delay color change on open
+        transitionDelay: open ? '0.5s' : '0s', // Delay color change on open
       }}
     >
       <svg fill="none" viewBox="0 0 50 50" height="32" width="32">
