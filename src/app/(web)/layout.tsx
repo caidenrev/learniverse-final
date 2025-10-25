@@ -78,12 +78,13 @@ export default function WebLayout({ children }: { children: ReactNode }) {
               <SheetTrigger asChild className="md:hidden">
                  <AnimatedHamburger open={isSheetOpen} onClick={() => setIsSheetOpen(!isSheetOpen)} />
               </SheetTrigger>
-              <SheetContent side="right">
+              <SheetContent side="right" showCloseButton={false}>
                 <SheetHeader>
-                  <SheetTitle>
+                  <SheetTitle className="flex items-center justify-between">
                     <Link href="/" onClick={() => setIsSheetOpen(false)}>
                       <Logo withText={true} />
                     </Link>
+                     <AnimatedHamburger open={true} onClick={() => setIsSheetOpen(false)} />
                   </SheetTitle>
                 </SheetHeader>
                 <nav className="mt-8 flex flex-col gap-2">
