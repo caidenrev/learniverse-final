@@ -68,6 +68,7 @@ export default function WebLayout({ children }: { children: ReactNode }) {
               href="/tentang"
               className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary"
             >
+              {/*  */}
               Tentang
             </Link>
             <Link
