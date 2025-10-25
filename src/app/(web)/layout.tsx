@@ -50,26 +50,32 @@ export default function WebLayout({ children }: { children: ReactNode }) {
             <Logo withText={true} />
           </Link>
 
-          <nav className="hidden items-center gap-6 md:flex">
-            <Link
-              href="/pricing"
-              className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary"
-            >
-              Harga
-            </Link>
-            <Link
-              href="/tentang"
-              className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary"
-            >
-              Tentang
-            </Link>
-            <Link
-              href="/kontak"
-              className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary"
-            >
-              Kontak
-            </Link>
-          </nav>
+          <nav className="hidden md:flex items-center gap-10">
+  <Link
+    href="/pricing"
+    className="relative text-base md:text-lg font-medium text-muted-foreground transition-all duration-300 hover:text-primary hover:-translate-y-[2px] hover:drop-shadow-[0_0_8px_rgba(109,40,217,0.4)] group"
+  >
+    Harga
+    <span className="absolute left-1/2 bottom-[-6px] h-[2px] w-0 bg-primary transition-all duration-300 group-hover:w-full group-hover:left-0 rounded-full" />
+  </Link>
+
+  <Link
+    href="/tentang"
+    className="relative text-base md:text-lg font-medium text-muted-foreground transition-all duration-300 hover:text-primary hover:-translate-y-[2px] hover:drop-shadow-[0_0_8px_rgba(109,40,217,0.4)] group"
+  >
+    Tentang
+    <span className="absolute left-1/2 bottom-[-6px] h-[2px] w-0 bg-primary transition-all duration-300 group-hover:w-full group-hover:left-0 rounded-full" />
+  </Link>
+
+  <Link
+    href="/kontak"
+    className="relative text-base md:text-lg font-medium text-muted-foreground transition-all duration-300 hover:text-primary hover:-translate-y-[2px] hover:drop-shadow-[0_0_8px_rgba(109,40,217,0.4)] group"
+  >
+    Kontak
+    <span className="absolute left-1/2 bottom-[-6px] h-[2px] w-0 bg-primary transition-all duration-300 group-hover:w-full group-hover:left-0 rounded-full" />
+  </Link>
+</nav>
+
 
           <div className="flex items-center gap-4">
             <UserAuth />

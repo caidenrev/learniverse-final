@@ -4,6 +4,12 @@
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from '@/components/ui/accordion';
+import {
   ArrowRight,
   BookCopy,
   BrainCircuit,
@@ -19,6 +25,7 @@ import {
   BookDown,
   CheckCircle2,
   Gem,
+  HelpCircle,
 } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -112,6 +119,35 @@ const features = [
   },
 ];
 
+const faqItems = [
+  {
+    question: 'Apa itu Learniverse?',
+    answer:
+      'Learniverse adalah platform bertenaga AI yang dirancang untuk membantu mahasiswa dan akademisi dengan berbagai tugas, mulai dari mencari ide, melakukan riset, hingga belajar untuk ujian. Kami menyediakan satu set alat lengkap untuk mempercepat proses belajar Anda.',
+  },
+  {
+    question: 'Apakah ada versi gratis?',
+    answer:
+      'Ya, tentu saja! Learniverse menawarkan paket Gratis yang memberikan akses terbatas ke beberapa fitur utama. Ini adalah cara yang bagus untuk mencoba platform kami sebelum memutuskan untuk upgrade ke paket Premium untuk akses tanpa batas.',
+  },
+  {
+    question: 'Apa bedanya paket Gratis dan Premium?',
+    answer:
+      'Paket Gratis memberikan batasan penggunaan harian pada fitur seperti Peringkas Jurnal dan Parafrase. Paket Premium membuka akses tanpa batas ke semua fitur, menggunakan model AI yang lebih canggih untuk hasil yang lebih baik, dan memungkinkan Anda menyimpan riwayat proyek Anda.',
+  },
+  {
+    question: 'Bagaimana proses pembayarannya?',
+    answer:
+      'Kami menggunakan Midtrans, sebuah gerbang pembayaran yang aman dan terpercaya di Indonesia. Anda dapat membayar menggunakan berbagai metode seperti transfer bank, kartu kredit, atau dompet digital (GoPay, OVO, dll).',
+  },
+  {
+    question: 'Bisakah saya membatalkan langganan saya?',
+    answer:
+      'Tentu. Anda dapat membatalkan langganan Premium Anda kapan saja. Anda akan tetap memiliki akses ke fitur Premium hingga akhir siklus penagihan Anda saat ini. Tidak ada pengembalian dana untuk periode yang sudah berjalan.',
+  },
+];
+
+
 export default function Home() {
   return (
     <div className="container">
@@ -134,12 +170,12 @@ export default function Home() {
               </Link>
             </div>
           </div>
-          <div className="relative h-64 w-full overflow-hidden p-4 md:h-96">
+          <div className="relative h-64 w-full p-4 md:h-96">
             <Image
               src="/hero-image.png"
               alt="Seorang siswa menggunakan laptop"
               fill
-              className="object-contain [filter:drop-shadow(0_4px_6px_rgba(0,0,0,0.05))]"
+              className="object-contain [filter:drop-shadow(0_2px_4px_rgba(0,0,0,0.02))]"
               sizes="(max-width: 768px) 100vw, 50vw"
               priority
             />
@@ -275,9 +311,36 @@ export default function Home() {
             </div>
           </div>
         </FadeIn>
+
+        <FadeIn as="section" className="py-16 lg:py-24">
+          <div className="mx-auto max-w-3xl">
+            <div className="mx-auto mb-12 max-w-2xl text-center">
+              <h3 className="font-headline text-3xl font-bold tracking-tight md:text-4xl">
+                Pertanyaan yang Sering Diajukan
+              </h3>
+              <p className="mt-4 text-lg text-muted-foreground">
+                Tidak menemukan jawaban yang Anda cari?{' '}
+                <Link href="/kontak" className="text-primary underline">
+                  Hubungi kami
+                </Link>
+                .
+              </p>
+            </div>
+            <Accordion type="single" collapsible className="w-full">
+              {faqItems.map((item, index) => (
+                <AccordionItem value={`item-${index}`} key={index}>
+                  <AccordionTrigger className="text-left font-semibold text-base">
+                    {item.question}
+                  </AccordionTrigger>
+                  <AccordionContent className="text-base text-muted-foreground">
+                    {item.answer}
+                  </AccordionContent>
+                </AccordionItem>
+              ))}
+            </Accordion>
+          </div>
+        </FadeIn>
       </main>
     </div>
   );
 }
-
-    
