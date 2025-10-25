@@ -31,6 +31,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { Badge } from '@/components/ui/badge';
 import { FadeIn } from '@/components/ui/fade-in';
+import { AnimatedButton } from '@/components/ui/animated-button';
 
 const features = [
   {
@@ -163,11 +164,9 @@ export default function Home() {
               kebuntuan menulis dan percepat proses belajarmu.
             </p>
             <div className="pt-4">
-              <Link href="/brainstorm-topik">
-                <Button size="lg" className="mt-4 px-10 py-6 text-lg">
-                  Mulai Sekarang <ArrowRight className="ml-2 h-5 w-5" />
-                </Button>
-              </Link>
+              <AnimatedButton href="/brainstorm-topik" className="text-lg">
+                Mulai Sekarang
+              </AnimatedButton>
             </div>
           </div>
           <div className="relative h-64 w-full p-4 md:h-96">
@@ -175,7 +174,7 @@ export default function Home() {
               src="/hero-image.png"
               alt="Seorang siswa menggunakan laptop"
               fill
-              className="object-contain [filter:drop-shadow(0_2px_4px_rgba(0,0,0,0.02))]"
+              className="object-contain [filter:drop-shadow(0_4px_6px_rgba(0,0,0,0.05))]"
               sizes="(max-width: 768px) 100vw, 50vw"
               priority
             />
