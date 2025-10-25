@@ -134,10 +134,10 @@ export function Chatbot() {
                   </div>
                 )}
                 <div
-                  className={`max-w-[80%] rounded-lg p-3 text-sm ${
+                  className={`max-w-[80%] p-3 text-sm shadow-sm ${
                     message.role === 'user'
-                      ? 'bg-primary text-primary-foreground'
-                      : 'bg-muted'
+                      ? 'rounded-l-xl rounded-t-xl bg-primary text-primary-foreground'
+                      : 'rounded-r-xl rounded-t-xl bg-muted'
                   }`}
                 >
                   {message.content}
