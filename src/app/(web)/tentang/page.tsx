@@ -18,12 +18,12 @@ export default function AboutPage() {
       </div>
 
       <div className="container grid grid-cols-1 items-center gap-8 md:grid-cols-2 md:gap-12">
-        <div className="relative h-64 w-full overflow-hidden rounded-2xl shadow-lg sm:h-80 md:h-96">
+        <div className="relative h-64 w-full p-4 md:h-96">
           <Image
             src="/hero-image.png"
-            alt="Tim Learniverse sedang berkolaborasi"
+            alt="Ilustrasi belajar dengan teknologi"
             fill
-            className="object-cover"
+            className="object-contain [filter:drop-shadow(0_1px_2px_rgba(0,0,0,0.1))]"
             sizes="(max-width: 768px) 100vw, 50vw"
             priority
           />
