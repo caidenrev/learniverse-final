@@ -20,7 +20,7 @@ export default function AboutPage() {
       <div className="container grid grid-cols-1 items-center gap-8 md:grid-cols-2 md:gap-12">
         <div className="relative h-64 w-full overflow-hidden rounded-2xl shadow-lg sm:h-80 md:h-96">
           <Image
-            src="/hero-image.jpg"
+            src="/hero-image.png"
             alt="Tim Learniverse sedang berkolaborasi"
             fill
             className="object-cover"
