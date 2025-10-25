@@ -136,8 +136,8 @@ export function Chatbot() {
                 <div
                   className={`max-w-[80%] p-3 text-sm shadow-sm ${
                     message.role === 'user'
-                      ? 'rounded-l-xl rounded-t-xl bg-primary text-primary-foreground'
-                      : 'rounded-r-xl rounded-t-xl bg-border'
+                      ? 'rounded-b-xl rounded-tl-xl bg-primary text-primary-foreground'
+                      : 'rounded-b-xl rounded-tr-xl bg-border'
                   }`}
                 >
                   {message.content}
