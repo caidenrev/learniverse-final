@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import './globals.css';
 import { Toaster } from '@/components/ui/toaster';
 import { FirebaseClientProvider } from '@/firebase';
+import { Analytics } from '@vercel/analytics/react';
 
 const APP_NAME = 'Learniverse';
 const APP_DESCRIPTION = 'Asisten belajar cerdas bertenaga AI untuk mendukung perjalanan akademis Anda, mulai dari brainstorming ide, riset, hingga belajar untuk ujian.';
@@ -69,6 +70,7 @@ export default function RootLayout({
       <body className="font-body antialiased">
         <FirebaseClientProvider>{children}</FirebaseClientProvider>
         <Toaster />
+        <Analytics />
       </body>
     </html>
   );
