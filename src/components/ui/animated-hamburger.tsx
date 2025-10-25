@@ -7,16 +7,18 @@ interface AnimatedHamburgerProps {
   open: boolean;
   onClick: () => void;
   className?: string;
+  color?: string;
 }
 
 export function AnimatedHamburger({
   open,
   onClick,
   className,
+  color = 'hsl(var(--primary))', // Default color
 }: AnimatedHamburgerProps) {
   const lineStyle: React.CSSProperties = {
-    transition: '0.5s',
-    stroke: 'hsl(var(--primary))',
+    transition: 'all 0.5s',
+    stroke: 'currentColor', // Use currentColor to inherit from parent
     strokeWidth: 6,
     strokeLinecap: 'round',
   };
@@ -48,6 +50,11 @@ export function AnimatedHamburger({
       onClick={onClick}
       className={cn('relative h-8 w-8 transition-transform duration-200 focus:outline-none', className)}
       aria-label="Toggle menu"
+      style={{
+        color, // Apply color to the button, which SVG will inherit
+        transition: 'color 0.3s ease-in-out',
+        transitionDelay: open ? '0.2s' : '0s', // Delay color change on open
+      }}
     >
       <svg fill="none" viewBox="0 0 50 50" height="32" width="32">
         <path style={lineTopStyle} d="M6 11L44 11" />

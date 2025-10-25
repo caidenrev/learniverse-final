@@ -84,7 +84,11 @@ export default function WebLayout({ children }: { children: ReactNode }) {
                     <Link href="/" onClick={() => setIsSheetOpen(false)}>
                       <Logo withText={true} />
                     </Link>
-                     <AnimatedHamburger open={true} onClick={() => setIsSheetOpen(false)} />
+                     <AnimatedHamburger 
+                        open={true} 
+                        onClick={() => setIsSheetOpen(false)}
+                        color={isSheetOpen ? 'hsl(var(--primary))' : 'transparent'}
+                      />
                   </SheetTitle>
                 </SheetHeader>
                 <nav className="mt-8 flex flex-col gap-2">
