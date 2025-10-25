@@ -46,10 +46,10 @@ export function AnimatedHamburger({
   return (
     <button
       onClick={onClick}
-      className={cn('relative h-10 w-10 transition-transform duration-200 focus:outline-none', className)}
+      className={cn('relative h-8 w-8 transition-transform duration-200 focus:outline-none', className)}
       aria-label="Toggle menu"
     >
-      <svg fill="none" viewBox="0 0 50 50" height="40" width="40">
+      <svg fill="none" viewBox="0 0 50 50" height="32" width="32">
         <path style={lineTopStyle} d="M6 11L44 11" />
         <path style={lineMidStyle} d="M6 24H43" />
         <path style={lineBottomStyle} d="M6 37H43" />
