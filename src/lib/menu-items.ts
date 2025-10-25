@@ -19,6 +19,7 @@ import {
   History,
   Archive,
   LayoutDashboard,
+  FileCheck,
 } from 'lucide-react';
 
 interface MenuItem {
@@ -50,6 +51,11 @@ export const menuItems: MenuGroup[] = [
         href: '/tutor-ai',
         title: 'Tutor AI',
         icon: Bot,
+      },
+      {
+        href: '/jawaban-cepat',
+        title: 'Jawaban Cepat',
+        icon: FileCheck,
       },
       {
         href: '/generator-peta-belajar',
