@@ -44,8 +44,8 @@ function getFirstName(name: string | null | undefined): string {
     return name.split(' ')[0];
 }
 
-const SUMMARY_LIMIT = 3;
-const PARAPHRASE_LIMIT = 3;
+const SUMMARY_LIMIT = 10;
+const PARAPHRASE_LIMIT = 10;
 
 export function UserProfileSidebar() {
   const auth = useAuth();

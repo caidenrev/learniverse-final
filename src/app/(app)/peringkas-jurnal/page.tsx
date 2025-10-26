@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -27,7 +27,7 @@ import {
   useDoc,
   useMemoFirebase,
 } from '@/firebase';
-import { doc, updateDoc, increment } from 'firebase/firestore';
+import { doc, updateDoc, increment, serverTimestamp, writeBatch } from 'firebase/firestore';
 import Link from 'next/link';
 
 const formSchema = z.object({
@@ -37,7 +37,7 @@ const formSchema = z.object({
     .max(3000, 'Teks terlalu panjang. Harap pertahankan di bawah 3000 karakter.'),
 });
 
-const USAGE_LIMIT = 3;
+const USAGE_LIMIT = 10;
 
 export default function SummarizerPage() {
   const [result, setResult] = useState<SummarizeOutput | null>(null);
@@ -55,6 +55,7 @@ export default function SummarizerPage() {
   const {
     data: subscription,
     isLoading: isSubscriptionLoading,
+    mutate,
   } = useDoc(subscriptionRef);
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -63,9 +64,45 @@ export default function SummarizerPage() {
   });
   
   const planId = subscription?.planId ?? 'free';
+  
+  // Logic for daily reset
+  const checkAndResetUsage = async () => {
+    if (!subscription || !firestore || !subscriptionRef || planId === 'premium') return;
+
+    const lastReset = subscription.usage?.lastResetDate?.toDate();
+    if (!lastReset) { // If no reset date, set it and continue
+        await updateDoc(subscriptionRef, { 'usage.lastResetDate': serverTimestamp() });
+        return;
+    }
+    const now = new Date();
+    const hoursSinceLastReset = (now.getTime() - lastReset.getTime()) / (1000 * 60 * 60);
+
+    if (hoursSinceLastReset >= 24) {
+      const batch = writeBatch(firestore);
+      batch.update(subscriptionRef, {
+        'usage.summaryCount': 0,
+        'usage.paraphraseCount': 0,
+        'usage.tutorQuestionCount': 0,
+        'usage.lastResetDate': serverTimestamp(),
+      });
+      await batch.commit();
+      mutate(); // Re-fetch data after reset
+      toast({
+        title: 'Kuota Harian Direset',
+        description: 'Kuota penggunaan gratis Anda telah diperbarui untuk hari ini.',
+      });
+    }
+  };
+  
+  // Check on component mount
+  useEffect(() => {
+    checkAndResetUsage();
+  }, [subscription, firestore]);
+
   const remainingSummaries =
     planId === 'premium' ? Infinity : USAGE_LIMIT - (subscription?.usage?.summaryCount || 0);
   const isLimitReached = !isSubscriptionLoading && remainingSummaries <= 0;
+
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     if (!user || !firestore) {
@@ -76,6 +113,9 @@ export default function SummarizerPage() {
       });
       return;
     }
+
+    // Double check and reset just before submission
+    await checkAndResetUsage();
 
     if (isLimitReached) {
       toast({
@@ -102,7 +142,7 @@ export default function SummarizerPage() {
           title: 'Berhasil Meringkas!',
           description: `Sisa kuota hari ini: ${remainingSummaries - 1}`,
         });
-      } else {
+      } else if (planId === 'premium') {
          toast({
           title: 'Berhasil Meringkas!',
           description: 'Anda menggunakan paket Premium tanpa batas.',

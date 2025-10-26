@@ -22,6 +22,7 @@ export interface UseDocResult<T> {
   data: WithId<T> | null; // Document data with ID, or null.
   isLoading: boolean;       // True if loading.
   error: FirestoreError | Error | null; // Error object, or null.
+  mutate: () => void; // Function to manually re-fetch data
 }
 
 /**
@@ -46,6 +47,11 @@ export function useDoc<T = any>(
   const [data, setData] = useState<StateDataType>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<FirestoreError | Error | null>(null);
+  const [key, setKey] = useState(0); // Add a key to force re-fetching
+
+  const mutate = () => {
+    setKey(prevKey => prevKey + 1);
+  };
 
   useEffect(() => {
     if (!memoizedDocRef) {
@@ -87,7 +93,7 @@ export function useDoc<T = any>(
     );
 
     return () => unsubscribe();
-  }, [memoizedDocRef]); // Re-run if the memoizedDocRef changes.
+  }, [memoizedDocRef, key]); // Re-run if the memoizedDocRef or key changes.
 
-  return { data, isLoading, error };
+  return { data, isLoading, error, mutate };
 }

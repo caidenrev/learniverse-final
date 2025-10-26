@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -22,7 +22,7 @@ import { academicParaphraser } from '@/ai/flows/academic-paraphraser';
 import type { AcademicParaphraserOutput } from '@/ai/flows/academic-paraphraser';
 import { Loader2, Wand2, ShieldAlert } from 'lucide-react';
 import { useUser, useFirestore, useDoc, useMemoFirebase } from '@/firebase';
-import { doc, updateDoc, increment } from 'firebase/firestore';
+import { doc, updateDoc, increment, serverTimestamp, writeBatch } from 'firebase/firestore';
 import Link from 'next/link';
 
 const formSchema = z.object({
@@ -32,7 +32,7 @@ const formSchema = z.object({
     .max(1000, 'Teks terlalu panjang. Harap pertahankan di bawah 1000 karakter.'),
 });
 
-const USAGE_LIMIT = 3;
+const USAGE_LIMIT = 10;
 
 export default function AcademicParaphraserPage() {
   const [result, setResult] = useState<AcademicParaphraserOutput | null>(null);
@@ -46,7 +46,7 @@ export default function AcademicParaphraserPage() {
     return doc(firestore, 'users', user.uid, 'subscriptions', 'default');
   }, [firestore, user]);
 
-  const { data: subscription, isLoading: isSubscriptionLoading } =
+  const { data: subscription, isLoading: isSubscriptionLoading, mutate } =
     useDoc(subscriptionRef);
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -55,6 +55,41 @@ export default function AcademicParaphraserPage() {
   });
   
   const planId = subscription?.planId ?? 'free';
+  
+  // Logic for daily reset
+  const checkAndResetUsage = async () => {
+    if (!subscription || !firestore || !subscriptionRef || planId === 'premium') return;
+
+    const lastReset = subscription.usage?.lastResetDate?.toDate();
+     if (!lastReset) { // If no reset date, set it and continue
+        await updateDoc(subscriptionRef, { 'usage.lastResetDate': serverTimestamp() });
+        return;
+    }
+    const now = new Date();
+    const hoursSinceLastReset = (now.getTime() - lastReset.getTime()) / (1000 * 60 * 60);
+
+    if (hoursSinceLastReset >= 24) {
+      const batch = writeBatch(firestore);
+      batch.update(subscriptionRef, {
+        'usage.summaryCount': 0,
+        'usage.paraphraseCount': 0,
+        'usage.tutorQuestionCount': 0,
+        'usage.lastResetDate': serverTimestamp(),
+      });
+      await batch.commit();
+      mutate(); // Re-fetch data after reset
+      toast({
+        title: 'Kuota Harian Direset',
+        description: 'Kuota penggunaan gratis Anda telah diperbarui untuk hari ini.',
+      });
+    }
+  };
+
+  // Check on component mount
+  useEffect(() => {
+    checkAndResetUsage();
+  }, [subscription, firestore]);
+
   const remainingParaphrases =
     planId === 'premium' ? Infinity : USAGE_LIMIT - (subscription?.usage?.paraphraseCount || 0);
   const isLimitReached = !isSubscriptionLoading && remainingParaphrases <= 0;
@@ -68,6 +103,9 @@ export default function AcademicParaphraserPage() {
       });
       return;
     }
+
+    // Double check and reset just before submission
+    await checkAndResetUsage();
 
     if (isLimitReached) {
       toast({
