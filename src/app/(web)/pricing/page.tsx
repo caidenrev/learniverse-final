@@ -323,7 +323,6 @@ export default function PricingPage() {
               </Label>
               <Input
                 id="voucher"
-                placeholder="misalnya, LEARNIVERSE25"
                 value={voucherInput}
                 onChange={(e) => setVoucherInput(e.target.value.toUpperCase())}
                 disabled={isVoucherLoading}
