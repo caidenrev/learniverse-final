@@ -19,13 +19,14 @@ import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
 import { generateLearningPath } from '@/ai/flows/learning-path-generator';
 import type { LearningPathOutput } from '@/ai/flows/learning-path-generator';
-import { Loader2, Wand2, Milestone } from 'lucide-react';
+import { Loader2, Wand2, Milestone, LinkIcon, BookOpen } from 'lucide-react';
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
 } from '@/components/ui/accordion';
+import Link from 'next/link';
 
 const formSchema = z.object({
   topic: z
@@ -70,7 +71,7 @@ export default function LearningPathGeneratorPage() {
         </h1>
         <p className="mt-2 text-muted-foreground">
           Masukkan topik yang ingin Anda kuasai, dan AI akan membuatkan roadmap
-          belajar yang terstruktur untuk Anda.
+          belajar yang terstruktur untuk Anda, lengkap dengan sumber belajar.
         </p>
       </div>
 
@@ -142,15 +143,42 @@ export default function LearningPathGeneratorPage() {
                         {step.stepTitle}
                       </div>
                     </AccordionTrigger>
-                    <AccordionContent className="pl-4">
-                      <p className="mb-3 text-sm text-muted-foreground">
+                    <AccordionContent className="pl-4 space-y-4">
+                      <p className="text-sm text-muted-foreground">
                         {step.description}
                       </p>
-                      <ul className="ml-5 mt-2 list-disc space-y-2 text-sm">
-                        {step.subPoints.map((point, i) => (
-                          <li key={i}>{point}</li>
-                        ))}
-                      </ul>
+                      <div>
+                        <h4 className="font-semibold text-sm mb-2 flex items-center gap-2">
+                            <BookOpen className="h-4 w-4"/>
+                            Konsep Kunci
+                        </h4>
+                        <ul className="ml-5 mt-2 list-disc space-y-2 text-sm">
+                            {step.subPoints.map((point, i) => (
+                            <li key={i}>{point}</li>
+                            ))}
+                        </ul>
+                      </div>
+                       {step.resources && step.resources.length > 0 && (
+                        <div>
+                            <h4 className="font-semibold text-sm mb-2 flex items-center gap-2">
+                                <LinkIcon className="h-4 w-4"/>
+                                Rekomendasi Sumber Belajar
+                            </h4>
+                             <div className="space-y-2">
+                                {step.resources.map((resource, i) => (
+                                    <Link 
+                                        href={resource.url}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        key={i}
+                                        className="text-sm text-primary underline-offset-4 hover:underline flex items-center gap-2"
+                                    >
+                                       <span>{resource.title}</span>
+                                    </Link>
+                                ))}
+                            </div>
+                        </div>
+                       )}
                     </AccordionContent>
                   </AccordionItem>
                 ))}

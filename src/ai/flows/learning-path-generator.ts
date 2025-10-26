@@ -18,10 +18,16 @@ const LearningPathInputSchema = z.object({
 });
 export type LearningPathInput = z.infer<typeof LearningPathInputSchema>;
 
+const ResourceSchema = z.object({
+    title: z.string().describe('Judul sumber belajar.'),
+    url: z.string().url().describe('URL sumber belajar yang relevan.'),
+});
+
 const StepSchema = z.object({
   stepTitle: z.string().describe('The title of the learning step.'),
   description: z.string().describe('A brief description of what to learn in this step.'),
   subPoints: z.array(z.string()).describe('A list of key concepts or technologies to cover in this step.'),
+  resources: z.array(ResourceSchema).describe('Daftar sumber belajar yang direkomendasikan untuk langkah ini.'),
 });
 
 const LearningPathOutputSchema = z.object({
@@ -44,8 +50,12 @@ const prompt = ai.definePrompt({
 
   Topiknya adalah: {{{topic}}}
 
-  Peta jalan belajarnya harus logis, mulai dari dasar sampai ke hal-hal yang lebih expert. Untuk setiap langkah, berikan judul, deskripsi singkat, dan beberapa sub-poin (konsep kunci atau teknologi).
-  
+  Peta jalan belajarnya harus logis, mulai dari dasar sampai ke hal-hal yang lebih expert. Untuk setiap langkah, berikan:
+  1. Judul langkah (stepTitle).
+  2. Deskripsi singkat (description).
+  3. Beberapa sub-poin (subPoints) berisi konsep kunci atau teknologi.
+  4. Daftar sumber belajar (resources) yang relevan, seperti artikel, tutorial, atau video. Setiap sumber harus memiliki judul (title) dan URL yang valid (url).
+
   Tolong hasilnya dalam format JSON yang sesuai dengan skema output dan dalam bahasa Indonesia.
 `,
 });
