@@ -32,6 +32,7 @@ import {
   increment,
   serverTimestamp,
   writeBatch,
+  getDoc,
 } from 'firebase/firestore';
 import Link from 'next/link';
 
@@ -113,9 +114,16 @@ export default function CodeReviewPage() {
 
   // Daily reset logic
   const checkAndResetUsage = useMemo(() => async () => {
-    if (!subscription || !firestore || !subscriptionRef || planId === 'premium') return;
+    if (!subscriptionRef || !firestore ) return;
+    
+    // We need to get a fresh document snapshot here to check the date
+    const currentSubDoc = await getDoc(subscriptionRef);
+    if (!currentSubDoc.exists()) return;
 
-    const lastReset = subscription.usage?.lastResetDate?.toDate();
+    const subData = currentSubDoc.data();
+    if(subData.planId === 'premium') return;
+
+    const lastReset = subData.usage?.lastResetDate?.toDate();
     if (!lastReset) {
       await updateDoc(subscriptionRef, {
         'usage.lastResetDate': serverTimestamp(),
@@ -136,14 +144,14 @@ export default function CodeReviewPage() {
         'usage.lastResetDate': serverTimestamp(),
       });
       await batch.commit();
-      await mutate(); // Re-fetches the subscription data
+      await mutate(); // Re-fetches the subscription data for the hook
       toast({
         title: 'Kuota Harian Direset',
         description:
           'Kuota penggunaan gratis Anda telah diperbarui untuk hari ini.',
       });
     }
-  }, [subscription, firestore, subscriptionRef, planId, mutate, toast]);
+  }, [subscriptionRef, firestore, mutate, toast]);
   
   useEffect(() => {
     if (user && subscription) {
@@ -164,21 +172,19 @@ export default function CodeReviewPage() {
     setError(null);
     setAiExplanation(null);
 
-    // Ensure usage data is fresh before proceeding
-    await checkAndResetUsage();
-    // We need to refetch subscription data to get the latest count if it was just reset
-    const freshSub = await subscriptionRef ? (await (await fetch(subscriptionRef.path)).json()) : null;
-    const freshRemaining = planId === 'premium' ? Infinity : USAGE_LIMIT - (freshSub?.usage?.codeReviewCount || 0);
-    const freshLimitReached = !isSubscriptionLoading && freshRemaining <= 0;
-
-
     try {
       const result = await runCodeInBrowser(code, language);
       setOutput(result as string);
     } catch (e: any) {
       setError(e);
       
-      if (planId === 'free' && freshLimitReached) {
+      // Check for usage limit only if an error occurs
+      await checkAndResetUsage();
+      await mutate(); // Re-fetch to get the latest count
+      
+      const currentRemainingReviews = planId === 'premium' ? Infinity : USAGE_LIMIT - (subscription?.usage?.codeReviewCount || 0);
+
+      if (planId === 'free' && currentRemainingReviews <= 0) {
         toast({
             title: 'Kuota Review Kode Habis',
             description: 'Anda telah mencapai batas harian untuk penjelasan error oleh AI. Silakan upgrade.',
@@ -203,7 +209,7 @@ export default function CodeReviewPage() {
             });
             toast({
                 title: 'AI Menemukan Error!',
-                description: `Sisa kuota review hari ini: ${freshRemaining - 1}`,
+                description: `Sisa kuota review hari ini: ${currentRemainingReviews - 1}`,
             });
             mutate(); // Update local state after incrementing
         } else if (planId === 'premium') {
@@ -301,7 +307,7 @@ export default function CodeReviewPage() {
                 language={language}
               />
             </div>
-            <Button onClick={handleRunCode} disabled={isLoading || isLimitReached}>
+            <Button onClick={handleRunCode} disabled={isLoading || (isLimitReached && language === 'python')}>
               {isLoading ? (
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
               ) : (
@@ -377,3 +383,5 @@ export default function CodeReviewPage() {
     </div>
   );
 }
+
+    
