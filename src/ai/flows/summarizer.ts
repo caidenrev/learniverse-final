@@ -34,19 +34,14 @@ const summarizeFlow = ai.defineFlow(
     outputSchema: SummarizeOutputSchema,
   },
   async input => {
-    // Pilih model berdasarkan paket pengguna
-    const model =
-      input.planId === 'premium'
-        ? 'googleai/gemini-1.5-flash'
-        : 'googleai/gemini-1.5-flash';
-    
     // Definisikan prompt secara dinamis di dalam flow
     const prompt = `Ringkasin teks bahasa Inggris ini jadi poin-poin yang gampang dimengerti dalam Bahasa Indonesia dong:\n\n${input.text}
 
     Hasilnya harus dalam bahasa Indonesia yang santai dan jangan pakai format markdown seperti bold atau heading.`;
 
+    // The default model from `src/ai/genkit.ts` will be used.
+    // We can add logic here in the future to select a different model based on the plan.
     const {output} = await ai.generate({
-      model: model,
       prompt: prompt,
       output: {
         schema: SummarizeOutputSchema,

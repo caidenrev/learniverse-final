@@ -52,14 +52,9 @@ const codeReviewerFlow = ai.defineFlow(
     outputSchema: CodeReviewerOutputSchema,
   },
   async (input) => {
-    // Select model based on user plan
-    const model =
-      input.planId === 'premium'
-        ? 'googleai/gemini-1.5-flash'
-        : 'googleai/gemini-1.5-flash';
-
-    const { output } = await prompt(input, { model });
+    // The default model is used, which is configured in `src/ai/genkit.ts`.
+    // We can add logic here in the future to select a different model based on the plan.
+    const { output } = await prompt(input);
     return output!;
   }
 );
-
