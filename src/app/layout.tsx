@@ -45,6 +45,11 @@ export const metadata: Metadata = {
     images: [`${APP_URL}/hero-image.png`],
   },
   metadataBase: new URL(APP_URL),
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: 'default',
+    title: APP_NAME,
+  },
 };
 
 
@@ -66,6 +71,7 @@ export default function RootLayout({
           href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Space+Grotesk:wght@500;700&display=swap"
           rel="stylesheet"
         />
+        <meta name="theme-color" content="#8B5CF6" />
       </head>
       <body className="font-body antialiased">
         <FirebaseClientProvider>{children}</FirebaseClientProvider>

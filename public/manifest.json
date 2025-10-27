@@ -1,0 +1,21 @@
+{
+  "name": "Learniverse",
+  "short_name": "Learniverse",
+  "description": "Asisten belajar cerdas bertenaga AI untuk mendukung perjalanan akademis Anda.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#F5F5F5",
+  "theme_color": "#8B5CF6",
+  "icons": [
+    {
+      "src": "/logo-learniverse-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/logo-learniverse-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
