@@ -157,16 +157,16 @@ export default function CodeReviewPage() {
                 <span>Output Kode</span>
               </CardTitle>
             </CardHeader>
-            <CardContent className="min-h-[150px] bg-muted/30 rounded-md p-4 font-code text-sm">
+            <CardContent className="min-h-[150px] rounded-md bg-zinc-900 p-4 font-code text-sm text-zinc-50">
               {isLoading && (
                 <div className="flex h-full items-center justify-center">
-                  <p className="text-muted-foreground">Menjalankan kode...</p>
+                  <p className="text-zinc-400">Menjalankan kode...</p>
                 </div>
               )}
               {output && <pre className="whitespace-pre-wrap">{output}</pre>}
-              {error && <pre className="whitespace-pre-wrap text-destructive">{error.message}</pre>}
+              {error && <pre className="whitespace-pre-wrap text-red-400">{error.message}</pre>}
               {!isLoading && !output && !error && (
-                <p className="text-muted-foreground">Hasil eksekusi akan muncul di sini.</p>
+                <p className="text-zinc-400">Hasil eksekusi akan muncul di sini.</p>
               )}
             </CardContent>
           </Card>
