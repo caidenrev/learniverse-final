@@ -44,7 +44,7 @@ const premiumFeatures = [
   { text: 'Ringkasan & parafrase tanpa batas', included: true },
   { text: 'Akses ke model AI yang lebih canggih & akurat', included: true },
   { text: 'Reviewer CV yang lebih mendalam', included: true },
-  { text: 'Simpan riwayat dan proyek Anda', included: true },
+  { text: 'Code review tanpa batas', included: true },
   { text: 'Fitur kolaborasi tim (segera hadir)', included: true },
   { text: 'Dukungan prioritas', included: true },
 ];
