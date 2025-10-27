@@ -37,13 +37,13 @@ import { useRouter } from 'next/navigation';
 const freeFeatures = [
   { text: '10 ringkasan jurnal per hari', included: true },
   { text: 'Parafrase hingga 10 kali per hari', included: true },
+  { text: 'Code review hingga 10 kali per hari', included: true },
   { text: 'Akses ke semua fitur dasar', included: true },
 ];
 
 const premiumFeatures = [
   { text: 'Ringkasan & parafrase tanpa batas', included: true },
   { text: 'Akses ke model AI yang lebih canggih & akurat', included: true },
-  { text: 'Reviewer CV yang lebih mendalam', included: true },
   { text: 'Code review tanpa batas', included: true },
   { text: 'Fitur kolaborasi tim (segera hadir)', included: true },
   { text: 'Dukungan prioritas', included: true },
