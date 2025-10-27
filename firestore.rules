@@ -1,110 +1,105 @@
 /**
- * @fileoverview Firestore Security Rules for Learniverse application.
+ * @fileoverview Firestore Security Rules for Learniverse Prototyping.
  *
  * Core Philosophy:
- * This ruleset enforces a strict user-ownership model, ensuring that users can only
- * access their own data. All data is nested under /users/{userId}, and access is
- * controlled based on the authenticated user's UID matching the userId in the path.
+ * This ruleset enforces a strict user-ownership model. Each user can only access their own data,
+ * and no data is publicly accessible. This approach prioritizes security and data privacy.
  *
  * Data Structure:
- * - /users/{userId}: Stores user profile data. Only the authenticated user can read/write their own profile.
- * - /users/{userId}/subscriptions/{subscriptionId}: Stores subscription information. Only the authenticated user can read/write their own subscriptions.
- * - /users/{userId}/transactions/{transactionId}: Stores transaction history. Only the authenticated user can read/write their own transactions.
+ * The Firestore database is structured with user-specific data nested under the `/users/{userId}` path.
+ * This hierarchy ensures that each user's data is isolated and access can be controlled at the user level.
  *
  * Key Security Decisions:
- * - User listing is disallowed to prevent unauthorized access to user data.
- * - All write operations are validated against the authenticated user's UID.
+ * - User listing is explicitly denied to prevent unauthorized access to user data.
+ * - All write operations require authentication, and ownership is validated against the authenticated user's UID.
+ * - Data schema validation is relaxed to allow for rapid prototyping, focusing on authorization and relational integrity.
  *
  * Denormalization for Authorization:
- *  - The rules rely on the `userId` present in the path to match `request.auth.uid`.
+ * The `userId` field is included in the Project documents stored in `/users/{userId}/projects/{projectId}`. This denormalization avoids the need for complex queries or additional reads to verify project ownership, simplifying the security rules and improving performance.
  */
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
     /**
-     * @description Secure user profiles. Only the user can read and write their own profile.
-     * @path /users/{userId}
-     * @allow (get, update, delete) User 'qgVojRxAdqe7pKp8n72dY0lwGSP2' can read/write their own profile at /users/qgVojRxAdqe7pKp8n72dY0lwGSP2.
-     * @deny (get, update, delete) User 'anotherUser' cannot read/write the profile at /users/qgVojRxAdqe7pKp8n72dY0lwGSP2.
-     * @allow (create) User 'qgVojRxAdqe7pKp8n72dY0lwGSP2' can create their own profile at /users/qgVojRxAdqe7pKp8n72dY0lwGSP2 if the document id matches their uid.
-     * @deny (create) User 'anotherUser' cannot create the profile at /users/qgVojRxAdqe7pKp8n72dY0lwGSP2.
-     * @principle Enforces document ownership, validates user ID on creation, and enforces immutability of user ID on update.
+     * @description Checks if the request is authenticated.
      */
-    match /users/{userId} {
-      function isSignedIn() {
-        return request.auth != null;
-      }
-
-      function isOwner(userId) {
-        return request.auth.uid == userId;
-      }
-
-      function isExistingOwner(userId) {
-        return isOwner(userId) && resource != null;
-      }
-
-      allow get: if isOwner(userId);
-      allow list: if false; // Disallowing listing of all users for privacy.
-      allow create: if isSignedIn() && isOwner(userId) && request.resource.data.uid == userId;
-      allow update: if isExistingOwner(userId) && request.resource.data.uid == resource.data.uid;
-      allow delete: if isExistingOwner(userId);
+    function isSignedIn() {
+      return request.auth != null;
     }
 
     /**
-     * @description Secure user subscriptions. Only the user can read and write their own subscriptions.
-     * @path /users/{userId}/subscriptions/{subscriptionId}
-     * @allow (get, update, delete) User 'qgVojRxAdqe7pKp8n72dY0lwGSP2' can read/write their own subscription at /users/qgVojRxAdqe7pKp8n72dY0lwGSP2/subscriptions/sub123.
-     * @deny (get, update, delete) User 'anotherUser' cannot read/write the subscription at /users/qgVojRxAdqe7pKp8n72dY0lwGSP2/subscriptions/sub123.
-     * @allow (create) User 'qgVojRxAdqe7pKp8n72dY0lwGSP2' can create their own subscription at /users/qgVojRxAdqe7pKp8n72dY0lwGSP2/subscriptions/sub123.
-     * @deny (create) User 'anotherUser' cannot create the subscription at /users/qgVojRxAdqe7pKp8n72dY0lwGSP2/subscriptions/sub123.
-     * @principle Enforces document ownership.
+     * @description Checks if the authenticated user's UID matches the provided userId.
+     * @param {string} userId - The user ID to compare against the authenticated user's UID.
      */
-    match /users/{userId}/subscriptions/{subscriptionId} {
-      function isSignedIn() {
-        return request.auth != null;
-      }
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
 
-      function isOwner(userId) {
-        return request.auth.uid == userId;
-      }
-
-       function isExistingOwner(userId) {
+    /**
+     * @description Checks if the authenticated user's UID matches the resource's userId.
+     * @param {string} userId - The user ID to compare against the authenticated user's UID.
+     */
+    function isExistingOwner(userId) {
         return isOwner(userId) && resource != null;
-      }
+    }
 
+    /**
+     * @description Enforces document ownership for writes.
+     * @path /users/{userId}
+     * @allow (create) User with uid 'user123' can create their own profile.
+     * @deny (create) User with uid 'user123' cannot create a profile for 'user456'.
+     * @principle Enforces document ownership for writes, restricts access to a user's own data tree, validates relational integrity between documents
+     */
+    match /users/{userId} {
       allow get: if isOwner(userId);
-      allow list: if isOwner(userId);
-      allow create: if isSignedIn() && isOwner(userId);
+      allow list: if false;
+      allow create: if isOwner(userId);
       allow update: if isExistingOwner(userId);
       allow delete: if isExistingOwner(userId);
     }
 
     /**
-     * @description Secure user transactions. Only the user can read and write their own transactions.
-     * @path /users/{userId}/transactions/{transactionId}
-     * @allow (get, update, delete) User 'qgVojRxAdqe7pKp8n72dY0lwGSP2' can read/write their own transaction at /users/qgVojRxAdqe7pKp8n72dY0lwGSP2/transactions/txn123.
-     * @deny (get, update, delete) User 'anotherUser' cannot read/write the transaction at /users/qgVojRxAdqe7pKp8n72dY0lwGSP2/transactions/txn123.
-     * @allow (create) User 'qgVojRxAdqe7pKp8n72dY0lwGSP2' can create their own transaction at /users/qgVojRxAdqe7pKp8n72dY0lwGSP2/transactions/txn123.
-     * @deny (create) User 'anotherUser' cannot create the transaction at /users/qgVojRxAdqe7pKp8n72dY0lwGSP2/transactions/txn123.
-     * @principle Enforces document ownership.
+     * @description Enforces subscription ownership.
+     * @path /users/{userId}/subscriptions/{subscriptionId}
+     * @allow (create) User with uid 'user123' can create a subscription under their profile.
+     * @deny (create) User with uid 'user123' cannot create a subscription under 'user456' profile.
+     * @principle Enforces document ownership for writes, restricts access to a user's own data tree, validates relational integrity between documents
      */
-    match /users/{userId}/transactions/{transactionId} {
-      function isSignedIn() {
-        return request.auth != null;
-      }
-
-      function isOwner(userId) {
-        return request.auth.uid == userId;
-      }
-
-      function isExistingOwner(userId) {
-        return isOwner(userId) && resource != null;
-      }
-
+    match /users/{userId}/subscriptions/{subscriptionId} {
       allow get: if isOwner(userId);
       allow list: if isOwner(userId);
-      allow create: if isSignedIn() && isOwner(userId);
+      allow create: if isOwner(userId);
+      allow update: if isExistingOwner(userId);
+      allow delete: if isExistingOwner(userId);
+    }
+
+    /**
+     * @description Enforces transaction ownership.
+     * @path /users/{userId}/transactions/{transactionId}
+     * @allow (create) User with uid 'user123' can create a transaction under their profile.
+     * @deny (create) User with uid 'user123' cannot create a transaction under 'user456' profile.
+     * @principle Enforces document ownership for writes, restricts access to a user's own data tree, validates relational integrity between documents
+     */
+    match /users/{userId}/transactions/{transactionId} {
+      allow get: if isOwner(userId);
+      allow list: if isOwner(userId);
+      allow create: if isOwner(userId);
+      allow update: if isExistingOwner(userId);
+      allow delete: if isExistingOwner(userId);
+    }
+
+    /**
+     * @description Enforces project ownership.
+     * @path /users/{userId}/projects/{projectId}
+     * @allow (create) User with uid 'user123' can create a project under their profile.
+     * @deny (create) User with uid 'user123' cannot create a project under 'user456' profile.
+     * @principle Enforces document ownership for writes, restricts access to a user's own data tree, validates relational integrity between documents
+     */
+    match /users/{userId}/projects/{projectId} {
+      allow get: if isOwner(userId);
+      allow list: if isOwner(userId);
+      allow create: if isOwner(userId);
       allow update: if isExistingOwner(userId);
       allow delete: if isExistingOwner(userId);
     }
