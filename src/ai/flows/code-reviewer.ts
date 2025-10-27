@@ -55,10 +55,11 @@ const codeReviewerFlow = ai.defineFlow(
     // Select model based on user plan
     const model =
       input.planId === 'premium'
-        ? 'googleai/gemini-pro'
-        : 'googleai/gemini-2.5-flash';
+        ? 'googleai/gemini-1.5-flash'
+        : 'googleai/gemini-1.5-flash';
 
     const { output } = await prompt(input, { model });
     return output!;
   }
 );
+

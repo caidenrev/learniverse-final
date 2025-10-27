@@ -1,3 +1,4 @@
+
 'use server';
 
 /**
@@ -36,8 +37,8 @@ const summarizeFlow = ai.defineFlow(
     // Pilih model berdasarkan paket pengguna
     const model =
       input.planId === 'premium'
-        ? 'googleai/gemini-pro'
-        : 'googleai/gemini-2.5-flash';
+        ? 'googleai/gemini-1.5-flash'
+        : 'googleai/gemini-1.5-flash';
     
     // Definisikan prompt secara dinamis di dalam flow
     const prompt = `Ringkasin teks bahasa Inggris ini jadi poin-poin yang gampang dimengerti dalam Bahasa Indonesia dong:\n\n${input.text}
