@@ -17,9 +17,9 @@ import {
   BookDown,
   Gem,
   History,
-  Archive,
   LayoutDashboard,
   FileCheck,
+  Terminal, // Ikon baru untuk Code Review
 } from 'lucide-react';
 
 interface MenuItem {
@@ -56,6 +56,11 @@ export const menuItems: MenuGroup[] = [
         href: '/jawaban-cepat',
         title: 'Jawaban Cepat',
         icon: FileCheck,
+      },
+       {
+        href: '/code-review',
+        title: 'Code Review',
+        icon: Terminal,
       },
       {
         href: '/generator-peta-belajar',
@@ -127,11 +132,6 @@ export const menuItems: MenuGroup[] = [
   {
     title: 'Akun',
     items: [
-       {
-        href: '/riwayat-projek',
-        title: 'Riwayat Projek',
-        icon: Archive,
-      },
       {
         href: '/pricing',
         title: 'Harga',

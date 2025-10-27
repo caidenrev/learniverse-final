@@ -19,3 +19,4 @@ import '@/ai/flows/create-payment.ts';
 import '@/ai/flows/chatbot-schemas.ts';
 import '@/ai/flows/chatbot.ts';
 import '@/ai/flows/question-answerer.ts';
+import '@/ai/flows/code-reviewer.ts';
