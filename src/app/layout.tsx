@@ -1,3 +1,4 @@
+
 import type { Metadata } from 'next';
 import './globals.css';
 import { Toaster } from '@/components/ui/toaster';
@@ -21,7 +22,7 @@ export const metadata: Metadata = {
   icons: {
     icon: '/logo-learniverse.svg',
   },
-  manifest: '/manifest.json', // Jika Anda punya file manifest
+  manifest: '/manifest.json',
   openGraph: {
     type: 'website',
     url: APP_URL,
@@ -81,3 +82,5 @@ export default function RootLayout({
     </html>
   );
 }
+
+    
