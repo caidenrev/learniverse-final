@@ -172,7 +172,7 @@ export default function Home() {
           <div className="relative h-64 w-full p-4 md:h-96">
             <Image
               src="/hero-image.png"
-              alt="Seorang siswa menggunakan laptop"
+              alt="Learniverse AI"
               fill
               className="object-contain [filter:drop-shadow(0_4px_6px_rgba(0,0,0,0.05))]"
               sizes="(max-width: 768px) 100vw, 50vw"
