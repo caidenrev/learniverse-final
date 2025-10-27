@@ -254,7 +254,7 @@ export default function PricingPage() {
             variant="destructive"
             className="absolute -top-3 left-1/2 -translate-x-1/2"
           >
-            Pembayaran Maintenance
+            Promo Mahasiswa
           </Badge>
           <CardHeader className="pb-4">
             <CardTitle className="flex items-center gap-3">
