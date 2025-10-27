@@ -16,6 +16,7 @@ import { UserAuth } from '@/components/user-auth';
 import { Gem, Info, Mail, LayoutDashboard } from 'lucide-react';
 import { Chatbot } from '@/components/chatbot';
 import { AnimatedHamburger } from '@/components/ui/animated-hamburger';
+import { PwaInstallButton } from '@/components/pwa-install-button';
 
 export default function WebLayout({ children }: { children: ReactNode }) {
   const [isSheetOpen, setIsSheetOpen] = useState(false);
@@ -81,6 +82,7 @@ export default function WebLayout({ children }: { children: ReactNode }) {
           </nav>
 
           <div className="flex items-center gap-4">
+            <PwaInstallButton />
             <UserAuth />
             <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
               <SheetTrigger asChild className="md:hidden">

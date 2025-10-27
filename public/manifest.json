@@ -4,7 +4,7 @@
   "description": "Asisten belajar cerdas bertenaga AI untuk mendukung perjalanan akademis Anda.",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#F5F5F5",
+  "background_color": "#ffffff",
   "theme_color": "#8B5CF6",
   "icons": [
     {
