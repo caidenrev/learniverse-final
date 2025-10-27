@@ -71,6 +71,7 @@ export default function WebLayout({ children }: { children: ReactNode }) {
               {/*  */}
               Tentang
             </Link>
+            {/*  */}
             <Link
               href="/kontak"
               className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary"
