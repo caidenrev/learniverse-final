@@ -67,6 +67,9 @@
             "tutorQuestionCount": {
               "type": "number"
             },
+            "codeReviewCount": {
+              "type": "number"
+            },
             "lastResetDate": {
               "type": "string",
               "format": "date-time"

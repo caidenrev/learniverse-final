@@ -12,7 +12,7 @@ import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
 import { Skeleton } from './ui/skeleton';
 import { Button } from './ui/button';
 import Link from 'next/link';
-import { LogOut, BookText, Repeat, Infinity, User } from 'lucide-react';
+import { LogOut, BookText, Repeat, Infinity, User, Terminal } from 'lucide-react';
 import { useAuth } from '@/firebase';
 import { signOut } from 'firebase/auth';
 import {
@@ -46,6 +46,7 @@ function getFirstName(name: string | null | undefined): string {
 
 const SUMMARY_LIMIT = 10;
 const PARAPHRASE_LIMIT = 10;
+const CODE_REVIEW_LIMIT = 10;
 
 export function UserProfileSidebar() {
   const auth = useAuth();
@@ -88,6 +89,7 @@ export function UserProfileSidebar() {
   const isPremium = subscription?.planId === 'premium';
   const remainingSummaries = SUMMARY_LIMIT - (subscription?.usage?.summaryCount || 0);
   const remainingParaphrases = PARAPHRASE_LIMIT - (subscription?.usage?.paraphraseCount || 0);
+  const remainingCodeReviews = CODE_REVIEW_LIMIT - (subscription?.usage?.codeReviewCount || 0);
 
   return (
     <div className="space-y-1 rounded-lg bg-card p-2 text-card-foreground">
@@ -162,6 +164,16 @@ export function UserProfileSidebar() {
                             <Skeleton className="h-4 w-8" />
                           ) : (
                             `${remainingParaphrases < 0 ? 0 : remainingParaphrases} / ${PARAPHRASE_LIMIT}`
+                          )}
+                        </span>
+                      </div>
+                       <div className="flex justify-between items-center">
+                        <span className="flex items-center gap-1.5 text-muted-foreground"><Terminal className="w-3.5 h-3.5"/> Code Review</span>
+                        <span className="font-medium">
+                          {isSubscriptionLoading ? (
+                            <Skeleton className="h-4 w-8" />
+                          ) : (
+                            `${remainingCodeReviews < 0 ? 0 : remainingCodeReviews} / ${CODE_REVIEW_LIMIT}`
                           )}
                         </span>
                       </div>

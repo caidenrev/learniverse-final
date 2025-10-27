@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import {
   Card,
@@ -13,10 +13,27 @@ import {
 import { useToast } from '@/hooks/use-toast';
 import { reviewCodeError } from '@/ai/flows/code-reviewer';
 import type { CodeReviewerOutput } from '@/ai/flows/code-reviewer-schemas';
-import { Loader2, Play, Terminal, Sparkles, Bot, AlertTriangle } from 'lucide-react';
+import {
+  Loader2,
+  Play,
+  Terminal,
+  Sparkles,
+  Bot,
+  AlertTriangle,
+  ShieldAlert,
+} from 'lucide-react';
 import { Label } from '@/components/ui/label';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { CodeEditor } from '@/components/code-editor';
+import { useUser, useFirestore, useDoc, useMemoFirebase } from '@/firebase';
+import {
+  doc,
+  updateDoc,
+  increment,
+  serverTimestamp,
+  writeBatch,
+} from 'firebase/firestore';
+import Link from 'next/link';
 
 // This is a simplified, client-side sandbox. It is NOT secure for untrusted code.
 // For this educational tool, it's an acceptable tradeoff.
@@ -28,41 +45,115 @@ const runCodeInBrowser = (code: string, language: 'javascript' | 'python') => {
         const logMessages: any[] = [];
         const originalLog = console.log;
         console.log = (...args) => {
-          logMessages.push(args.map(arg => typeof arg === 'object' ? JSON.stringify(arg) : arg).join(' '));
+          logMessages.push(
+            args
+              .map((arg) =>
+                typeof arg === 'object' ? JSON.stringify(arg) : arg
+              )
+              .join(' ')
+          );
         };
-        
+
         // eslint-disable-next-line no-new-func
         const result = new Function(code)();
-        
+
         // Restore console.log
         console.log = originalLog;
-        
+
         let output = logMessages.join('\n');
         if (result !== undefined) {
           output += (output ? '\n' : '') + `Return Value: ${result}`;
         }
-        
-        resolve(output || 'Eksekusi selesai tanpa output eksplisit.');
 
+        resolve(output || 'Eksekusi selesai tanpa output eksplisit.');
       } catch (error: any) {
         reject(error);
       }
     } else {
-        // Python execution is not possible in the browser.
-        // We will just send it to AI for review without running.
-        reject(new Error('Eksekusi Python tidak didukung di browser. AI akan tetap mereview kode Anda.'));
+      // Python execution is not possible in the browser.
+      // We will just send it to AI for review without running.
+      reject(
+        new Error(
+          'Eksekusi Python tidak didukung di browser. AI akan tetap mereview kode Anda.'
+        )
+      );
     }
   });
 };
 
+const USAGE_LIMIT = 10;
+
 export default function CodeReviewPage() {
   const [code, setCode] = useState("console.log('Halo Learniverse!');");
-  const [language, setLanguage] = useState<'javascript' | 'python'>('javascript');
+  const [language, setLanguage] = useState<'javascript' | 'python'>(
+    'javascript'
+  );
   const [output, setOutput] = useState<string | null>(null);
   const [error, setError] = useState<Error | null>(null);
-  const [aiExplanation, setAiExplanation] = useState<CodeReviewerOutput | null>(null);
+  const [aiExplanation, setAiExplanation] =
+    useState<CodeReviewerOutput | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
+
+  const { user } = useUser();
+  const firestore = useFirestore();
+
+  const subscriptionRef = useMemoFirebase(() => {
+    if (!firestore || !user) return null;
+    return doc(firestore, 'users', user.uid, 'subscriptions', 'default');
+  }, [firestore, user]);
+
+  const {
+    data: subscription,
+    isLoading: isSubscriptionLoading,
+    mutate,
+  } = useDoc(subscriptionRef);
+  
+  const planId = subscription?.planId ?? 'free';
+
+  // Daily reset logic
+  const checkAndResetUsage = async () => {
+    if (!subscription || !firestore || !subscriptionRef || planId === 'premium') return;
+
+    const lastReset = subscription.usage?.lastResetDate?.toDate();
+    if (!lastReset) {
+      await updateDoc(subscriptionRef, {
+        'usage.lastResetDate': serverTimestamp(),
+      });
+      return;
+    }
+    const now = new Date();
+    const hoursSinceLastReset =
+      (now.getTime() - lastReset.getTime()) / (1000 * 60 * 60);
+
+    if (hoursSinceLastReset >= 24) {
+      const batch = writeBatch(firestore);
+      batch.update(subscriptionRef, {
+        'usage.summaryCount': 0,
+        'usage.paraphraseCount': 0,
+        'usage.tutorQuestionCount': 0,
+        'usage.codeReviewCount': 0,
+        'usage.lastResetDate': serverTimestamp(),
+      });
+      await batch.commit();
+      mutate();
+      toast({
+        title: 'Kuota Harian Direset',
+        description:
+          'Kuota penggunaan gratis Anda telah diperbarui untuk hari ini.',
+      });
+    }
+  };
+  
+  useEffect(() => {
+    checkAndResetUsage();
+  }, [subscription, firestore]);
+
+  const remainingReviews =
+    planId === 'premium'
+      ? Infinity
+      : USAGE_LIMIT - (subscription?.usage?.codeReviewCount || 0);
+  const isLimitReached = !isSubscriptionLoading && remainingReviews <= 0;
 
   const handleRunCode = async () => {
     setIsLoading(true);
@@ -75,18 +166,44 @@ export default function CodeReviewPage() {
       setOutput(result as string);
     } catch (e: any) {
       setError(e);
+      
+      // Check for usage limit before calling AI
+      await checkAndResetUsage();
+      if (isLimitReached) {
+        toast({
+            title: 'Kuota Review Kode Habis',
+            description: 'Anda telah mencapai batas harian untuk penjelasan error oleh AI. Silakan upgrade.',
+            variant: 'destructive',
+        });
+        setIsLoading(false);
+        return;
+      }
+
       try {
         const explanation = await reviewCodeError({
           code,
           language,
           errorMessage: e.message,
+          planId,
         });
         setAiExplanation(explanation);
+
+        if (planId === 'free' && subscriptionRef) {
+            await updateDoc(subscriptionRef, {
+                'usage.codeReviewCount': increment(1),
+            });
+            toast({
+                title: 'AI Menemukan Error!',
+                description: `Sisa kuota review hari ini: ${remainingReviews - 1}`,
+            });
+        }
+
       } catch (aiError) {
         console.error('AI error review failed:', aiError);
         toast({
           title: 'Gagal Mendapatkan Review AI',
-          description: 'Terjadi kesalahan saat mencoba menganalisis error kode Anda.',
+          description:
+            'Terjadi kesalahan saat mencoba menganalisis error kode Anda.',
           variant: 'destructive',
         });
       }
@@ -102,9 +219,29 @@ export default function CodeReviewPage() {
           Code Review & Sandbox
         </h1>
         <p className="mt-2 text-muted-foreground">
-          Tulis kode JavaScript atau Python, jalankan, dan jika ada error, AI akan menjelaskannya untuk Anda.
+          Tulis kode, jalankan, dan jika ada error, AI akan menjelaskannya
+          untuk Anda.
         </p>
       </div>
+      
+      {user && isLimitReached && (
+        <Card className="border-amber-500 bg-amber-50/50">
+          <CardContent className="flex items-center gap-4 p-4">
+            <ShieldAlert className="h-8 w-8 text-amber-600" />
+            <div className="flex-1">
+              <h3 className="font-semibold text-amber-800">
+                Kuota Review AI Telah Habis
+              </h3>
+              <p className="text-sm text-amber-700">
+                Upgrade ke paket Premium untuk review kode tanpa batas.
+              </p>
+            </div>
+            <Button asChild>
+              <Link href="/pricing">Upgrade Sekarang</Link>
+            </Button>
+          </CardContent>
+        </Card>
+      )}
 
       <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
         <Card>
@@ -117,7 +254,9 @@ export default function CodeReviewPage() {
               <RadioGroup
                 defaultValue="javascript"
                 value={language}
-                onValueChange={(value: 'javascript' | 'python') => setLanguage(value)}
+                onValueChange={(value: 'javascript' | 'python') =>
+                  setLanguage(value)
+                }
                 className="flex gap-4"
               >
                 <div className="flex items-center space-x-2">
@@ -164,9 +303,15 @@ export default function CodeReviewPage() {
                 </div>
               )}
               {output && <pre className="whitespace-pre-wrap">{output}</pre>}
-              {error && <pre className="whitespace-pre-wrap text-red-500">{error.message}</pre>}
+              {error && (
+                <pre className="whitespace-pre-wrap text-red-500">
+                  {error.message}
+                </pre>
+              )}
               {!isLoading && !output && !error && (
-                <p className="text-muted-foreground">Hasil eksekusi akan muncul di sini.</p>
+                <p className="text-muted-foreground">
+                  Hasil eksekusi akan muncul di sini.
+                </p>
               )}
             </CardContent>
           </Card>
@@ -178,19 +323,28 @@ export default function CodeReviewPage() {
                   <Sparkles className="h-6 w-6" />
                   <span>Penjelasan AI</span>
                 </CardTitle>
-                 <CardDescription className="text-primary/80">
+                <CardDescription className="text-primary/80">
                   AI mendeteksi ada masalah. Berikut penjelasannya.
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
-                 <div className="space-y-2">
-                     <h4 className="font-semibold flex items-center gap-2"><AlertTriangle className="h-4 w-4" /> Masalah</h4>
-                     <p className="text-sm text-muted-foreground">{aiExplanation.problem}</p>
-                 </div>
-                  <div className="space-y-2">
-                     <h4 className="font-semibold flex items-center gap-2"><Bot className="h-4 w-4" /> Saran Perbaikan</h4>
-                     <p className="text-sm text-muted-foreground">{aiExplanation.solution}</p>
-                 </div>
+                <div className="space-y-2">
+                  <h4 className="flex items-center gap-2 font-semibold">
+                    <AlertTriangle className="h-4 w-4" /> Masalah
+                  </h4>
+                  <p className="text-sm text-muted-foreground">
+                    {aiExplanation.problem}
+                  </p>
+                </div>
+                <div className="space-y-2">
+                  <h4 className="flex items-center gap-2 font-semibold">
+                    <Bot className="h-4 w-4" /> Saran Perbaikan
+                  </h4>
+                  <div
+                    className="prose prose-sm prose-p:text-muted-foreground prose-pre:bg-zinc-800"
+                    dangerouslySetInnerHTML={{ __html: aiExplanation.solution }}
+                  />
+                </div>
               </CardContent>
             </Card>
           )}

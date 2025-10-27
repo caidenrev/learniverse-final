@@ -7,6 +7,7 @@ export const CodeReviewerInputSchema = z.object({
     .enum(['javascript', 'python'])
     .describe('The programming language of the code.'),
   errorMessage: z.string().describe('The error message produced when running the code.'),
+  planId: z.enum(['free', 'premium']).default('free').describe("The user's subscription plan."),
 });
 export type CodeReviewerInput = z.infer<typeof CodeReviewerInputSchema>;
 

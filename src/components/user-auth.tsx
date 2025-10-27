@@ -67,6 +67,7 @@ export function UserAuth() {
                   summaryCount: 0,
                   paraphraseCount: 0,
                   tutorQuestionCount: 0,
+                  codeReviewCount: 0,
                   lastResetDate: serverTimestamp()
               }
           };
