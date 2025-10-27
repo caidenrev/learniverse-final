@@ -134,6 +134,61 @@
         "paymentUrl",
         "createdAt"
       ]
+    },
+    "Project": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Project",
+      "type": "object",
+      "description": "Represents a saved project or output from one of the AI features.",
+      "properties": {
+        "userId": {
+          "type": "string",
+          "description": "The UID of the user who created the project."
+        },
+        "title": {
+          "type": "string",
+          "description": "A user-defined title for the project."
+        },
+        "feature": {
+          "type": "string",
+          "description": "The name of the feature used to generate this project (e.g., 'Peringkas Jurnal')."
+        },
+        "featureUrl": {
+          "type": "string",
+          "description": "The URL of the feature page where the project was created."
+        },
+        "input": {
+          "type": "object",
+          "description": "The original input provided by the user."
+        },
+        "output": {
+          "type": "object",
+          "description": "The AI-generated output."
+        },
+        "isSaved": {
+          "type": "boolean",
+          "description": "Whether the user has explicitly saved this project."
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Timestamp when the project was created."
+        },
+        "updatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Timestamp when the project was last updated."
+        }
+      },
+      "required": [
+        "userId",
+        "title",
+        "feature",
+        "featureUrl",
+        "input",
+        "output",
+        "createdAt"
+      ]
     }
   },
   "auth": {
@@ -159,6 +214,12 @@
         "$ref": "#/entities/Transaction"
       },
       "description": "Stores a user's payment transaction history."
+    },
+    "/users/{userId}/projects/{projectId}": {
+      "schema": {
+        "$ref": "#/entities/Project"
+      },
+      "description": "Stores a user's saved projects and AI-generated outputs."
     }
   }
 }

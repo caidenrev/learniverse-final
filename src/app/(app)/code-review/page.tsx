@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { Button } from '@/components/ui/button';
 import {
   Card,
@@ -109,10 +109,10 @@ export default function CodeReviewPage() {
     mutate,
   } = useDoc(subscriptionRef);
   
-  const planId = subscription?.planId ?? 'free';
+  const planId = useMemo(() => subscription?.planId ?? 'free', [subscription]);
 
   // Daily reset logic
-  const checkAndResetUsage = async () => {
+  const checkAndResetUsage = useMemo(() => async () => {
     if (!subscription || !firestore || !subscriptionRef || planId === 'premium') return;
 
     const lastReset = subscription.usage?.lastResetDate?.toDate();
@@ -136,24 +136,27 @@ export default function CodeReviewPage() {
         'usage.lastResetDate': serverTimestamp(),
       });
       await batch.commit();
-      mutate();
+      await mutate(); // Re-fetches the subscription data
       toast({
         title: 'Kuota Harian Direset',
         description:
           'Kuota penggunaan gratis Anda telah diperbarui untuk hari ini.',
       });
     }
-  };
+  }, [subscription, firestore, subscriptionRef, planId, mutate, toast]);
   
   useEffect(() => {
-    checkAndResetUsage();
-  }, [subscription, firestore]);
+    if (user && subscription) {
+        checkAndResetUsage();
+    }
+  }, [user, subscription, checkAndResetUsage]);
 
-  const remainingReviews =
-    planId === 'premium'
-      ? Infinity
-      : USAGE_LIMIT - (subscription?.usage?.codeReviewCount || 0);
-  const isLimitReached = !isSubscriptionLoading && remainingReviews <= 0;
+  const remainingReviews = useMemo(() => {
+    if (planId === 'premium') return Infinity;
+    return USAGE_LIMIT - (subscription?.usage?.codeReviewCount || 0);
+  }, [subscription, planId]);
+  
+  const isLimitReached = useMemo(() => !isSubscriptionLoading && remainingReviews <= 0, [isSubscriptionLoading, remainingReviews]);
 
   const handleRunCode = async () => {
     setIsLoading(true);
@@ -161,15 +164,21 @@ export default function CodeReviewPage() {
     setError(null);
     setAiExplanation(null);
 
+    // Ensure usage data is fresh before proceeding
+    await checkAndResetUsage();
+    // We need to refetch subscription data to get the latest count if it was just reset
+    const freshSub = await subscriptionRef ? (await (await fetch(subscriptionRef.path)).json()) : null;
+    const freshRemaining = planId === 'premium' ? Infinity : USAGE_LIMIT - (freshSub?.usage?.codeReviewCount || 0);
+    const freshLimitReached = !isSubscriptionLoading && freshRemaining <= 0;
+
+
     try {
       const result = await runCodeInBrowser(code, language);
       setOutput(result as string);
     } catch (e: any) {
       setError(e);
       
-      // Check for usage limit before calling AI
-      await checkAndResetUsage();
-      if (isLimitReached) {
+      if (planId === 'free' && freshLimitReached) {
         toast({
             title: 'Kuota Review Kode Habis',
             description: 'Anda telah mencapai batas harian untuk penjelasan error oleh AI. Silakan upgrade.',
@@ -194,18 +203,33 @@ export default function CodeReviewPage() {
             });
             toast({
                 title: 'AI Menemukan Error!',
-                description: `Sisa kuota review hari ini: ${remainingReviews - 1}`,
+                description: `Sisa kuota review hari ini: ${freshRemaining - 1}`,
+            });
+            mutate(); // Update local state after incrementing
+        } else if (planId === 'premium') {
+             toast({
+              title: 'AI Menemukan Error!',
+              description: 'AI sedang menjelaskan masalahnya untuk Anda.',
             });
         }
 
-      } catch (aiError) {
+      } catch (aiError: any) {
         console.error('AI error review failed:', aiError);
-        toast({
-          title: 'Gagal Mendapatkan Review AI',
-          description:
-            'Terjadi kesalahan saat mencoba menganalisis error kode Anda.',
-          variant: 'destructive',
-        });
+        const errorMessage = aiError.message || '';
+        if (errorMessage.includes('503')) {
+            toast({
+              title: 'Model AI Sibuk',
+              description: 'Model AI sedang kelebihan beban. Silakan coba lagi beberapa saat.',
+              variant: 'destructive',
+            });
+        } else {
+            toast({
+              title: 'Gagal Mendapatkan Review AI',
+              description:
+                'Terjadi kesalahan saat mencoba menganalisis error kode Anda.',
+              variant: 'destructive',
+            });
+        }
       }
     } finally {
       setIsLoading(false);
@@ -233,7 +257,7 @@ export default function CodeReviewPage() {
                 Kuota Review AI Telah Habis
               </h3>
               <p className="text-sm text-amber-700">
-                Upgrade ke paket Premium untuk review kode tanpa batas.
+                Upgrade ke paket Premium untuk review kode tanpa batas. Kuota gratis direset setiap 24 jam.
               </p>
             </div>
             <Button asChild>
@@ -277,7 +301,7 @@ export default function CodeReviewPage() {
                 language={language}
               />
             </div>
-            <Button onClick={handleRunCode} disabled={isLoading}>
+            <Button onClick={handleRunCode} disabled={isLoading || isLimitReached}>
               {isLoading ? (
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
               ) : (
@@ -297,7 +321,7 @@ export default function CodeReviewPage() {
               </CardTitle>
             </CardHeader>
             <CardContent className="min-h-[150px] rounded-md bg-muted p-4 font-code text-sm text-foreground">
-              {isLoading && (
+              {isLoading && !output && !error && (
                 <div className="flex h-full items-center justify-center">
                   <p className="text-muted-foreground">Menjalankan kode...</p>
                 </div>
@@ -341,7 +365,7 @@ export default function CodeReviewPage() {
                     <Bot className="h-4 w-4" /> Saran Perbaikan
                   </h4>
                   <div
-                    className="prose prose-sm prose-p:text-muted-foreground prose-pre:bg-zinc-800"
+                    className="prose prose-sm max-w-none text-sm text-muted-foreground prose-p:text-muted-foreground prose-pre:bg-background/50"
                     dangerouslySetInnerHTML={{ __html: aiExplanation.solution }}
                   />
                 </div>
