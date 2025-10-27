@@ -16,7 +16,7 @@ import type { CodeReviewerOutput } from '@/ai/flows/code-reviewer-schemas';
 import { Loader2, Play, Terminal, Sparkles, Bot, AlertTriangle } from 'lucide-react';
 import { Label } from '@/components/ui/label';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import { Textarea } from '@/components/ui/textarea';
+import { CodeEditor } from '@/components/code-editor';
 
 // This is a simplified, client-side sandbox. It is NOT secure for untrusted code.
 // For this educational tool, it's an acceptable tradeoff.
@@ -56,7 +56,7 @@ const runCodeInBrowser = (code: string, language: 'javascript' | 'python') => {
 };
 
 export default function CodeReviewPage() {
-  const [code, setCode] = useState('');
+  const [code, setCode] = useState("console.log('Halo Learniverse!');");
   const [language, setLanguage] = useState<'javascript' | 'python'>('javascript');
   const [output, setOutput] = useState<string | null>(null);
   const [error, setError] = useState<Error | null>(null);
@@ -132,12 +132,10 @@ export default function CodeReviewPage() {
             </div>
             <div className="space-y-2">
               <Label htmlFor="code-editor">Kode Anda</Label>
-              <Textarea
-                id="code-editor"
-                placeholder="console.log('Halo Learniverse!');"
-                className="min-h-[300px] font-code text-sm"
+              <CodeEditor
                 value={code}
-                onChange={(e) => setCode(e.target.value)}
+                onValueChange={setCode}
+                language={language}
               />
             </div>
             <Button onClick={handleRunCode} disabled={isLoading}>
