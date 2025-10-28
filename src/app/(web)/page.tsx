@@ -26,6 +26,8 @@ import {
   CheckCircle2,
   Gem,
   HelpCircle,
+  FileCheck,
+  Terminal,
 } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -118,6 +120,20 @@ const features = [
       'Unggah dokumen PDF atau Word untuk mendapatkan ringkasan dan kesimpulan instan.',
     href: '/rangkum-dokumen',
   },
+  {
+    icon: <FileCheck className="h-8 w-8" />,
+    title: 'Jawaban Cepat',
+    description:
+      'Unggah dokumen soal (PDF/JPG) dan biarkan AI menjawab semuanya untuk Anda.',
+    href: '/jawaban-cepat',
+  },
+  {
+    icon: <Terminal className="h-8 w-8" />,
+    title: 'Code Review',
+    description:
+      'Tulis kode, jalankan, dan jika ada error, AI akan menjelaskannya untuk Anda.',
+    href: '/code-review',
+  },
 ];
 
 const faqItems = [
@@ -193,7 +209,7 @@ export default function Home() {
               </p>
             </div>
             <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-              {features.map((feature, index) => (
+              {features.sort((a, b) => a.title.localeCompare(b.title)).map((feature, index) => (
                 <FadeIn key={feature.title} custom={index}>
                     <Link
                     href={feature.href}
