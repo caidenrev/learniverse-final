@@ -20,7 +20,6 @@ import {
   LayoutDashboard,
   FileCheck,
   Terminal, 
-  Archive, // Ikon baru untuk Riwayat Projek
 } from 'lucide-react';
 
 interface MenuItem {
@@ -133,11 +132,6 @@ export const menuItems: MenuGroup[] = [
   {
     title: 'Akun & Lainnya',
     items: [
-      {
-        href: '/riwayat-projek',
-        title: 'Riwayat Projek',
-        icon: Archive,
-      },
       {
         href: '/pricing',
         title: 'Harga',

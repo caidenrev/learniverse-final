@@ -16,15 +16,11 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { Card, CardContent, CardFooter } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
 import { analogyFinder } from '@/ai/flows/analogy-finder';
 import type { AnalogyFinderOutput } from '@/ai/flows/analogy-finder';
-import { Loader2, Wand2, Save } from 'lucide-react';
-import { useUser, useFirestore, useDoc, useMemoFirebase } from '@/firebase';
-import { doc } from 'firebase/firestore';
-import { saveProject } from '@/ai/flows/save-project';
-import { PremiumLockPopup } from '@/components/premium-lock-popup';
+import { Loader2, Wand2 } from 'lucide-react';
 
 const formSchema = z.object({
   technicalConcept: z
@@ -35,21 +31,8 @@ const formSchema = z.object({
 
 export default function AnalogyFinderPage() {
   const [result, setResult] = useState<AnalogyFinderOutput | null>(null);
-  const [lastInput, setLastInput] = useState<z.infer<typeof formSchema> | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [isSaving, setIsSaving] = useState(false);
-  const [isPopupOpen, setIsPopupOpen] = useState(false);
   const { toast } = useToast();
-  const { user } = useUser();
-  const firestore = useFirestore();
-
-  const subscriptionRef = useMemoFirebase(() => {
-    if (!firestore || !user) return null;
-    return doc(firestore, 'users', user.uid, 'subscriptions', 'default');
-  }, [firestore, user]);
-
-  const { data: subscription, isLoading: isSubscriptionLoading } = useDoc(subscriptionRef);
-  const isPremium = subscription?.planId === 'premium';
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -59,7 +42,6 @@ export default function AnalogyFinderPage() {
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsLoading(true);
     setResult(null);
-    setLastInput(values);
     try {
       const response = await analogyFinder(values);
       setResult(response);
@@ -75,54 +57,8 @@ export default function AnalogyFinderPage() {
     }
   }
 
-  const handleSaveProject = async () => {
-    if (!user) {
-      toast({ title: 'Anda harus login untuk menyimpan.', variant: 'destructive' });
-      return;
-    }
-    if (!isPremium) {
-      setIsPopupOpen(true);
-      return;
-    }
-    if (!result || !lastInput) {
-      toast({ title: 'Tidak ada hasil untuk disimpan.', variant: 'destructive' });
-      return;
-    }
-
-    setIsSaving(true);
-    try {
-      await saveProject({
-        userId: user.uid,
-        title: `Analogi untuk "${lastInput.technicalConcept}"`,
-        feature: 'Pencari Analogi',
-        featureUrl: '/pencari-analogi',
-        input: lastInput,
-        output: result,
-      });
-      toast({
-        title: 'Projek Tersimpan!',
-        description: 'Anda dapat melihatnya di halaman Riwayat Projek.',
-      });
-    } catch (error) {
-      console.error('Gagal menyimpan projek:', error);
-      toast({
-        title: 'Gagal Menyimpan',
-        description: 'Terjadi kesalahan saat menyimpan projek Anda.',
-        variant: 'destructive',
-      });
-    } finally {
-      setIsSaving(false);
-    }
-  };
-
   return (
     <div className="space-y-8">
-      <PremiumLockPopup
-        open={isPopupOpen}
-        onOpenChange={setIsPopupOpen}
-        featureName="Simpan Projek"
-        description="Simpan semua hasil kerjamu, mulai dari kerangka presentasi hingga ringkasan jurnal, dan akses kapan saja. Upgrade ke Premium untuk membuka fitur ini!"
-      />
       <div className="pt-4">
         <h1 className="font-headline text-3xl font-bold md:text-4xl">
           Pencari Analogi
@@ -175,8 +111,8 @@ export default function AnalogyFinderPage() {
           <h2 className="font-headline text-2xl font-semibold">
             Analogi yang Dihasilkan
           </h2>
-          <Card className="min-h-[240px] flex flex-col">
-            <CardContent className="p-6 flex-1">
+          <Card className="min-h-[240px]">
+            <CardContent className="p-6">
               {isLoading && (
                 <div className="flex items-center justify-center pt-16">
                   <Loader2 className="h-10 w-10 animate-spin text-primary" />
@@ -191,18 +127,6 @@ export default function AnalogyFinderPage() {
                 </p>
               )}
             </CardContent>
-            {result && (
-              <CardFooter className="justify-end border-t pt-4">
-                <Button onClick={handleSaveProject} disabled={isSaving || isSubscriptionLoading}>
-                  {isSaving ? (
-                    <Loader2 className="animate-spin" />
-                  ) : (
-                    <Save className="mr-2 h-4 w-4" />
-                  )}
-                  Simpan Projek
-                </Button>
-              </CardFooter>
-            )}
           </Card>
         </div>
       </div>
