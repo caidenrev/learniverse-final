@@ -9,8 +9,7 @@ import {
   useMemoFirebase,
   useDoc,
 } from '@/firebase';
-import { collection, query, orderBy, limit } from 'firebase/firestore';
-import { doc } from 'firebase/firestore';
+import { collection, query, orderBy, limit, doc } from 'firebase/firestore';
 import {
   Card,
   CardContent,
@@ -26,6 +25,8 @@ import {
   AlertCircle,
   Sparkles,
   ChevronRight,
+  Eye,
+  EyeOff,
 } from 'lucide-react';
 import { PremiumLockPopup } from '@/components/premium-lock-popup';
 import { menuItems } from '@/lib/menu-items';
@@ -33,6 +34,12 @@ import Link from 'next/link';
 import { Badge } from '@/components/ui/badge';
 import { formatDistanceToNow } from 'date-fns';
 import { id } from 'date-fns/locale';
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from '@/components/ui/collapsible';
+import { AnimatePresence, motion } from 'framer-motion';
 
 // Helper to find the icon for a given feature title
 const getFeatureIcon = (featureName: string) => {
@@ -49,60 +56,83 @@ function ProjectItem({ project }: { project: any }) {
   const [isExpanded, setIsExpanded] = useState(false);
 
   return (
-    <Card className="transition-all hover:shadow-md">
-      <CardHeader>
-        <div className="flex items-start justify-between gap-4">
-          <div>
-            <CardTitle className="text-lg">{project.title}</CardTitle>
-            <CardDescription className="mt-1 flex items-center gap-2 text-xs">
-              <div className="flex items-center gap-1">
-                {getFeatureIcon(project.feature)}
-                <span>{project.feature}</span>
-              </div>
-              <span className="text-muted-foreground/80">
-                &middot; Dibuat{' '}
-                {formatDistanceToNow(project.createdAt.toDate(), {
-                  addSuffix: true,
-                  locale: id,
-                })}
-              </span>
-            </CardDescription>
-          </div>
-          <Badge variant={project.isSaved ? 'default' : 'secondary'}>
-            {project.isSaved ? 'Disimpan' : 'Baru'}
-          </Badge>
-        </div>
-      </CardHeader>
-      <CardFooter className="flex justify-end gap-2">
-        <Button variant="outline" onClick={() => setIsExpanded(!isExpanded)}>
-          Lihat Detail
-        </Button>
-        <Button asChild>
-          <Link href="#">
-            <ChevronRight className="mr-2 h-4 w-4" />
-            Gunakan Lagi
-          </Link>
-        </Button>
-      </CardFooter>
-      {isExpanded && (
-        <CardContent className="border-t pt-4">
-          <div className="space-y-4">
+    <Collapsible open={isExpanded} onOpenChange={setIsExpanded}>
+      <Card className="transition-all hover:shadow-md">
+        <CardHeader>
+          <div className="flex items-start justify-between gap-4">
             <div>
-              <h4 className="font-semibold">Input:</h4>
-              <pre className="mt-1 whitespace-pre-wrap rounded-md bg-muted p-2 text-xs font-mono">
-                {JSON.stringify(project.input, null, 2)}
-              </pre>
+              <CardTitle className="text-lg">{project.title}</CardTitle>
+              <CardDescription className="mt-1 flex items-center gap-2 text-xs">
+                <div className="flex items-center gap-1.5">
+                  {getFeatureIcon(project.feature)}
+                  <span>{project.feature}</span>
+                </div>
+                <span className="text-muted-foreground/80">
+                  &middot; Dibuat{' '}
+                  {project.createdAt
+                    ? formatDistanceToNow(project.createdAt.toDate(), {
+                        addSuffix: true,
+                        locale: id,
+                      })
+                    : 'beberapa waktu lalu'}
+                </span>
+              </CardDescription>
             </div>
-            <div>
-              <h4 className="font-semibold">Output:</h4>
-              <pre className="mt-1 whitespace-pre-wrap rounded-md bg-muted p-2 text-xs font-mono">
-                {JSON.stringify(project.output, null, 2)}
-              </pre>
-            </div>
+            <Badge variant={project.isSaved ? 'default' : 'secondary'}>
+              {project.isSaved ? 'Disimpan' : 'Baru'}
+            </Badge>
           </div>
-        </CardContent>
-      )}
-    </Card>
+        </CardHeader>
+        <CardFooter className="flex justify-end gap-2">
+          <CollapsibleTrigger asChild>
+            <Button variant="outline" size="sm">
+              {isExpanded ? (
+                <EyeOff className="mr-2 h-4 w-4" />
+              ) : (
+                <Eye className="mr-2 h-4 w-4" />
+              )}
+              {isExpanded ? 'Sembunyikan' : 'Lihat Detail'}
+            </Button>
+          </CollapsibleTrigger>
+          <Button asChild size="sm">
+            <Link href={project.featureUrl || '#'}>
+              Gunakan Lagi
+              <ChevronRight className="ml-2 h-4 w-4" />
+            </Link>
+          </Button>
+        </CardFooter>
+        <AnimatePresence>
+          {isExpanded && (
+            <CollapsibleContent asChild forceMount>
+              <motion.div
+                initial={{ height: 0, opacity: 0 }}
+                animate={{ height: 'auto', opacity: 1 }}
+                exit={{ height: 0, opacity: 0 }}
+                transition={{ duration: 0.3, ease: 'easeInOut' }}
+                className="overflow-hidden"
+              >
+                <div className="border-t">
+                  <CardContent className="space-y-4 pt-6">
+                    <div>
+                      <h4 className="font-semibold text-sm">Input:</h4>
+                      <pre className="mt-1 whitespace-pre-wrap rounded-md bg-muted p-3 text-xs font-mono text-muted-foreground">
+                        {JSON.stringify(project.input, null, 2)}
+                      </pre>
+                    </div>
+                    <div>
+                      <h4 className="font-semibold text-sm">Output:</h4>
+                      <pre className="mt-1 whitespace-pre-wrap rounded-md bg-muted p-3 text-xs font-mono text-muted-foreground">
+                        {JSON.stringify(project.output, null, 2)}
+                      </pre>
+                    </div>
+                  </CardContent>
+                </div>
+              </motion.div>
+            </CollapsibleContent>
+          )}
+        </AnimatePresence>
+      </Card>
+    </Collapsible>
   );
 }
 
@@ -124,7 +154,8 @@ export default function ProjectHistoryPage() {
       !firestore ||
       !user ||
       isSubscriptionLoading ||
-      subscription?.planId !== 'premium'
+      !subscription || // ensure subscription data is loaded
+      subscription.planId !== 'premium'
     ) {
       return null;
     }
@@ -183,7 +214,7 @@ export default function ProjectHistoryPage() {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <p className="mb-4 text-muted-foreground">
+              <p className="mb-4 text-sm text-primary/80">
                 Jangan khawatir kehilangan ide cemerlang atau ringkasan penting
                 lagi. Dengan paket Premium, semua hasil generasimu akan
                 tersimpan rapi di sini, siap untuk diakses kapan pun kamu butuh.
@@ -199,7 +230,7 @@ export default function ProjectHistoryPage() {
       {isPremium && (
         <div className="space-y-6">
           {isProjectsLoading && (
-            <div className="flex flex-col items-center justify-center gap-4 rounded-lg border p-12">
+            <div className="flex flex-col items-center justify-center gap-4 rounded-lg border border-dashed p-12">
               <Loader2 className="h-8 w-8 animate-spin text-primary" />
               <p className="text-muted-foreground">Memuat projek Anda...</p>
             </div>
@@ -218,7 +249,7 @@ export default function ProjectHistoryPage() {
                   <Archive className="h-12 w-12 text-muted-foreground/50" />
                   <p className="font-semibold">Belum Ada Projek Tersimpan</p>
                   <p className="text-sm text-muted-foreground">
-                    Mulai gunakan fitur untuk menyimpan projekmu di sini.
+                    Mulai gunakan fitur dan simpan pekerjaanmu di sini.
                   </p>
                 </div>
               ) : (

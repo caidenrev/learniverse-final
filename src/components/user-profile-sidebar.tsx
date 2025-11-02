@@ -44,7 +44,6 @@ function getFirstName(name: string | null | undefined): string {
     return name.split(' ')[0];
 }
 
-const SUMMARY_LIMIT = 10;
 const PARAPHRASE_LIMIT = 10;
 const CODE_REVIEW_LIMIT = 10;
 
@@ -87,7 +86,6 @@ export function UserProfileSidebar() {
   }
 
   const isPremium = subscription?.planId === 'premium';
-  const remainingSummaries = SUMMARY_LIMIT - (subscription?.usage?.summaryCount || 0);
   const remainingParaphrases = PARAPHRASE_LIMIT - (subscription?.usage?.paraphraseCount || 0);
   const remainingCodeReviews = CODE_REVIEW_LIMIT - (subscription?.usage?.codeReviewCount || 0);
 
@@ -147,16 +145,6 @@ export function UserProfileSidebar() {
               {!isPremium && (
                    <>
                       <p className="font-medium text-muted-foreground pt-2 pb-1 border-t border-border">Sisa Kuota Harian:</p>
-                      <div className="flex justify-between items-center">
-                        <span className="flex items-center gap-1.5 text-muted-foreground"><BookText className="w-3.5 h-3.5"/> Peringkas</span>
-                        <span className="font-medium">
-                          {isSubscriptionLoading ? (
-                            <Skeleton className="h-4 w-8" />
-                          ) : (
-                            `${remainingSummaries < 0 ? 0 : remainingSummaries} / ${SUMMARY_LIMIT}`
-                          )}
-                        </span>
-                      </div>
                        <div className="flex justify-between items-center">
                         <span className="flex items-center gap-1.5 text-muted-foreground"><Repeat className="w-3.5 h-3.5"/> Parafrase</span>
                         <span className="font-medium">
