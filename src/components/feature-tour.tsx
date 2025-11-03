@@ -46,7 +46,7 @@ export function FeatureTour() {
 
   const handleBack = () => {
     if (currentStep > 0) {
-      setCurrentStep(prev => prev - 1);
+      setCurrentStep(prev => prev + 1);
     }
   };
 
@@ -79,6 +79,8 @@ export function FeatureTour() {
         
         <div className="py-4 text-sm text-muted-foreground">
           {currentFeature.title === 'Tutor AI' && 'Unggah materi kuliah Anda dan ajukan pertanyaan spesifik untuk mendapatkan jawaban instan.'}
+          {currentFeature.title === 'Jawaban Cepat' && 'Unggah dokumen atau gambar soal, dan biarkan AI menjawab semua pertanyaan untuk Anda.'}
+          {currentFeature.title === 'Code Review' && 'Tulis, jalankan, dan jika ada error, AI akan menjelaskan serta memberikan solusi perbaikan kode Anda.'}
           {currentFeature.title === 'Roadmap Belajar' && 'Buat roadmap belajar yang terstruktur untuk menguasai topik atau keterampilan baru dari awal hingga mahir.'}
           {currentFeature.title === 'CV Reviewer' && 'Dapatkan ulasan, skor, dan saran perbaikan untuk CV Anda dari AI yang bertindak sebagai HR profesional.'}
           {currentFeature.title === 'Pembuat Pertanyaan' && 'Secara otomatis hasilkan pertanyaan dari materi pelajaran Anda untuk kuis atau bahan diskusi.'}
