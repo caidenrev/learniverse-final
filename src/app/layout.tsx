@@ -4,6 +4,7 @@ import './globals.css';
 import { Toaster } from '@/components/ui/toaster';
 import { FirebaseClientProvider } from '@/firebase';
 import { Analytics } from '@vercel/analytics/react';
+import { SpeedInsights } from "@vercel/speed-insights/next"
 
 const APP_NAME = 'Learniverse';
 const APP_DESCRIPTION = 'Asisten belajar cerdas bertenaga AI untuk mendukung perjalanan akademis Anda, mulai dari brainstorming ide, riset, hingga belajar untuk ujian.';
@@ -78,9 +79,8 @@ export default function RootLayout({
         <FirebaseClientProvider>{children}</FirebaseClientProvider>
         <Toaster />
         <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   );
 }
-
-    
