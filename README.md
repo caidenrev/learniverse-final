@@ -49,45 +49,45 @@ Learniverse dirancang dengan **Arsitektur Aplikasi Web Serverless**. Arsitektur 
 
 ```mermaid
 graph TD
-    subgraph Pengguna
-        A[Browser/PWA]
+    %% Styling
+    classDef user fill:#D0BFFF,stroke:#333,stroke-width:2px;
+    classDef cloud fill:#FFDDC1,stroke:#333,stroke-width:2px;
+    classDef logic fill:#ADD8E6,stroke:#333,stroke-width:2px;
+
+    subgraph User_Side ["Pengguna (Client Side)"]
+        A["Browser / PWA"]:::user
     end
 
-    subgraph "Google Cloud & Firebase Infrastructure"
-        B(Firebase App Hosting)
-        C(Firebase Authentication)
-        D(Cloud Firestore)
-        E(Google AI Platform / Vertex AI)
-        F[Genkit Flows on Cloud Run]
-    end
-    
-    A -- HTTPS Request --> B
-    B -- SSR/Static Files --> A
-    A -- Login/Register --> C
-    C -- User Token --> A
-
-    subgraph "Alur Fitur AI (Server-Side)"
-        G[1. Komponen React (Client)]
-        H[2. Next.js Server Action]
-        I[3. Genkit Flow]
-        J[4. Model Gemini]
+    subgraph Google_Infra ["Google Cloud & Firebase Infrastructure"]
+        B("Firebase App Hosting"):::cloud
+        C("Firebase Authentication"):::cloud
+        D[("Cloud Firestore")]:::cloud
+        E("Vertex AI (Gemini)"):::cloud
     end
 
-    A -- Interaksi Fitur --> G
-    G -- Panggil (misal: onSubmit) --> H
-    H -- Memanggil Flow --> I
-    I -- Memanggil Model --> J
-    J -- Mengembalikan Hasil --> I
-    I -- Mengembalikan Output --> H
-    H -- Mengirim Data ke Client --> G
-    G -- Menampilkan Hasil --> A
-    
-    I -- (Opsional) Read/Write Data --> D
-    H -- Membutuhkan Auth --> C
-    
-    style Pengguna fill:#D0BFFF,stroke:#333,stroke-width:2px
-    style "Google Cloud & Firebase Infrastructure" fill:#FFDDC1,stroke:#333,stroke-width:2px
-    style "Alur Fitur AI (Server-Side)" fill:#ADD8E6,stroke:#333,stroke-width:2px
+    %% Flow Koneksi Dasar
+    A -- "1. HTTPS Request" --> B
+    B -- "2. SSR/Static Assets" --> A
+    A -- "3. Login/Register" --> C
+    C -- "4. User Token" --> A
+
+    subgraph Server_Logic ["Alur Fitur AI (Server-Side)"]
+        G["Komponen React (Client)"]:::logic
+        H["Next.js Server Action"]:::logic
+        I["Genkit Flow (Cloud Run)"]:::logic
+    end
+
+    %% Alur Detail Fitur AI
+    A -- "Interaksi User" --> G
+    G -- "Submit Form" --> H
+    H -- "Validasi Auth" --> C
+    H -- "Invoke Flow" --> I
+    I -- "Prompt Engineering" --> E
+    E -- "Generative Response" --> I
+    I -- "Save History (Optional)" --> D
+    I -- "Return Output" --> H
+    H -- "Response Data" --> G
+    G -- "Render UI" --> A
 ```
 
 ### Penjelasan Alur Arsitektur
@@ -111,24 +111,114 @@ Pola ini memastikan bahwa:
 Database aplikasi menggunakan Cloud Firestore dengan struktur data yang berpusat pada pengguna (user-centric). Semua data terkait pengguna disimpan dalam sub-koleksi di bawah dokumen pengguna tersebut.
 
 ```
-/users/{userId} (Dokumen)
-  - uid: string
-  - email: string
-  - displayName: string
-  - photoURL: string
-  - createdAt: timestamp
-  
-  /subscriptions/{subscriptionId} (Sub-koleksi)
-    - planId: 'free' | 'premium'
-    - status: 'active' | 'cancelled'
-    - usage: { ... } (map)
-
-  /transactions/{transactionId} (Sub-koleksi)
-    - orderId: string
-    - amount: number
-    - status: 'pending' | 'success' | 'failed'
-    - createdAt: timestamp
+erDiagram
+    USERS ||--o{ SUBSCRIPTIONS : has
+    USERS ||--o{ TRANSACTIONS : makes
+    USERS {
+        string uid PK
+        string email
+        string displayName
+        string photoURL
+        timestamp createdAt
+    }
+    SUBSCRIPTIONS {
+        string subscriptionId PK
+        string planId "free | premium"
+        string status "active | cancelled"
+        map usage "token usage details"
+    }
+    TRANSACTIONS {
+        string transactionId PK
+        string orderId
+        number amount
+        string status "pending | success"
+        timestamp createdAt
+    }
 ```
+flowchart TD
+    Start([Mulai]) --> Login{Sudah Login?}
+    
+    Login -- Tidak --> AuthPage[Halaman Login/Register]
+    AuthPage --> AuthProcess[Proses Autentikasi Firebase]
+    AuthProcess --> CheckStatus{Berhasil?}
+    CheckStatus -- Tidak --> AuthPage
+    CheckStatus -- Ya --> Dashboard[Dashboard Utama]
+    
+    Login -- Ya --> Dashboard
+    
+    Dashboard --> SelectFeature[Pilih Fitur AI]
+    
+    subgraph Features [Fitur Learniverse]
+        Direction1[Brainstorming]
+        Direction2[Peringkas Jurnal]
+        Direction3[Tutor AI]
+        Direction4[CV Review]
+    end
+    
+    SelectFeature --> Features
+    Features --> InputData[/Input Data / Upload Dokumen/]
+    InputData --> ProcessAI[Proses Genkit & Gemini]
+    ProcessAI --> Output[/Tampilkan Hasil/]
+    
+    Output --> SaveOption{Simpan?}
+    SaveOption -- Ya --> SaveDB[(Simpan ke Firestore)]
+    SaveDB --> End([Selesai])
+    SaveOption -- Tidak --> End
+
+    usecaseDiagram
+    actor "Mahasiswa / User" as User
+    actor "Sistem AI (Gemini)" as AI
+    actor "Payment Gateway" as Midtrans
+
+    package "Learniverse App" {
+        usecase "Login & Registrasi" as UC1
+        usecase "Brainstorming Ide" as UC2
+        usecase "Meringkas Dokumen" as UC3
+        usecase "Parafrase Teks" as UC4
+        usecase "Konsultasi Tutor AI" as UC5
+        usecase "Review CV" as UC6
+        usecase "Kelola Langganan" as UC7
+    }
+
+    User --> UC1
+    User --> UC2
+    User --> UC3
+    User --> UC4
+    User --> UC5
+    User --> UC6
+    User --> UC7
+
+    UC2 .> AI : include
+    UC3 .> AI : include
+    UC4 .> AI : include
+    UC5 .> AI : include
+    UC6 .> AI : include
+    
+    UC7 --> Midtrans : payment
+
+    sequenceDiagram
+    participant User as Pengguna
+    participant FE as Frontend (Next.js)
+    participant BE as Server Action
+    participant GK as Genkit Flow
+    participant AI as Vertex AI (Gemini)
+
+    User->>FE: Upload File PDF/Teks
+    FE->>BE: Kirim Data (POST)
+    activate BE
+    BE->>BE: Validasi Input & Auth
+    BE->>GK: Panggil Flow: summarizeFlow
+    activate GK
+    GK->>GK: Pre-processing & Prompting
+    GK->>AI: Generate Content
+    activate AI
+    AI-->>GK: Hasil Ringkasan
+    deactivate AI
+    GK-->>BE: Return Data Terstruktur
+    deactivate GK
+    BE-->>FE: Response JSON
+    deactivate BE
+    FE-->>User: Tampilkan Hasil Ringkasan
 
 Aturan Keamanan Firestore diterapkan secara ketat untuk memastikan bahwa pengguna hanya dapat membaca dan menulis datanya sendiri, menegakkan privasi dan keamanan data.
 
