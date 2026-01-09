@@ -114,6 +114,7 @@ Database aplikasi menggunakan Cloud Firestore dengan struktur data yang berpusat
 erDiagram
     USERS ||--o{ SUBSCRIPTIONS : has
     USERS ||--o{ TRANSACTIONS : makes
+
     USERS {
         string uid PK
         string email
@@ -121,17 +122,19 @@ erDiagram
         string photoURL
         timestamp createdAt
     }
+
     SUBSCRIPTIONS {
         string subscriptionId PK
-        string planId "free | premium"
-        string status "active | cancelled"
-        map usage "token usage details"
+        string planId "free/premium"
+        string status "active/cancelled"
+        json usage "token_usage_details"
     }
+
     TRANSACTIONS {
         string transactionId PK
         string orderId
         number amount
-        string status "pending | success"
+        string status "pending/success"
         timestamp createdAt
     }
 ```
