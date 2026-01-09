@@ -111,12 +111,19 @@ Pola ini memastikan bahwa:
 Database aplikasi menggunakan Cloud Firestore dengan struktur data yang berpusat pada pengguna (user-centric). Semua data terkait pengguna disimpan dalam sub-koleksi di bawah dokumen pengguna tersebut.
 
 ```
-erDiagram
-    USERS ||--o{ SUBSCRIPTIONS : has
-    USERS ||--o{ TRANSACTIONS : makes
+### Model & Struktur Database (Firestore)
 
+Database aplikasi menggunakan Cloud Firestore dengan struktur data yang berpusat pada pengguna (*user-centric*). Data langganan dan transaksi disimpan sebagai **sub-koleksi** di bawah dokumen pengguna.
+
+```mermaid
+erDiagram
+    %% Relasi Antar Entitas (Menggambarkan Sub-koleksi)
+    USERS ||--o{ SUBSCRIPTIONS : "has (sub-collection)"
+    USERS ||--o{ TRANSACTIONS : "makes (sub-collection)"
+
+    %% Definisi Atribut Entitas
     USERS {
-        string uid PK
+        string uid PK "Primary Key (dari Auth)"
         string email
         string displayName
         string photoURL
@@ -125,16 +132,16 @@ erDiagram
 
     SUBSCRIPTIONS {
         string subscriptionId PK
-        string planId "free/premium"
-        string status "active/cancelled"
-        json usage "token_usage_details"
+        string planId "Tipe: free / premium"
+        string status "Status: active / cancelled"
+        json usage "Detail penggunaan token (nested map)"
     }
 
     TRANSACTIONS {
         string transactionId PK
-        string orderId
+        string orderId "ID dari Midtrans"
         number amount
-        string status "pending/success"
+        string status "Status: pending / success"
         timestamp createdAt
     }
 ```
